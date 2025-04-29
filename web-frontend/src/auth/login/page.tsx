@@ -11,7 +11,11 @@ function LoginPage() {
 
   return (
     <>
-      <button onClick={handleLogin}>카카오 로그인</button>
+      <a href="http://localhost:8088/oauth2/authorization/kakao">
+        카카오 로그인
+      </a>
+
+      {/* <button onClick={handleLogin}>카카오 로그인</button> */}
     </>
   );
 }

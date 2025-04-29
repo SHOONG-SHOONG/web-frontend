@@ -1,35 +1,27 @@
 import React, { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
-function KakaoCallback() {
+function CallBackPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const query = new URLSearchParams(location.search);
-    const code = query.get("code");
-    if (code) {
-      // 백엔드에 인가코드 전달
-      axios
-        .post(
-          "http://localhost:8088/api/auth/kakao",
-          { code },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          //   console.log(res.data.user.accessToken);
-          window.history.replaceState({}, document.title, "/main");
-          sessionStorage.setItem("access_token", res.data.user.accessToken);
-          // user id도 저장해야하지않나?
-          navigate("/main"); // 홈으로
-        })
-        .catch((err) => {
-          console.error("로그인 실패", err);
-        });
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get("access_token");
+    // const name = params.get("name");
+
+    if (accessToken) {
+      sessionStorage.setItem("access_token", accessToken);
+      //   sessionStorage.setItem("user", JSON.stringify({ name }));
+      console.log("access_token 저장 완료");
+      navigate("/main");
+    } else {
+      console.warn("유효하지 않은 로그인 정보");
+      navigate("/login");
     }
   }, [location, navigate]);
 
-  return <div>로그인 중...</div>;
+  return <div>로그인 처리 중...</div>;
 }
-export default KakaoCallback;
+
+export default CallBackPage;
