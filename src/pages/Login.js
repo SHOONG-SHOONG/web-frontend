@@ -13,11 +13,12 @@ const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [loggedIn, setLoggedIn] = useState(false); // 상태 추가
 
+    // 로그인 요청 함수
     const fetchLogin = async (credentials) => {
         try {
             const response = await fetch("http://localhost:8080/login", {
                 method: 'POST',
-                credentials: 'include',
+                credentials: 'include',  // 쿠키 자동 포함
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
@@ -29,6 +30,7 @@ const LoginForm = () => {
                 const data = await response.json();
                 const { name } = data;
 
+                // 로그인 후 localStorage에 저장
                 window.localStorage.setItem("access", response.headers.get("access"));
                 window.localStorage.setItem("name", name);
 
@@ -41,7 +43,7 @@ const LoginForm = () => {
                 alert('Login failed');
             }
         } catch (error) {
-            console.log('error: ', error)
+            console.log('error: ', error);
         }
     };
 
@@ -51,13 +53,14 @@ const LoginForm = () => {
         fetchLogin(credentials);
     };
 
-    // ✅ 장바구니 조회 요청 버튼 클릭 핸들러
+    // 장바구니 조회 요청 함수
     const fetchCart = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/cart", {
+            const response = await fetch("http://localhost:8080/cart/get", {
                 method: 'GET',
-                credentials: 'include',
+                credentials: 'include',  // 쿠키 자동 전송
             });
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('장바구니 응답:', data);
@@ -73,19 +76,17 @@ const LoginForm = () => {
     return (
         <div className='로그인'>
             <h1>로그인</h1>
-                <form method='post' onSubmit={loginHandler}>
+            <form method='post' onSubmit={loginHandler}>
                 <p><span className='label'>Username</span><input className='input-class' type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder='username' /></p>
                 <p><span className='label'>Password</span><input className='input-class' type="password" autoComplete='off' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='password' /></p>
                 <input type="submit" value="Login" className='form-btn' />
             </form>
 
-
-                <div>
-                    <button className='form-btn' onClick={fetchCart}>
-                        장바구니 조회 테스트
-                    </button>
-                </div>
-
+            <div>
+                <button className='form-btn' onClick={fetchCart}>
+                    장바구니 조회 테스트
+                </button>
+            </div>
 
             <div className='social-login'>
                 <h2>소셜 로그인</h2>

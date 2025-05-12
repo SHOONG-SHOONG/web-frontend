@@ -13,7 +13,6 @@ const JoinForm = () => {
     const [registrationNumber, setRegistrationNumber] = useState('');
     const [userAddress, setUserAddress] = useState('');
     const [name, setname] = useState('');
-    const [isAddressOpen, setIsAddressOpen] = useState(false); // 🔑 주소 창 열기 여부
 
     const fetchJoin = async (credentials) => {
         try {
@@ -21,10 +20,11 @@ const JoinForm = () => {
                 method: "POST",
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: new URLSearchParams(credentials),
+                body: JSON.stringify(credentials), // ✅ JSON으로 변환
             });
+
             if (response.ok) {
                 alert("Join Successful");
                 navigate("/login", { replace: true });
@@ -56,16 +56,16 @@ const JoinForm = () => {
             oncomplete: function (data) {
                 let fullAddress = data.address;
                 let extraAddress = '';
-    
+
                 if (data.addressType === 'R') {
                     if (data.bname !== '') extraAddress += data.bname;
                     if (data.buildingName !== '') extraAddress += `${extraAddress ? ', ' : ''}${data.buildingName}`;
                     fullAddress += extraAddress ? ` (${extraAddress})` : '';
                 }
-    
+
                 setUserAddress(fullAddress);
             }
-        }).open(); // 🔥 팝업으로 열기
+        }).open();
     };
 
     return (
@@ -76,11 +76,9 @@ const JoinForm = () => {
                 <p><span className='label'>비밀번호</span><input className='input-class' type="password" autoComplete="off" name="userPassword" value={userPassword} placeholder="password" onChange={(e) => setUserPassword(e.target.value)} /></p>
                 <p><span className='label'>이메일</span><input className='input-class' type="email" name="userEmail" value={userEmail} placeholder="email" onChange={(e) => setUserEmail(e.target.value)} /></p>
                 <p><span className='label'>이름</span><input className='input-class' type="text" name="name" value={name} placeholder="name" onChange={(e) => setname(e.target.value)} /></p>
-
                 <p><span className='label'>전화번호</span><input className='input-class' type="text" name="userPhone" value={userPhone} placeholder="010-0000-0000" onChange={(e) => setUserPhone(e.target.value)} /></p>
                 <p><span className='label'>생년월일</span><input className='input-class' type="date" name="birthDay" value={birthDay} onChange={(e) => setBirthDay(e.target.value)} /></p>
                 <p><span className='label'>사업자 등록 번호</span><input className='input-class' type="text" name="registrationNumber" value={registrationNumber} placeholder="000-00-00000" onChange={(e) => setRegistrationNumber(e.target.value)} /></p>
-
                 <p><span className='label'>주소</span>
                     <input
                         className='input-class'
@@ -92,7 +90,6 @@ const JoinForm = () => {
                         readOnly
                     />
                 </p>
-
                 <input type="submit" value="회원가입" className="form-btn" />
             </form>
         </div>
