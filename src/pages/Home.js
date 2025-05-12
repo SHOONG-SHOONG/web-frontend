@@ -9,8 +9,8 @@ const Home = () => {
     const fetchCart = async () => {
         try {
             const token = localStorage.getItem("access"); // accessToken 꺼내기
-
-            const response = await fetch("http://localhost:8080/cart/get", {
+            
+            const response = await fetch("http://192.168.0.16:8080/cart/get", {
                 method: 'GET',
                 headers: {
                     'access': token, // 서버가 읽는 헤더 이름 그대로 사용

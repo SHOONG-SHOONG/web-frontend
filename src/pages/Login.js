@@ -16,7 +16,7 @@ const LoginForm = () => {
     // 로그인 요청 함수
     const fetchLogin = async (credentials) => {
         try {
-            const response = await fetch("http://localhost:8080/login", {
+            const response = await fetch("http://192.168.0.16:8080/login", {
                 method: 'POST',
                 credentials: 'include',  // 쿠키 자동 포함
                 headers: {
@@ -56,7 +56,7 @@ const LoginForm = () => {
     // 장바구니 조회 요청 함수
     const fetchCart = async () => {
         try {
-            const response = await fetch("http://localhost:8080/cart/get", {
+            const response = await fetch("http://192.168.0.16:8080/cart/get", {
                 method: 'GET',
                 credentials: 'include',  // 쿠키 자동 전송
             });
@@ -91,7 +91,7 @@ const LoginForm = () => {
             <div className='social-login'>
                 <h2>소셜 로그인</h2>
                 <div>
-                    <a href="http://localhost:8080/oauth2/authorization/kakao">
+                    <a href="http://192.168.0.16:8080/oauth2/authorization/kakao">
                         <img className='social-icon' src="google_icon.png" alt="kakao" />
                     </a>
                 </div>
