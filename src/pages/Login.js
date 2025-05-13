@@ -11,12 +11,11 @@ const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false); // 상태 추가
 
     // 로그인 요청 함수
     const fetchLogin = async (credentials) => {
         try {
-            // IP 주소를 192.168.0.26으로 수정
             const response = await fetch("http://192.168.0.26:8080/login", {
                 method: 'POST',
                 credentials: 'include',  // 쿠키 자동 포함
@@ -50,28 +49,8 @@ const LoginForm = () => {
 
     const loginHandler = async (e) => {
         e.preventDefault();
-        const credentials = { username, password, email };
+        const credentials = { username, password};
         fetchLogin(credentials);
-    };
-
-    // 장바구니 조회 요청 함수
-    const fetchCart = async () => {
-        try {
-            const response = await fetch("http://192.168.0.26:8080/cart/get", {
-                method: 'GET',
-                credentials: 'include',  // 쿠키 자동 전송
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('장바구니 응답:', data);
-                alert('장바구니 조회 성공 (콘솔 확인)');
-            } else {
-                alert('장바구니 조회 실패');
-            }
-        } catch (error) {
-            console.error('에러 발생:', error);
-        }
     };
 
     return (
@@ -92,7 +71,6 @@ const LoginForm = () => {
             <div className='social-login'>
                 <h2>소셜 로그인</h2>
                 <div>
-                    {/* IP 주소를 192.168.0.26으로 수정 */}
                     <a href="http://192.168.0.26:8080/oauth2/authorization/kakao">
                         <img className='social-icon' src="google_icon.png" alt="kakao" />
                     </a>
