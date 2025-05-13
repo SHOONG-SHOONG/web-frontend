@@ -56,7 +56,7 @@ const LoginForm = () => {
     // 장바구니 조회 요청 함수
     const fetchCart = async () => {
         try {
-            const response = await fetch("http://192.168.0.16:8080/cart/get", {
+            const response = await fetch("http://192.168.0.26:8080/cart/get", {
                 method: 'GET',
                 credentials: 'include',  // 쿠키 자동 전송
             });

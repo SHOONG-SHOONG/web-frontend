@@ -22,7 +22,7 @@ const Logout = () => {
 
     const fetchLogout = async () => {
         try {
-            const response = await fetch("http://192.168.0.16:8080/logout", {
+            const response = await fetch("http://192.168.0.26:8080/logout", {
                 method: "POST",
                 credentials: "include",
             });
