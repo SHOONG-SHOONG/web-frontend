@@ -12,7 +12,7 @@ const OAuth2Redirect = () => {
         const fetchJwt = async () => {
             try {
                 const response = await fetch("http://192.168.0.26:8080/oauth2-jwt-header", {
-                    method: "POST",
+                    method: "GET",
                     credentials: "include",
                     redirect: "manual", // 리다이렉트를 수동으로 처리
                 });
