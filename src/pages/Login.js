@@ -62,11 +62,6 @@ const LoginForm = () => {
                 <input type="submit" value="Login" className='form-btn' />
             </form>
 
-            <div>
-                <button className='form-btn' onClick={fetchCart}>
-                    장바구니 조회 테스트
-                </button>
-            </div>
 
             <div className='social-login'>
                 <h2>소셜 로그인</h2>
