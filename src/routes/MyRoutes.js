@@ -6,6 +6,7 @@ import OAuth2Redirect from '../services/Oauth2Redirect';
 import Admin from '../pages/Admin';
 import Logout from '../pages/Logout';
 import { useLogin } from '../contexts/AuthContext';
+import OAuth2Callback from '../pages/OAuth2Callback';  // OAuth2Callback 컴포넌트를 import
 
 const MyRoutes = () => {
   const { isLoggedIn } = useLogin();
@@ -18,6 +19,7 @@ const MyRoutes = () => {
       {isLoggedIn && <Route path="/logout" element={<Logout />} />}
       <Route path="/admin" element={<Admin />} />
       <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
+      <Route path="/oauth2-callback" element={<OAuth2Callback />} />
     </Routes>
   );
 }
