@@ -94,6 +94,7 @@ const LoginForm = () => {
                 <div>
                     {/* IP 주소를 192.168.0.26으로 수정 */}
                     <a href="http://192.168.0.26:8080/oauth2/authorization/kakao">
+                        <img className='social-icon' src="google_icon.png" alt="kakao" />
                     </a>
                 </div>
             </div>
