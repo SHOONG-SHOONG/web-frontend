@@ -11,7 +11,7 @@ const OAuth2Redirect = () => {
         const fetchJwt = async () => {
             try {
                 const response = await fetch("http://192.168.0.16:8080/oauth2-jwt-header", {
-                    method: "GET",
+                    method: "POST",
                     credentials: "include",
                 });
 
