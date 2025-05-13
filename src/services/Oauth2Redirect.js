@@ -16,9 +16,11 @@ const OAuth2Redirect = () => {
                 });
 
                 if (response.ok) {
-                    // access 토큰을 응답 헤더에서 가져옴
-                    window.localStorage.setItem("access", response.headers.get("access"));
+                    // 헤더에서 access 토큰만 따로 로컬스토리지에 저장
+                    const accessToken = response.headers.get("access");
+                    window.localStorage.setItem("access", accessToken);
 
+                    // 이름을 URL의 쿼리 파라미터에서 가져와 로컬스토리지에 저장
                     const name = queryParams.get("name");
                     window.localStorage.setItem("name", name);
 

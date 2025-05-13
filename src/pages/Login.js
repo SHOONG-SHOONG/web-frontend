@@ -53,26 +53,6 @@ const LoginForm = () => {
         fetchLogin(credentials);
     };
 
-    // 장바구니 조회 요청 함수
-    const fetchCart = async () => {
-        try {
-            const response = await fetch("http://192.168.0.26:8080/cart/get", {
-                method: 'GET',
-                credentials: 'include',  // 쿠키 자동 전송
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('장바구니 응답:', data);
-                alert('장바구니 조회 성공 (콘솔 확인)');
-            } else {
-                alert('장바구니 조회 실패');
-            }
-        } catch (error) {
-            console.error('에러 발생:', error);
-        }
-    };
-
     return (
         <div className='로그인'>
             <h1>로그인</h1>
