@@ -91,7 +91,7 @@ const LoginForm = () => {
             <div className='social-login'>
                 <h2>소셜 로그인</h2>
                 <div>
-                    <a href="http://192.168.0.16:8080/oauth2/authorization/kakao">
+                    <a href="http://192.168.0.26:8080/oauth2/authorization/kakao">
                         <img className='social-icon' src="google_icon.png" alt="kakao" />
                     </a>
                 </div>
