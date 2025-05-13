@@ -1,41 +1,50 @@
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useLogin } from "../contexts/AuthContext";
 
 const OAuth2Redirect = () => {
     const navigate = useNavigate();
     const { setIsLoggedIn, setLoginUser } = useLogin();
-    const [queryParams] = useSearchParams(); // ✅ 훅은 최상단에서 호출!
 
     useEffect(() => {
         const fetchJwt = async () => {
             try {
                 const response = await fetch("http://192.168.0.26:8080/oauth2-jwt-header", {
                     method: "POST",
-                    credentials: "include",
+                    credentials: "include", // 쿠키 포함
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 });
 
                 if (response.ok) {
-                    // access 토큰을 응답 헤더에서 가져옴
-                    window.localStorage.setItem("access", response.headers.get("access"));
+                    const data = await response.json(); // ✅ JSON 형식으로 받기
+                    const { access, refresh, name } = data;
 
-                    const name = queryParams.get("name");
-                    window.localStorage.setItem("name", name);
+                    // 로컬스토리지에 저장
+                    localStorage.setItem("access", access);
+                    localStorage.setItem("refresh", refresh);
+                    localStorage.setItem("name", name);
 
+                    // 로그인 상태 반영
                     setIsLoggedIn(true);
                     setLoginUser(name);
-                } else {
-                    alert("접근할 수 없는 페이지입니다.");
-                }
 
-                navigate("/", { replace: true });
+                    // 홈으로 이동
+                    navigate("/", { replace: true });
+                } else {
+                    alert("로그인에 실패했습니다.");
+                    navigate("/login", { replace: true });
+                }
             } catch (error) {
-                console.log("error: ", error);
+                console.error("JWT 요청 실패:", error);
+                alert("서버와의 통신에 실패했습니다.");
+                navigate("/login", { replace: true });
             }
         };
 
         fetchJwt();
-    }, [queryParams, navigate, setIsLoggedIn, setLoginUser]);
+    }, [navigate, setIsLoggedIn, setLoginUser]);
 
     return null;
 };
