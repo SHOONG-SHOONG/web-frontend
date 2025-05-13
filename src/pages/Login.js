@@ -16,7 +16,7 @@ const LoginForm = () => {
     // 로그인 요청 함수
     const fetchLogin = async (credentials) => {
         try {
-            const response = await fetch("http://192.168.0.16:8080/login", {
+            const response = await fetch("http://192.168.0.26:8080/login", {
                 method: 'POST',
                 credentials: 'include',  // 쿠키 자동 포함
                 headers: {
