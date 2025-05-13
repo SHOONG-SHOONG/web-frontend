@@ -5,39 +5,34 @@ import { useLogin } from "../contexts/AuthContext";
 const OAuth2Redirect = () => {
     const navigate = useNavigate();
     const { setIsLoggedIn, setLoginUser } = useLogin();
-    const [queryParams] = useSearchParams(); // ✅ 훅은 최상단에서 호출!
+    const [queryParams] = useSearchParams();
 
     useEffect(() => {
-        const fetchJwt = async () => {
-            try {
-                const response = await fetch("http://192.168.0.16:8080/oauth2-jwt-header", {
-                    method: "POST",
-                    credentials: "include",
-                });
+        const name = queryParams.get("name");
+        const accessToken = getCookie("access");
 
-                if (response.ok) {
-                    // access 토큰을 응답 헤더에서 가져옴
-                    window.localStorage.setItem("access", response.headers.get("access"));
-
-                    const name = queryParams.get("name");
-                    window.localStorage.setItem("name", name);
-
-                    setIsLoggedIn(true);
-                    setLoginUser(name);
-                } else {
-                    alert("접근할 수 없는 페이지입니다.");
-                }
-
-                navigate("/", { replace: true });
-            } catch (error) {
-                console.log("error: ", error);
+        if (accessToken) {
+            window.localStorage.setItem("access", accessToken);
+            if (name) {
+                window.localStorage.setItem("name", name);
+                setLoginUser(name);
             }
-        };
+            setIsLoggedIn(true);
+        } else {
+            alert("로그인에 실패했습니다. 다시 시도해주세요.");
+        }
 
-        fetchJwt();
+        navigate("/", { replace: true });
     }, [queryParams, navigate, setIsLoggedIn, setLoginUser]);
 
     return null;
 };
+
+function getCookie(name) {
+  const cookie = document.cookie
+      .split("; ")
+      .find(row => row.startsWith(name + "="));
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
+}
 
 export default OAuth2Redirect;
