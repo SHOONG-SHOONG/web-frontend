@@ -3,6 +3,7 @@ import fetchReissue from "../services/fetchReissue";
 // 권한이 있는 페이지 접근 시 access 토큰을 검증
 const fetchAuthorizedPage = async (url, navigate, location) => {
     try {
+        console.log("권한이 있는 페이지 접근 시 access 토큰을 검증");
         const response = await fetch(url, {
             method: "POST",
             credentials: "include",
