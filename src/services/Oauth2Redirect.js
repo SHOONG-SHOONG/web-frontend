@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useLogin } from "../contexts/AuthContext";
+import BASE_URL from "../config"; // BASE_URL을 import
 
 const OAuth2Redirect = () => {
     const navigate = useNavigate();
@@ -10,7 +11,7 @@ const OAuth2Redirect = () => {
     useEffect(() => {
         const fetchJwt = async () => {
             try {
-                const response = await fetch("http://192.168.0.26:8080/oauth2-jwt-header", {
+                const response = await fetch(`${BASE_URL}/oauth2-jwt-header`, {
                     method: "POST",
                     credentials: "include",
                 });

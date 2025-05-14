@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLogin } from '../contexts/AuthContext';
+import BASE_URL from '../config'; // BASE_URL import
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ const LoginForm = () => {
     // 로그인 요청 함수
     const fetchLogin = async (credentials) => {
         try {
-            const response = await fetch("http://192.168.0.26:8080/login", {
+            const response = await fetch(`${BASE_URL}/login`, {
                 method: 'POST',
                 credentials: 'include',  // 쿠키 자동 포함
                 headers: {
@@ -49,7 +50,7 @@ const LoginForm = () => {
 
     const loginHandler = async (e) => {
         e.preventDefault();
-        const credentials = { username, password};
+        const credentials = { username, password };
         fetchLogin(credentials);
     };
 
@@ -64,7 +65,8 @@ const LoginForm = () => {
             <div className='social-login'>
                 <h2>소셜 로그인</h2>
                 <div>
-                    <a href="http://192.168.0.26:8080/oauth2/authorization/kakao">
+                    {/* 소셜 로그인 URL에 BASE_URL 적용 */}
+                    <a href={`${BASE_URL}/oauth2/authorization/kakao`}>
                         <img className='social-icon' src="google_icon.png" alt="kakao" />
                     </a>
                 </div>

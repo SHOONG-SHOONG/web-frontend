@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import fetchAuthorizedPage from "../services/fetchAuthorizedPage";
+import BASE_URL from "../config";  // BASE_URL을 import
 
 const Admin = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [data, setData] = useState("");
 
-    fetchAuthorizedPage("http://192.168.0.26:8080/admin", navigate, location)
+    fetchAuthorizedPage(`${BASE_URL}/admin`, navigate, location)
         .then(result => setData(result));
 
     return data && <h2>{data}</h2>;

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useLogin } from "../contexts/AuthContext";
+import BASE_URL from "../config"; // BASE_URL을 import
 
 const Logout = () => {
     const navigate = useNavigate();
@@ -22,15 +23,15 @@ const Logout = () => {
 
     const fetchLogout = async () => {
         try {
-            const response = await fetch("http://192.168.0.26:8080/logout", {
+            const response = await fetch(`${BASE_URL}/logout`, {
                 method: "POST",
                 credentials: "include",
             });
 
             if (response.ok) {
-                alert("logout successful");
+                alert("Logout successful");
             } else {
-                alert("logout failed");
+                alert("Logout failed");
             }
 
             // 성공 여부와 상관없이 클라이언트 측 정보 정리

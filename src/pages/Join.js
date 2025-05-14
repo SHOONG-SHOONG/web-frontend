@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DaumPostcode from "react-daum-postcode";
+import BASE_URL from "../config";  // BASE_URL을 import
 
 const JoinForm = () => {
     const navigate = useNavigate();
@@ -16,7 +16,7 @@ const JoinForm = () => {
 
     const fetchJoin = async (credentials) => {
         try {
-            const response = await fetch("http://192.168.0.26:8080/api/join", {
+            const response = await fetch(`${BASE_URL}/join`, {
                 method: "POST",
                 credentials: 'include',
                 headers: {
