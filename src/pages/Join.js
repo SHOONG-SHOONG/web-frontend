@@ -16,7 +16,7 @@ const JoinForm = () => {
 
     const fetchJoin = async (credentials) => {
         try {
-            const response = await fetch("http://192.168.0.26:8080/join", {
+            const response = await fetch("http://192.168.0.26:8080/api/join", {
                 method: "POST",
                 credentials: 'include',
                 headers: {

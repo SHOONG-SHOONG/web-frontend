@@ -17,6 +17,7 @@ const MyRoutes = () => {
       {!isLoggedIn && <Route path="/join" element={<JoinForm />} />}
       {isLoggedIn && <Route path="/logout" element={<Logout />} />}
       <Route path="/admin" element={<Admin />} />
+      <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
     </Routes>
   );
 }
