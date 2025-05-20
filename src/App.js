@@ -1,17 +1,18 @@
-import './App.css';
+import "./App.css";
 
-import AuthProvider from './contexts/AuthContext';
-import NavBar from './components/NavBar';
-import MyRoutes from './routes/MyRoutes';
+// 페이지 컴포넌트 임포트
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainPage from "./pages/main.tsx";
+// import Home from "./pages/Home.js";
 
 function App() {
   return (
-    <div className="App">
-      <AuthProvider>
-        <NavBar />
-        <MyRoutes />
-      </AuthProvider>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        {/* <Route path="/" element={<Home />} /> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
