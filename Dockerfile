@@ -1,15 +1,16 @@
-# 1단계: 빌드
-FROM node:18-alpine AS builder
+FROM jenkins/jenkins:lts
 
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+USER root
 
-# 2단계: Nginx 서빙
-FROM nginx:alpine
+# Node.js & npm 설치
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs
 
-COPY --from=builder /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# AWS CLI v2 설치
+RUN apt-get install -y unzip curl && \
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && ./aws/install && \
+    rm -rf awscliv2.zip aws
+
+USER jenkins
