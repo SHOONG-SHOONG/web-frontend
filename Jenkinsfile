@@ -58,15 +58,6 @@ pipeline {
         }
 
         
-        post {
-            success {
-                echo "📢 프론트엔드 S3 배포 + CloudFront 캐시 무효화 완료!"
-            }
-            failure {
-                echo "😵‍💫 배포 실패. 로그를 확인해 주세요."
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME}:latest ."
