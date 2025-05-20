@@ -6,7 +6,7 @@ pipeline {
         TAG = "${BUILD_NUMBER}"
         HARBOR_CREDENTIALS_ID = "Harbor"
         MANIFEST_REPO = "https://github.com/SHOONG-SHOONG/k8s-manifests.git"
-        SERVICE_NAME = "${env.JOB_BASE_NAME}"
+        SERVICE_NAME = "web-frontend"
         AWS_REGION = 'ap-northeast-2'
         S3_BUCKET = 'shoong-front'
         CLOUDFRONT_DIST_ID = 'EOU0KTHUPG6CS'
