@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mantine/core": "^8.0.1",
+    "@mantine/hooks": "^8.0.1",
+    "@mantine/notifications": "^8.0.1",
+    "@tabler/icons-react": "^3.33.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -12,7 +16,7 @@
     "react-cookie": "^7.2.2",
     "react-daum-postcode": "^3.2.0",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.23.1",
+    "react-router-dom": "^6.30.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
