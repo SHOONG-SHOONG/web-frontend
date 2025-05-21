@@ -68,7 +68,7 @@ export default function MainPage() {
                   wrap="wrap"
                 >
                   <Image
-                    src={`https://placehold.co/60x60?text=pr+${i + 1}`}
+                    src={`https://placehold.co/60x60?text=${i + 1}`}
                     alt="상품 이미지"
                     radius="sm"
                     w={45}
