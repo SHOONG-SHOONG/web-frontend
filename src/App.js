@@ -1,18 +1,20 @@
 import "./App.css";
-
-// 페이지 컴포넌트 임포트
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/main.tsx";
-// import Home from "./pages/Home.js";
-
+import LoginPage from './pages/login/login.tsx';
+import AuthProvider from "./contexts/AuthContext.tsx";  // 경로 맞게 수정
+import RegisterUserPage from "./pages/login/join.tsx";
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        {/* <Route path="/" element={<Home />} /> */}
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterUserPage />} /> 
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

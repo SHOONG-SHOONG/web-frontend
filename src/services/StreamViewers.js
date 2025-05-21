@@ -10,7 +10,7 @@ function StreamViewer({ streamKey }) {
     if (!video) return;
 
     // 스트림 URL 생성 (서버 주소는 환경 변수로 설정하는 것이 좋습니다)
-    const streamUrl = `http://192.168.0.26:8088/hls/${streamKey}/index.m3u8`;
+    const streamUrl = `https://stream.shoong.store/hls/${streamKey}/index.m3u8`;
     
     let hls;
     

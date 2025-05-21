@@ -14,14 +14,12 @@ const MyRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      {!isLoggedIn && <Route path="/login" element={<LoginForm />} />}
-      {!isLoggedIn && <Route path="/join" element={<JoinForm />} />}
-      {isLoggedIn && <Route path="/logout" element={<Logout />} />}
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/join" element={<JoinForm />} />
+      <Route path="/logout" element={<Logout />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
-      
-      {/* 스트림 경로 추가 - 로그인된 사용자만 접근 가능 */}
-      {isLoggedIn && <Route path="/stream/:streamKey" element={<Stream />} />}
+      <Route path="/stream/:streamKey" element={<Stream />} />
     </Routes>
   );
 }

@@ -64,10 +64,10 @@ export default function MainPage() {
           {/* 오른쪽: 검색 및 로그인 메뉴 */}
           <Group gap="sm" w={190} justify="flex-end">
             <IconSearch size={16} />
-            <Anchor href="#" underline="never" c="gray" size="sm">
+            <Anchor href="/login" underline="never" c="gray" size="sm">
               로그인
             </Anchor>
-            <Anchor href="#" underline="never" c="gray" size="sm">
+            <Anchor href="/join" underline="never" c="gray" size="sm">
               회원가입
             </Anchor>
             <Anchor href="#" underline="never" c="gray" size="sm">
