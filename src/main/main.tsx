@@ -1,6 +1,4 @@
 import React from "react";
-import { useState } from "react";
-
 import {
   Container,
   Grid,
@@ -12,70 +10,17 @@ import {
   Badge,
   Box,
   Flex,
-  Group,
   Anchor,
-  Stack,
 } from "@mantine/core";
-import { IconChevronDown, IconSearch } from "@tabler/icons-react";
-
-const menus = [
-  { label: "홈", value: "home" },
-  { label: "카테고리", value: "category" },
-  { label: "라이브", value: "live" },
-];
+import { IconChevronDown } from "@tabler/icons-react";
+import HeaderComponent from "../components/Header.tsx";
+import FooterComponent from "../components/Footer.tsx";
 
 export default function MainPage() {
-  const [active, setActive] = useState("home");
-
   return (
     <>
-      <Box px="lg" py="xs" style={{ borderBottom: "1px solid #eee" }}>
-        <Flex justify="space-between" align="center">
-          {/* 왼쪽: 로고 */}
-          <Box w={190}>
-            <Text fw={900} size="lg" c="blue">
-              Shoong
-            </Text>
-          </Box>
-
-          {/* 중앙: Anchor 기반 메뉴 */}
-          <Box style={{ flex: 1 }}>
-            <Group justify="center" gap="lg">
-              {menus.map((menu) => (
-                <Anchor
-                  key={menu.value}
-                  component="button"
-                  size="md"
-                  fw={active === menu.value ? 700 : 500}
-                  c={active === menu.value ? "blue" : "gray"}
-                  style={{
-                    borderBottom:
-                      active === menu.value ? "2px solid #3B61FF" : "none",
-                    paddingBottom: 4,
-                  }}
-                  onClick={() => setActive(menu.value)}
-                >
-                  {menu.label}
-                </Anchor>
-              ))}
-            </Group>
-          </Box>
-
-          {/* 오른쪽: 검색 및 로그인 메뉴 */}
-          <Group gap="sm" w={190} justify="flex-end">
-            <IconSearch size={16} />
-            <Anchor href="#" underline="never" c="gray" size="sm">
-              로그인
-            </Anchor>
-            <Anchor href="#" underline="never" c="gray" size="sm">
-              회원가입
-            </Anchor>
-            <Anchor href="#" underline="never" c="gray" size="sm">
-              장바구니
-            </Anchor>
-          </Group>
-        </Flex>
-      </Box>
+      {/* Header */}
+      <HeaderComponent />
 
       {/* Banner */}
       <Box
@@ -244,43 +189,7 @@ export default function MainPage() {
       </Container>
 
       {/* Footer */}
-      <Box bg="black" c="white" py="xl" mt="xl" w="100%" h={350}>
-        <Box
-          ta="center"
-          style={{
-            maxWidth: "100%",
-            padding: "0 24px",
-            margin: "0 auto",
-          }}
-        >
-          <Stack gap="xs">
-            <Text fw={700} size="lg">
-              Shoong
-            </Text>
-            <Text size="sm">
-              Shoong | 대표자 : 김슝 | 사업자번호 : 123-34-56789
-            </Text>
-            <Text size="sm">
-              통신판매업 : 0000-서울중구-0000호 | 개인정보보호책임자 : 김슝 |
-              이메일 : shoong@shoong.ai
-            </Text>
-            <Text size="sm">
-              전화번호 : 00-0000-0000 | 주소 : 서울시 중구 을지로 000
-            </Text>
-            <Group gap="lg" mt="xs" ta="center">
-              <Anchor href="#" c="white" size="xs">
-                이용약관
-              </Anchor>
-              <Anchor href="#" c="white" size="xs">
-                개인정보처리방침
-              </Anchor>
-            </Group>
-            <Text size="xs" mt="sm" c="dimmed">
-              © 2024 Shoong. All Rights Reserved.
-            </Text>
-          </Stack>
-        </Box>
-      </Box>
+      <FooterComponent />
     </>
   );
 }
