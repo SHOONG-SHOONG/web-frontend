@@ -21,8 +21,8 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/logout" element={<LogoutPage />} />
-        <Route path="/item/:itemId" element={<ItemDetailPage />} />
-        <Route path="/admin" element={<AdminItemPage />} /> */}
+        //<Route path="/item/:itemId" element={<ItemDetailPage />} />
+        //<Route path="/admin" element={<AdminItemPage />} />
           <Route path="/register" element={<RegisterUserPage />} />
           <Route path="/register-business" element={<RegisterBusinessPage />} />
           <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
