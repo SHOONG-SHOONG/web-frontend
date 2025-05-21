@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Stack, Group, Anchor } from "@mantine/core";
+import { Box, Text, Stack, Group } from "@mantine/core";
 
 export default function FooterComponent() {
   return (
@@ -27,12 +27,12 @@ export default function FooterComponent() {
             전화번호 : 00-0000-0000 | 주소 : 서울시 중구 을지로 000
           </Text>
           <Group gap="lg" mt="xs" ta="center">
-            <Anchor href="#" c="white" size="xs">
+            <Text c="white" size="xs">
               이용약관
-            </Anchor>
-            <Anchor href="#" c="white" size="xs">
+            </Text>
+            <Text c="white" size="xs">
               개인정보처리방침
-            </Anchor>
+            </Text>
           </Group>
           <Text size="xs" mt="sm" c="dimmed">
             © 2024 Shoong. All Rights Reserved.

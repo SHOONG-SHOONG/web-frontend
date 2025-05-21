@@ -13,10 +13,43 @@ import {
   Anchor,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
+
 import HeaderComponent from "../components/Header.tsx";
 import FooterComponent from "../components/Footer.tsx";
 
+// best item sample data
+
+const bestItems = [
+  {
+    id: 1,
+    title: "캠핑의자",
+    priceOriginal: "85,000원",
+    priceSale: "76,500원",
+    sale: "10%",
+    image: "https://placehold.co/300x300?text=campingchair",
+  },
+  {
+    id: 2,
+    title: "라이브 쇼케이스 스마트폰 거치대",
+    priceOriginal: "4,000원",
+    priceSale: "3,500원",
+    sale: "12%",
+    image: "https://placehold.co/300x300?text=smartphone",
+  },
+  {
+    id: 3,
+    title: "실시간 방송용 LED 조명",
+    priceOriginal: "3,000원",
+    priceSale: "2,900원",
+    sale: "3%",
+    image: "https://placehold.co/300x300?text=LED+lightening",
+  },
+];
+
 export default function MainPage() {
+  const navigate = useNavigate();
+
   return (
     <>
       {/* Header */}
@@ -97,31 +130,15 @@ export default function MainPage() {
         </Flex>
 
         <Grid gutter="md" mb={70}>
-          {[
-            {
-              title: "캠핑의자",
-              priceOriginal: "85,000원",
-              priceSale: "76,500원",
-              sale: "10%",
-              image: "https://placehold.co/300x300?text=campingchair",
-            },
-            {
-              title: "라이브 쇼케이스 스마트폰 거치대",
-              priceOriginal: "4,000원",
-              priceSale: "3,500원",
-              sale: "12%",
-              image: "https://placehold.co/300x300?text=smartphone",
-            },
-            {
-              title: "실시간 방송용 LED 조명",
-              priceOriginal: "3,000원",
-              priceSale: "2,900원",
-              sale: "3%",
-              image: "https://placehold.co/300x300?text=LED+lightening",
-            },
-          ].map((item, i) => (
-            <Grid.Col span={4} key={i}>
-              <Card padding="sm" radius="md" withBorder>
+          {bestItems.map((item) => (
+            <Grid.Col span={4} key={item.id}>
+              <Card
+                padding="sm"
+                radius="md"
+                withBorder
+                onClick={() => navigate(`/item/${item.id}`, { state: item })}
+                style={{ cursor: "pointer" }}
+              >
                 <Card.Section>
                   <Image
                     src={item.image}
