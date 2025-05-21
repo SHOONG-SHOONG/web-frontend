@@ -15,8 +15,8 @@ import {
 } from "@mantine/core";
 import { IconUser, IconLock, IconBuildingStore } from "@tabler/icons-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useLogin } from "../../contexts/AuthContext.tsx";
-import BASE_URL from "../../config";
+import { useLogin } from "../contexts/AuthContext.tsx";
+import BASE_URL from "../config.js";
 
 
 export default function LoginPage() {
@@ -142,8 +142,15 @@ export default function LoginPage() {
         <Divider my="lg" />
 
         <Text size="sm" ta="center">
-          계정이 없으신가요? <Anchor component={Link} to="/register">회원가입</Anchor>
+          계정이 없으신가요?{" "}
+          <Anchor
+            component={Link}
+            to={tab === "biz" ? "/register-business" : "/register"}
+          >
+            회원가입
+          </Anchor>
         </Text>
+
       </Paper>
     </Center>
   );

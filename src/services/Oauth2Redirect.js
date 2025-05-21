@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useLogin } from "../contexts/AuthContext";
+import { useLogin } from "../contexts/AuthContext.tsx";
 import BASE_URL from "../config"; // BASE_URL을 import
 
 const OAuth2Redirect = () => {
@@ -14,6 +14,10 @@ const OAuth2Redirect = () => {
                 const response = await fetch(`${BASE_URL}/oauth2-jwt-header`, {
                     method: "POST",
                     credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({}), // 바디가 없더라도 빈 JSON 객체라도 넣자
                 });
                 console.log("토큰을 응답 헤더에서 가져옵니다");
                 if (response.ok) {
