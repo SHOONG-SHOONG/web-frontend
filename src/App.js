@@ -5,7 +5,7 @@ import LoginPage from "./login/LoginPage.tsx";
 import LogoutPage from "./login/LogoutPage.tsx";
 import RegisterUserPage from "./login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./login/RegisterBusinessPage.tsx";
-import OAuth2Redirect from "./services/Oauth2Redirect.tsx";
+import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
 
 // 추가된 페이지들
