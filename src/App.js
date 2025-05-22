@@ -7,7 +7,7 @@ import RegisterUserPage from "./login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./login/RegisterBusinessPage.tsx";
 import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
-import AdminItemPage from "./admin/registItem/page.tsx";
+import AdminItemPage from "./admin/registerItem/page.tsx";
 import ItemRegisterPage from "./admin/manageItem/page.tsx";
 import ItemPage from "./item/page.tsx";
 import ItemDetailPage from "./item/[itemId]/page.tsx";
