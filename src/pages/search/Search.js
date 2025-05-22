@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
+import BASE_URL from '../../config';
+
 import {
   Box,
   Button,
@@ -13,14 +15,14 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-// ProductCard 수정: 이미지, 제목, 가격 표시
+
 const ProductCard = ({ title, price, imageUrl }) => (
   <Paper shadow="sm" radius="md" p="md" withBorder>
     <Box
       h={192}
       mb="sm"
       sx={{
-        backgroundColor: '#F1F1F1',
+        backgroundColor: '#f1f1f1',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -39,42 +41,42 @@ const ProductCard = ({ title, price, imageUrl }) => (
     <Text fw={700}>₩{price?.toLocaleString() || 0}</Text>
   </Paper>
 );
+
 const ProductPage = () => {
-  // 상태 관리
   const [keyword, setKeyword] = useState('');
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(200000);
-  const [sortBy, setSortBy] = useState(''); // ex: "price,asc"
+  const [sortBy, setSortBy] = useState('');
   const [products, setProducts] = useState([]);
-  // 페이지 관련 상태 (간단히 고정값 사용)
+  const [hasSearched, setHasSearched] = useState(false);
+
   const page = 0;
   const size = 20;
-  // API 호출 함수
+
   const fetchProducts = async () => {
     try {
-      const condition = {
-        category: '',
-        keyword: keyword,
-        minPrice,
-        maxPrice,
-        sortBy,
-        brandId: 0,
-      };
-      const pageable = {
-        page,
-        size,
-        sort: sortBy ? [sortBy] : [],
-      };
       const queryParams = new URLSearchParams();
-      queryParams.append('condition', JSON.stringify(condition));
-      queryParams.append('pageable', JSON.stringify(pageable));
-      const response = await fetch(`/item/search?${queryParams.toString()}`, {
+
+      queryParams.append('category', '');
+      queryParams.append('keyword', keyword);
+      queryParams.append('minPrice', String(minPrice));
+      queryParams.append('maxPrice', String(maxPrice));
+      queryParams.append('sortBy', sortBy);
+      queryParams.append('brandId', '0');
+      queryParams.append('page', String(page));
+      queryParams.append('size', String(size));
+
+      if (sortBy) {
+        queryParams.append('sort', sortBy);
+      }
+
+      const response = await fetch(`${BASE_URL}/item/search?${queryParams.toString()}`, {
         method: 'GET',
         credentials: 'include',
       });
+
       if (response.ok) {
         const data = await response.json();
-        // data.content 배열이 실제 상품 리스트
         setProducts(data.content || []);
       } else {
         alert('상품 검색 실패');
@@ -83,14 +85,12 @@ const ProductPage = () => {
       console.error('검색 오류:', error);
     }
   };
-  // 초기 렌더링 시 데이터 호출
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-  // 검색 버튼 클릭 시 호출
+
   const onSearchClick = () => {
+    setHasSearched(true);
     fetchProducts();
   };
+
   return (
     <>
       <HeaderComponent />
@@ -110,7 +110,7 @@ const ProductPage = () => {
         }}
       >
         {/* Sidebar */}
-        <Box w={280} p="md" sx={{ border: '1px solid #E0E0E0', borderRadius: 8 }}>
+        <Box w={280} p="md" sx={{ border: '1px solid #e0e0e0', borderRadius: 8 }}>
           <Stack>
             <Box mb={32}>
               <Text fw={600} size="sm" mb={4}>키워드</Text>
@@ -120,6 +120,7 @@ const ProductPage = () => {
                 placeholder="검색어 입력"
               />
             </Box>
+
             <Box mb={32}>
               <Text fw={600} size="sm" mb={4}>가격</Text>
               <RangeSlider
@@ -139,6 +140,7 @@ const ProductPage = () => {
                 ]}
               />
             </Box>
+
             <Box mb={32}>
               <Text fw={600} size="sm" mb={4}>정렬</Text>
               <Group spacing="xs">
@@ -168,29 +170,36 @@ const ProductPage = () => {
                 </Button>
               </Group>
             </Box>
+
             <Button onClick={onSearchClick} fullWidth>검색</Button>
           </Stack>
         </Box>
+
         {/* Main Content */}
         <Box sx={{ flex: 1, width: '100%', minWidth: 0 }}>
-          <SimpleGrid cols={4} spacing="lg">
-            {products.length > 0 ? (
-              products.map((item) => (
-                <ProductCard
-                  key={item.itemId}
-                  title={item.itemName}
-                  price={item.finalPrice}
-                  imageUrl={item.itemImages?.[0]?.url}
-                />
-              ))
+          {hasSearched ? (
+            products.length > 0 ? (
+              <SimpleGrid cols={4} spacing="lg">
+                {products.map((item) => (
+                  <ProductCard
+                    key={item.itemId}
+                    title={item.itemName}
+                    price={item.finalPrice}
+                    imageUrl={item.itemImages?.[0]?.url}
+                  />
+                ))}
+              </SimpleGrid>
             ) : (
               <Text>검색 결과가 없습니다.</Text>
-            )}
-          </SimpleGrid>
+            )
+          ) : (
+            <Text>검색 조건을 입력하고 "검색" 버튼을 눌러주세요.</Text>
+          )}
         </Box>
       </Box>
       <FooterComponent />
     </>
   );
 };
+
 export default ProductPage;
