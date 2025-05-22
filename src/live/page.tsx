@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Grid, Image, Text, Title, Avatar, TextInput, Card, Flex, Badge, Paper, Box, Button, Stack, Group, Anchor, Divider, ActionIcon } from '@mantine/core';
 import { IconSearch } from "@tabler/icons-react";
 import { IconBrandFacebook, IconBrandTwitter, IconBrandBlogger, IconShare3 } from '@tabler/icons-react';
-
+import LiveViewer from "./LiveViewer.tsx";
 import HeaderComponent from "../components/Header.tsx";
 import FooterComponent from "../components/Footer.tsx";
 
@@ -34,12 +34,7 @@ export default function LivePage() {
                 <Grid gutter="xl">
                     {/* 왼쪽: 영상 + 공유 */}
                     <Grid.Col span={{ base: 12, md: 8 }}>
-                        <Image
-                            radius="md"
-                            src={`https://placehold.co/340x240?text=live`}
-                            style={{ width: '100%', height: 'auto' }}
-                            alt="라이브 영상"
-                        />
+                         <LiveViewer streamKey="shoong" />
 
                         {/* 공유 버튼 */}
                         <Group mt="md">

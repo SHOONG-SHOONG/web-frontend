@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Flex, Group, Image } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
-
+import shoongImage from "../assets/shoong2.png";
 const menus = [
   { label: "홈", value: "home", path: "/" },
   { label: "카테고리", value: "category", path: "/item" },
