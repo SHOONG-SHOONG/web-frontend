@@ -10,20 +10,19 @@ import LoginPage from "./apps/login/LoginPage.tsx";
 import LogoutPage from "./apps/login/LogoutPage.tsx";
 import RegisterUserPage from "./apps/login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./apps/login/RegisterBusinessPage.tsx";
-import AdminItemPage from "./apps/admin/registerItem/page.tsx";
-import ItemRegisterPage from "./apps/admin/manageItem/page.tsx";
+import AdminItemPage from "./apps/admin/manageItem/page.tsx";
+import ItemRegisterPage from "./apps/admin/registerItem/page.tsx";
 import ItemPage from "./apps/item/page.tsx";
 import ItemDetailPage from "./apps/item/[itemId]/page.tsx";
 import OrderPage from "./apps/order/page.tsx";
 import CartPage from "./apps/cart/page.tsx";
-import LivePage from "./apps/live/page.tsx";
+import LivePage from "./apps/live/[liveId]/page.tsx";
 import BrandPage from "./apps/brand/page.tsx";
 import ProductPage from "./apps/search/Search.js";
 
 // 테스트용 페이지지
 import Test from "./apps/login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
 import LiveListPage from "./apps/admin/manageLive/page.tsx";
-
 
 function App() {
   return (
@@ -35,15 +34,15 @@ function App() {
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/item" element={<ItemPage />} />
           <Route path="/item/:itemId" element={<ItemDetailPage />} />
-          <Route path="/admin" element={<ItemRegisterPage />} />
-          <Route path="/admin/regist-item" element={<AdminItemPage />} />
+          <Route path="/admin" element={<AdminItemPage />} />
+          <Route path="/admin/regist-item" element={<ItemRegisterPage />} />
           <Route path="/register" element={<RegisterUserPage />} />
           <Route path="/register-business" element={<RegisterBusinessPage />} />
           <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/test" element={<Test />} />
-          <Route path="/live" element={<LivePage />} />
+          <Route path="/live/:liveId" element={<LivePage />} />
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/{barndId}" element={<BrandPage />} />
           <Route path="/item/search" element={<ProductPage />} />
