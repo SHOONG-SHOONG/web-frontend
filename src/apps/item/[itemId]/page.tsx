@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Grid,
@@ -12,22 +12,79 @@ import {
   Flex,
   Group,
   Divider,
+  Loader,
 } from "@mantine/core";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
 
-export default function ItemDetailPage() {
-  const [quantity, setQuantity] = useState(1);
-  const { state: item } = useLocation();
+// 타입 정의
+interface ItemImage {
+  id: number;
+  url: string;
+  createdAt: string;
+}
 
-  if (!item) {
-    return (
-      <Container>
-        <Title order={3}>상품 정보를 찾을 수 없습니다.</Title>
-      </Container>
-    );
-  }
+interface Item {
+  itemId: number;
+  brandId: number;
+  itemName: string;
+  price: number;
+  discountRate: number;
+  finalPrice: number;
+  wishlistCount: number;
+  description: string;
+  itemQuantity: number;
+  category: string;
+  discountExpiredAt: string;
+  status: string;
+  itemImages: ItemImage[];
+}
+
+export default function ItemDetailPage() {
+  const { itemId } = useParams(); // <- 주소에서 itemId 추출
+  const [item, setItem] = useState<Item | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchItemDetail = async (
+      itemId: number,
+      setItem: (item: Item) => void,
+      setError: (error: string | null) => void
+    ) => {
+      try {
+        // const token = localStorage.getItem("access");
+
+        const response = await fetch(`http://192.168.0.6:8080/item/${itemId}`, {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            // access: token || "",
+          },
+          // credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(`서버 응답 오류: ${response.status}`);
+        }
+
+        const data: Item = await response.json();
+        setItem(data);
+        setError(null);
+      } catch (err: any) {
+        console.error("에러 발생:", err);
+        setError(err.message || "상품 조회 중 오류 발생");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (itemId) {
+      fetchItemDetail(Number(itemId), setItem, setError);
+    }
+  }, [itemId]);
 
   const handleAddToCart = () => {
     alert("장바구니에 담았습니다!");
@@ -37,6 +94,22 @@ export default function ItemDetailPage() {
     alert("구매 페이지로 이동합니다.");
   };
 
+  if (loading) {
+    return (
+      <Container py="xl">
+        <Loader color="blue" size="lg" />
+      </Container>
+    );
+  }
+
+  if (!item) {
+    return (
+      <Container py="xl">
+        <Title order={3}>상품 정보를 찾을 수 없습니다.</Title>
+      </Container>
+    );
+  }
+
   return (
     <>
       <HeaderComponent />
@@ -45,32 +118,35 @@ export default function ItemDetailPage() {
         {/* 상품 이미지 + 정보 */}
         <Grid gutter="md">
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <Image src={item.image} alt={item.title} radius="md" w={400} />
+            <Image
+              src={item.itemImages?.[0]?.url || "https://placehold.co/600x600"}
+              alt={item.itemName}
+              radius="md"
+              w={400}
+            />
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <Title order={3}>{item.title}</Title>
+            <Title order={3}>{item.itemName}</Title>
 
-            {item.original && (
+            {item.discountRate > 0 && (
               <Text size="sm" c="dimmed" td="line-through">
-                {item.original}
+                {item.price.toLocaleString()}원
               </Text>
             )}
 
-            {item.discount ? (
-              <Text fw={700} size="lg" c="red">
-                {item.discount}{" "}
-                <Text span fw={700} c="black">
-                  {item.sale.toLocaleString()}
-                </Text>
+            <Text
+              fw={700}
+              size="lg"
+              c={item.discountRate > 0 ? "red" : "black"}
+            >
+              {item.discountRate > 0 && `${item.discountRate}% `}
+              <Text span fw={700} c="black">
+                {item.finalPrice.toLocaleString()}원
               </Text>
-            ) : (
-              <Text fw={700} size="lg">
-                {item.sale.toLocaleString()}
-              </Text>
-            )}
+            </Text>
 
-            <Text mt="xs">정말 편안한 {item.title}입니다!</Text>
+            <Text mt="xs">{item.description}</Text>
 
             <Divider my="sm" />
 
@@ -83,13 +159,13 @@ export default function ItemDetailPage() {
                   setQuantity(typeof val === "number" ? val : 1)
                 }
                 min={1}
-                max={99}
+                max={item.itemQuantity}
                 size="sm"
                 w={100}
               />
 
               <Text fw={700}>
-                총 금액: {(item.sale * quantity).toLocaleString()}원
+                총 금액: {(item.finalPrice * quantity).toLocaleString()}원
               </Text>
             </Flex>
 
@@ -104,8 +180,7 @@ export default function ItemDetailPage() {
           </Grid.Col>
         </Grid>
 
-        {/* Tabs */}
-        {/* <Tabs defaultValue="detail" mt="xl"> */}
+        {/* 상세 정보 탭 */}
         <Tabs
           color="#4d6ef4"
           variant="pills"
@@ -120,39 +195,29 @@ export default function ItemDetailPage() {
             <Tabs.Tab value="notice">안내사항</Tabs.Tab>
           </Tabs.List>
 
-          {/* 상품상세 */}
           <Tabs.Panel value="detail" pt="md">
             <Image
               src="https://placehold.co/800x100?text=item+detail"
               alt="상세이미지"
             />
-            <Text mt="sm">
-              하이여잉
-              <br />
-              완벽하게 눕혀줍쇼서
-              <br />
-              너네들 다 나가 나만 와주세요.
-            </Text>
+            <Text mt="sm">{item.description}</Text>
           </Tabs.Panel>
 
-          {/* 리뷰 */}
           <Tabs.Panel value="review" pt="md">
             <Text size="sm" c="dimmed">
               가장 먼저 리뷰를 작성해주세요.
             </Text>
           </Tabs.Panel>
 
-          {/* 문의 */}
           <Tabs.Panel value="inquiry" pt="md">
             <Text size="sm" c="dimmed">
-              상품에 대해 궁금한점을 작성해주세요.
+              상품에 대해 궁금한 점을 작성해주세요.
             </Text>
             <Button variant="outline" mt="sm" size="xs">
               상품 문의 작성하기
             </Button>
           </Tabs.Panel>
 
-          {/* 안내사항 */}
           <Tabs.Panel value="notice" pt="md">
             <Table striped withColumnBorders mt="sm">
               <tbody>

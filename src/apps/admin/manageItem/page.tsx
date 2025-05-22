@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { IconBox, IconBroadcast, IconUser } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
+import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
 
 export default function AdminItemPage() {
   const items = [
@@ -31,7 +32,7 @@ export default function AdminItemPage() {
   return (
     <Flex>
       {/* 사이드바 */}
-      <Box
+      {/* <Box
         w={220}
         h="100vh"
         bg="#f8f9fa"
@@ -84,7 +85,8 @@ export default function AdminItemPage() {
             <Text size="sm">계정 관리</Text>
           </UnstyledButton>
         </Stack>
-      </Box>
+      </Box> */}
+      <AdminNavBarPage />
 
       {/* 메인 콘텐츠 */}
       <Box style={{ flex: 1 }} bg="#fefefe">

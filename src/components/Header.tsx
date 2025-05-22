@@ -50,7 +50,9 @@ export default function HeaderComponent() {
 
         {/* 오른쪽 메뉴 */}
         <Group gap="sm" w={220} justify="flex-end">
-          <IconSearch size={16} />
+          <Link to="/item/search">
+            <IconSearch size={16} />
+          </Link>
           <Link
             to="/login"
             style={{ color: "#868e96", fontSize: 14, textDecoration: "none" }}

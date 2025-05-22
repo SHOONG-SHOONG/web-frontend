@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
-import BASE_URL from '../../config.js';
+import BASE_URL from '../../config';
 
 import {
   Box,
@@ -91,9 +91,17 @@ const ProductPage = () => {
     fetchProducts();
   };
 
+  // sortBy가 바뀌면 검색 자동 실행
+  useEffect(() => {
+    if (hasSearched) {
+      fetchProducts();
+    }
+  }, [sortBy]);
+
   return (
     <>
       <HeaderComponent />
+
       <Box
         px="xl"
         py="xl"
@@ -145,28 +153,20 @@ const ProductPage = () => {
               <Text fw={600} size="sm" mb={4}>정렬</Text>
               <Group spacing="xs">
                 <Button
-                  onClick={() => setSortBy('price,asc')}
-                  variant={sortBy === 'price,asc' ? 'filled' : 'light'}
+                  onClick={() => setSortBy('priceAsc')}
+                  variant={sortBy === 'priceAsc' ? 'filled' : 'light'}
                   size="xs"
                   radius="xl"
                 >
-                  가격 오름차순
+                  가격 낮은 순 
                 </Button>
                 <Button
-                  onClick={() => setSortBy('price,desc')}
-                  variant={sortBy === 'price,desc' ? 'filled' : 'light'}
+                  onClick={() => setSortBy('priceDesc')}
+                  variant={sortBy === 'priceDesc' ? 'filled' : 'light'}
                   size="xs"
                   radius="xl"
                 >
-                  가격 내림차순
-                </Button>
-                <Button
-                  onClick={() => setSortBy('rating,desc')}
-                  variant={sortBy === 'rating,desc' ? 'filled' : 'light'}
-                  size="xs"
-                  radius="xl"
-                >
-                  평점순
+                  가격 높은 순 
                 </Button>
               </Group>
             </Box>
@@ -197,6 +197,7 @@ const ProductPage = () => {
           )}
         </Box>
       </Box>
+
       <FooterComponent />
     </>
   );

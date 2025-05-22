@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Grid,
@@ -14,41 +14,99 @@ import {
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 
-// best item sample data
+interface ItemImage {
+  id: number;
+  url: string;
+  createdAt: string;
+}
 
-const bestItems = [
-  {
-    id: 1,
-    title: "캠핑의자",
-    priceOriginal: "85,000원",
-    priceSale: "76,500원",
-    sale: "10%",
-    image: "https://placehold.co/300x300?text=campingchair",
-  },
-  {
-    id: 2,
-    title: "라이브 쇼케이스 스마트폰 거치대",
-    priceOriginal: "4,000원",
-    priceSale: "3,500원",
-    sale: "12%",
-    image: "https://placehold.co/300x300?text=smartphone",
-  },
-  {
-    id: 3,
-    title: "실시간 방송용 LED 조명",
-    priceOriginal: "3,000원",
-    priceSale: "2,900원",
-    sale: "3%",
-    image: "https://placehold.co/300x300?text=LED+lightening",
-  },
-];
+interface Item {
+  itemId: number;
+  brandId: number;
+  itemName: string;
+  price: number;
+  discountRate: number;
+  finalPrice: number;
+  wishlistCount: number;
+  description: string;
+  itemQuantity: number;
+  category: string;
+  discountExpiredAt: string;
+  status: string;
+  itemImages: ItemImage[];
+}
+
+interface LiveItem {
+  id: number;
+  title: string;
+  imageUrl: string;
+  itemName: string;
+  price: number;
+  discountRate: number;
+  itemImageUrl: string;
+  status: string;
+}
 
 export default function MainPage() {
   const navigate = useNavigate();
+  const [bestItems, setBestItems] = useState<Item[]>([]);
+  const [liveItems, setLiveItems] = useState<LiveItem[]>([]);
+  const [liveItemDetails, setLiveItemDetails] = useState<Record<number, Item>>(
+    {}
+  );
+
+  useEffect(() => {
+    const fetchLiveItems = async () => {
+      try {
+        const response = await fetch("http://192.168.0.6:8080/live/main", {
+          headers: { Accept: "*/*" },
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const liveData: LiveItem[] = await response.json();
+        setLiveItems(liveData);
+      } catch (err) {
+        console.error("라이브 방송 정보 불러오기 실패:", err);
+      }
+    };
+
+    const fetchBestItems = async () => {
+      try {
+        const params = new URLSearchParams({
+          sortBy: "wishlist", // condition.sortBy
+          page: "0",
+          size: "6",
+          sort: "wishlistCount,DESC",
+        });
+
+        const response = await fetch(
+          `http://192.168.0.6:8080/item/search?${params.toString()}`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "*/*",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`HTTP ${response.status} - ${errText}`);
+        }
+
+        const data = await response.json();
+        setBestItems(data.content || []);
+      } catch (err) {
+        console.error("Error fetching best items:", err);
+      }
+    };
+
+    fetchBestItems();
+    fetchLiveItems();
+  }, []);
 
   return (
     <>
@@ -74,22 +132,29 @@ export default function MainPage() {
           LIVE 방송
         </Title>
         <Grid gutter="md" mb={70}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Grid.Col span={3} key={i}>
-              <Card shadow="sm" padding="sm" radius="md" withBorder>
+          {liveItems.map((live) => (
+            <Grid.Col span={3} key={live.id}>
+              <Card
+                shadow="sm"
+                padding="sm"
+                radius="md"
+                withBorder
+                onClick={() => navigate(`/live/${live.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <Badge color="blue" variant="filled" size="sm">
                   LIVE
                 </Badge>
 
                 <Image
-                  src={`https://placehold.co/240x320?text=Live+${i + 1}`}
-                  alt="방송 이미지"
+                  src={live.imageUrl || "https://placehold.co/240x320"}
+                  alt={live.title}
                   mt="xs"
                   radius="sm"
                 />
 
                 <Text mt="xs" fw={600} ta="center" size="sm">
-                  라이브 방송 제목
+                  {live.title}
                 </Text>
 
                 <Flex
@@ -101,18 +166,19 @@ export default function MainPage() {
                   wrap="wrap"
                 >
                   <Image
-                    src={`https://placehold.co/60x60?text=${i + 1}`}
+                    src={live.itemImageUrl || "https://placehold.co/60x60"}
                     alt="상품 이미지"
                     radius="sm"
                     w={45}
                   />
                   <Text size="xs" fw={500}>
-                    상품명
+                    {live.itemName}
                   </Text>
                   <Text size="xs" c="red">
-                    50%{" "}
+                    {live.discountRate * 100}%{" "}
                     <Text span fw={700} c="black">
-                      19,800원
+                      {(live.price * (1 - live.discountRate)).toLocaleString()}
+                      원
                     </Text>
                   </Text>
                 </Flex>
@@ -131,36 +197,43 @@ export default function MainPage() {
 
         <Grid gutter="md" mb={70}>
           {bestItems.map((item) => (
-            <Grid.Col span={4} key={item.id}>
+            <Grid.Col span={4} key={item.itemId}>
               <Card
                 padding="sm"
                 radius="md"
                 withBorder
-                onClick={() => navigate(`/item/${item.id}`, { state: item })}
+                onClick={() =>
+                  navigate(`/item/${item.itemId}`, { state: item })
+                }
                 style={{ cursor: "pointer" }}
               >
                 <Card.Section>
                   <Image
-                    src={item.image}
-                    alt={item.title}
+                    src={
+                      item.itemImages?.[0]?.url ||
+                      "https://placehold.co/300x300"
+                    }
+                    alt={item.itemName}
                     height={160}
                     fit="cover"
                   />
                 </Card.Section>
 
                 <Text mt="xs" fw={600} size="sm">
-                  {item.title}
+                  {item.itemName}
                 </Text>
 
                 <Flex mt="xs" align="baseline" gap="xs">
                   <Text size="xs" c="red" fw={600}>
-                    {item.sale}
+                    {item.discountRate > 0 ? `${item.discountRate}%` : ""}
                   </Text>
                   <Text size="xs" td="line-through" c="dimmed">
-                    {item.priceOriginal}
+                    {item.discountRate > 0
+                      ? `${item.price.toLocaleString()}원`
+                      : ""}
                   </Text>
                   <Text size="sm" fw={700}>
-                    {item.priceSale}
+                    {item.finalPrice.toLocaleString()}원
                   </Text>
                 </Flex>
               </Card>
