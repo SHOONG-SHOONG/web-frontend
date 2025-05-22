@@ -48,7 +48,7 @@ const ProductPage = () => {
   const [maxPrice, setMaxPrice] = useState(200000);
   const [sortBy, setSortBy] = useState('');
   const [products, setProducts] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false); // 검색 여부 상태
+  const [hasSearched, setHasSearched] = useState(false);
 
   const page = 0;
   const size = 20;
@@ -90,6 +90,13 @@ const ProductPage = () => {
     setHasSearched(true);
     fetchProducts();
   };
+
+  // sortBy가 바뀌면 검색 자동 실행
+  useEffect(() => {
+    if (hasSearched) {
+      fetchProducts();
+    }
+  }, [sortBy]);
 
   return (
     <>
@@ -146,28 +153,20 @@ const ProductPage = () => {
               <Text fw={600} size="sm" mb={4}>정렬</Text>
               <Group spacing="xs">
                 <Button
-                  onClick={() => setSortBy('price,asc')}
-                  variant={sortBy === 'price,asc' ? 'filled' : 'light'}
+                  onClick={() => setSortBy('priceAsc')}
+                  variant={sortBy === 'priceAsc' ? 'filled' : 'light'}
                   size="xs"
                   radius="xl"
                 >
                   가격 오름차순
                 </Button>
                 <Button
-                  onClick={() => setSortBy('price,desc')}
-                  variant={sortBy === 'price,desc' ? 'filled' : 'light'}
+                  onClick={() => setSortBy('priceDesc')}
+                  variant={sortBy === 'priceDesc' ? 'filled' : 'light'}
                   size="xs"
                   radius="xl"
                 >
                   가격 내림차순
-                </Button>
-                <Button
-                  onClick={() => setSortBy('rating,desc')}
-                  variant={sortBy === 'rating,desc' ? 'filled' : 'light'}
-                  size="xs"
-                  radius="xl"
-                >
-                  평점순
                 </Button>
               </Group>
             </Box>
