@@ -55,15 +55,15 @@ export default function ItemDetailPage() {
       setError: (error: string | null) => void
     ) => {
       try {
-        const token = localStorage.getItem("access");
+        // const token = localStorage.getItem("access");
 
         const response = await fetch(`http://192.168.0.6:8080/item/${itemId}`, {
           method: "GET",
           headers: {
             Accept: "*/*",
-            access: token || "",
+            // access: token || "",
           },
-          credentials: "include",
+          // credentials: "include",
         });
 
         if (!response.ok) {
