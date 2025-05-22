@@ -13,9 +13,11 @@ import {
   Title,
   Flex,
   Text,
+  Divider,
 } from "@mantine/core";
 import { DatePickerInput } from '@mantine/dates';
 import { IconCalendar, IconPhoto } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 
 export default function ItemRegisterPage() {
   const [productName, setProductName] = useState("");
@@ -71,10 +73,17 @@ export default function ItemRegisterPage() {
 
         {/* 메인 콘텐츠 */}
         <Box style={{ flex: 1 }} bg="#fefefe">
-          <Container size="sm" py="xl">
-            <Title order={3} mb="lg">
-              상품 등록
-            </Title>
+          <Container py="xl">
+            <Flex justify="space-between" align="center" mb="md">
+              <Title order={4}>상품 관리</Title>
+              <Link to="">
+                <Button color="#3b5bdb" radius="md" size="sm" onClick={handleSubmit}>
+                  등록
+                </Button>
+              </Link>
+            </Flex>
+
+            <Divider mb="sm" />
 
             <Stack gap="md">
               <TextInput
@@ -149,12 +158,6 @@ export default function ItemRegisterPage() {
                 valueFormat="YYYY-MM-DD"
                 type="default"
               />
-
-              <Group justify="flex-end" mt="md">
-                <Button color="blue" onClick={handleSubmit}>
-                  상품 등록하기
-                </Button>
-              </Group>
             </Stack>
           </Container>
         </Box>
