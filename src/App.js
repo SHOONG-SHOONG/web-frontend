@@ -7,6 +7,10 @@ import RegisterUserPage from "./login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./login/RegisterBusinessPage.tsx";
 import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
+import AdminItemPage from "./admin/registItem/page.tsx";
+import ItemRegisterPage from "./admin/manageItem/page.tsx";
+import ItemPage from "./item/page.tsx";
+import ItemDetailPage from "./item/[itemId]/page.tsx";
 
 // 추가된 페이지들
 import OrderPage from "./order/page.tsx";
@@ -21,10 +25,10 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/logout" element={<LogoutPage />} />
-          {/* <Route path="/item" element={<ItemPage />} />
-        <Route path="/item/:itemId" element={<ItemDetailPage />} /> 
-          <Route path="/admin" element={<AdminItemPage />} />
-          <Route path="/admin/regist-item" element={<ItemRegisterPage />} /> */}
+          <Route path="/item" element={<ItemPage />} />
+          <Route path="/item/:itemId" element={<ItemDetailPage />} />
+          <Route path="/admin" element={<ItemRegisterPage />} />
+          <Route path="/admin/regist-item" element={<AdminItemPage />} />
           <Route path="/register" element={<RegisterUserPage />} />
           <Route path="/register-business" element={<RegisterBusinessPage />} />
           <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
