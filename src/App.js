@@ -18,6 +18,7 @@ import CartPage from "./cart/page.tsx";
 import Test from "./login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
 import LivePage from "./live/page.tsx";
 import BrandPage from "./brand/page.tsx";
+import ProductPage from "./pages/search/Search.js";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/test" element={<Test />} />
           <Route path="/live" element={<LivePage />} />
           <Route path="/brand" element={<BrandPage />} />
+          <Route path="/item/search" element={<ProductPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
