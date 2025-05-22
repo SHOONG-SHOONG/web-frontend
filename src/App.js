@@ -7,11 +7,17 @@ import RegisterUserPage from "./login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./login/RegisterBusinessPage.tsx";
 import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
+import AdminItemPage from "./admin/registItem/page.tsx";
+import ItemRegisterPage from "./admin/manageItem/page.tsx";
+import ItemPage from "./item/page.tsx";
+import ItemDetailPage from "./item/[itemId]/page.tsx";
 
 // 추가된 페이지들
 import OrderPage from "./order/page.tsx";
 import CartPage from "./cart/page.tsx";
 import Test from "./login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
+import LivePage from "./live/page.tsx";
+import BrandPage from "./brand/page.tsx";
 
 function App() {
   return (
@@ -21,14 +27,18 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/logout" element={<LogoutPage />} />
-        //<Route path="/item/:itemId" element={<ItemDetailPage />} />
-        //<Route path="/admin" element={<AdminItemPage />} />
+          <Route path="/item" element={<ItemPage />} />
+          <Route path="/item/:itemId" element={<ItemDetailPage />} />
+          <Route path="/admin" element={<ItemRegisterPage />} />
+          <Route path="/admin/regist-item" element={<AdminItemPage />} />
           <Route path="/register" element={<RegisterUserPage />} />
           <Route path="/register-business" element={<RegisterBusinessPage />} />
           <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/live" element={<LivePage />} />
+          <Route path="/brand" element={<BrandPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
