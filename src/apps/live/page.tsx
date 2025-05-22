@@ -3,8 +3,8 @@ import { Container, Grid, Image, Text, Title, Avatar, TextInput, Card, Flex, Bad
 import { IconSearch } from "@tabler/icons-react";
 import { IconBrandFacebook, IconBrandTwitter, IconBrandBlogger, IconShare3 } from '@tabler/icons-react';
 import LiveViewer from "./LiveViewer.tsx";
-import HeaderComponent from "../components/Header.tsx";
-import FooterComponent from "../components/Footer.tsx";
+import HeaderComponent from "../../components/Header.tsx";
+import FooterComponent from "../../components/Footer.tsx";
 
 const menus = [
     { label: "홈", value: "home" },

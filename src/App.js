@@ -1,24 +1,28 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainPage from "./app/main/page.tsx";
-import LoginPage from "./app/login/LoginPage.tsx";
-import LogoutPage from "./app/login/LogoutPage.tsx";
-import RegisterUserPage from "./app/login/RegisterUserPage.tsx";
-import RegisterBusinessPage from "./app/login/RegisterBusinessPage.tsx";
+
 import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
-import AdminItemPage from "./admin/registerItem/page.tsx";
-import ItemRegisterPage from "./admin/manageItem/page.tsx";
-import ItemPage from "./item/page.tsx";
-import ItemDetailPage from "./item/[itemId]/page.tsx";
 
-// 추가된 페이지들
-import OrderPage from "./order/page.tsx";
-import CartPage from "./cart/page.tsx";
-import Test from "./login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
-import LivePage from "./live/page.tsx";
-import BrandPage from "./brand/page.tsx";
+// 페이지들들
+import MainPage from "./apps/main/page.tsx";
+import LoginPage from "./apps/login/LoginPage.tsx";
+import LogoutPage from "./apps/login/LogoutPage.tsx";
+import RegisterUserPage from "./apps/login/RegisterUserPage.tsx";
+import RegisterBusinessPage from "./apps/login/RegisterBusinessPage.tsx";
+import AdminItemPage from "./apps/admin/registerItem/page.tsx";
+import ItemRegisterPage from "./apps/admin/manageItem/page.tsx";
+import ItemPage from "./apps/item/page.tsx";
+import ItemDetailPage from "./apps/item/[itemId]/page.tsx";
+import OrderPage from "./apps/order/page.tsx";
+import CartPage from "./apps/cart/page.tsx";
+import LivePage from "./apps/live/page.tsx";
+import BrandPage from "./apps/brand/page.tsx";
 import ProductPage from "./apps/search/Search.js";
+
+// 테스트용 페이지지
+import Test from "./apps/login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
+
 
 function App() {
   return (

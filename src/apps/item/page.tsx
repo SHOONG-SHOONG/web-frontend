@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FooterComponent from "../components/Footer.tsx";
-import HeaderComponent from "../components/Header.tsx";
+import FooterComponent from "../../components/Footer.tsx";
+import HeaderComponent from "../../components/Header.tsx";
+
 import {
   Box,
   Container,
