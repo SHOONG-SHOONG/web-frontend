@@ -16,6 +16,8 @@ import ItemDetailPage from "./item/[itemId]/page.tsx";
 import OrderPage from "./order/page.tsx";
 import CartPage from "./cart/page.tsx";
 import Test from "./login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
+import LivePage from "./live/page.tsx";
+import BrandPage from "./brand/page.tsx";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
           <Route path="/order" element={<OrderPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/live" element={<LivePage />} />
+          <Route path="/brand" element={<BrandPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
