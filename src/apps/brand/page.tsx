@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Container, Grid, Image, Text, Title, Flex, Badge, Card, Box, Tabs, Stack, Group, Anchor, Divider } from '@mantine/core';
 import { IconSearch } from "@tabler/icons-react";
 
-import HeaderComponent from "../components/Header.tsx";
-import FooterComponent from "../components/Footer.tsx";
+import HeaderComponent from "../../components/Header.tsx";
+import FooterComponent from "../../components/Footer.tsx";
 
 const menus = [
     { label: "홈", value: "home" },

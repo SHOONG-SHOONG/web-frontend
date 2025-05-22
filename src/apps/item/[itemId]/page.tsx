@@ -14,8 +14,8 @@ import {
   Divider,
 } from "@mantine/core";
 import { useLocation } from "react-router-dom";
-import HeaderComponent from "../../components/Header.tsx";
-import FooterComponent from "../../components/Footer.tsx";
+import HeaderComponent from "../../../components/Header.tsx";
+import FooterComponent from "../../../components/Footer.tsx";
 
 export default function ItemDetailPage() {
   const [quantity, setQuantity] = useState(1);

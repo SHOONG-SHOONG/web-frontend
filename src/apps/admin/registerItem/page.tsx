@@ -14,7 +14,7 @@ import {
   Flex,
   Text,
 } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DatePickerInput } from '@mantine/dates';
 import { IconCalendar, IconPhoto } from "@tabler/icons-react";
 
 export default function ItemRegisterPage() {
