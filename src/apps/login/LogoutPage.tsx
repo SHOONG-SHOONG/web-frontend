@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLogin } from "../contexts/AuthContext.tsx";
-import BASE_URL from "../config.js";
+import { useLogin } from "../../contexts/AuthContext.tsx";
+import BASE_URL from "../../config.js";
 
 
 const Logout = () => {

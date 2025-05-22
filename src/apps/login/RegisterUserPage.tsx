@@ -21,7 +21,7 @@ import {
   IconMapPin,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config";
+import BASE_URL from "../../config";
 
 declare global {
   interface Window {

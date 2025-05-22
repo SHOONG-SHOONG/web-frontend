@@ -15,8 +15,8 @@ import {
 } from "@mantine/core";
 import { IconUser, IconLock, IconBuildingStore } from "@tabler/icons-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useLogin } from "../contexts/AuthContext.tsx";
-import BASE_URL from "../config.js";
+import { useLogin } from "../../contexts/AuthContext.tsx";
+import BASE_URL from "../../config.js";
 
 
 export default function LoginPage() {

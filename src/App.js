@@ -1,10 +1,10 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainPage from "./main/page.tsx";
-import LoginPage from "./login/LoginPage.tsx";
-import LogoutPage from "./login/LogoutPage.tsx";
-import RegisterUserPage from "./login/RegisterUserPage.tsx";
-import RegisterBusinessPage from "./login/RegisterBusinessPage.tsx";
+import MainPage from "./app/main/page.tsx";
+import LoginPage from "./app/login/LoginPage.tsx";
+import LogoutPage from "./app/login/LogoutPage.tsx";
+import RegisterUserPage from "./app/login/RegisterUserPage.tsx";
+import RegisterBusinessPage from "./app/login/RegisterBusinessPage.tsx";
 import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
 import AdminItemPage from "./admin/registerItem/page.tsx";
@@ -18,7 +18,7 @@ import CartPage from "./cart/page.tsx";
 import Test from "./login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
 import LivePage from "./live/page.tsx";
 import BrandPage from "./brand/page.tsx";
-import ProductPage from "./pages/search/Search.js";
+import ProductPage from "./apps/search/Search.js";
 
 function App() {
   return (

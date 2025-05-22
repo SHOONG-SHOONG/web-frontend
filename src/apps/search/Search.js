@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
-import BASE_URL from '../../config';
+import BASE_URL from '../../config.js';
 
 import {
   Box,

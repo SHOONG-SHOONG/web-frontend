@@ -15,8 +15,8 @@ import {
   Button,
 } from "@mantine/core";
 import React, { useState, useEffect } from 'react';
-import HeaderComponent from "../components/Header.tsx";
-import FooterComponent from "../components/Footer.tsx";
+import HeaderComponent from "../../components/Header.tsx";
+import FooterComponent from "../../components/Footer.tsx";
 
 // 백엔드에서 받아올 상품 데이터 타입 정의
 type OrderDetail = {

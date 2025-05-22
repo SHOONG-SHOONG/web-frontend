@@ -23,7 +23,7 @@ import {
   IconBuildingStore, // 사업자 아이콘 (이미 로그인 페이지에서 사용됨)
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../config";
+import BASE_URL from "../../config";
 
 // Daum Postcode API를 위한 전역 선언 (public/index.html에 스크립트를 추가하는 것이 일반적)
 declare global {

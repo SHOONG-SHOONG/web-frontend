@@ -16,8 +16,8 @@ import {
     Anchor,
   } from "@mantine/core";
   import React, { useState, useEffect } from "react";
-  import HeaderComponent from "../components/Header";
-  import FooterComponent from "../components/Footer";
+  import HeaderComponent from "../../components/Header";
+  import FooterComponent from "../../components/Footer";
   
   export default function OrderPage() {
     const [agreed, setAgreed] = useState(false);
