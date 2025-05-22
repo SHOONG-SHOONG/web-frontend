@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Flex, Text, Group } from "@mantine/core";
+import { Box, Flex, Group, Image } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
+import shoongImage from "../assets/shoong2.png";
 
 const menus = [
   { label: "홈", value: "home", path: "/" },
@@ -14,13 +15,16 @@ export default function HeaderComponent() {
   const activePath = location.pathname;
 
   return (
-    <Box px="lg" py="xs" style={{ borderBottom: "1px solid #eee" }}>
+    <Box px="lg" py="sm" style={{ borderBottom: "1px solid #eee" }}>
       <Flex justify="space-between" align="center">
         {/* 로고 */}
-        <Box w={220}>
-          <Text fw={900} size="lg" c="blue">
+        <Box w={220} mt={5}>
+          <Link to="/">
+            <Image src={shoongImage} w={90} />{" "}
+          </Link>
+          {/* <Text fw={900} size="lg" c="blue">
             Shoong
-          </Text>
+          </Text> */}
         </Box>
 
         {/* 중앙 메뉴 */}
@@ -32,9 +36,9 @@ export default function HeaderComponent() {
                 to={menu.path}
                 style={{
                   fontWeight: activePath === menu.path ? 700 : 500,
-                  color: activePath === menu.path ? "#228be6" : "#868e96",
+                  color: activePath === menu.path ? "#3c5bdc" : "#868e96",
                   borderBottom:
-                    activePath === menu.path ? "2px solid #3B61FF" : "none",
+                    activePath === menu.path ? "2px solid #3c5bdc" : "none",
                   paddingBottom: 4,
                   textDecoration: "none",
                 }}
@@ -53,12 +57,6 @@ export default function HeaderComponent() {
             style={{ color: "#868e96", fontSize: 14, textDecoration: "none" }}
           >
             로그인
-          </Link>
-          <Link
-            to="/signup"
-            style={{ color: "#868e96", fontSize: 14, textDecoration: "none" }}
-          >
-            회원가입
           </Link>
           <Link
             to="/cart"

@@ -1,4 +1,6 @@
 import React from "react";
+import { useState } from "react";
+
 import {
   Container,
   Grid,
@@ -10,50 +12,70 @@ import {
   Badge,
   Box,
   Flex,
+  Group,
   Anchor,
+  Stack,
 } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
+import { IconChevronDown, IconSearch } from "@tabler/icons-react";
 
-import HeaderComponent from "../components/Header.tsx";
-import FooterComponent from "../components/Footer.tsx";
-
-// best item sample data
-
-const bestItems = [
-  {
-    id: 1,
-    title: "캠핑의자",
-    priceOriginal: "85,000원",
-    priceSale: "76,500원",
-    sale: "10%",
-    image: "https://placehold.co/300x300?text=campingchair",
-  },
-  {
-    id: 2,
-    title: "라이브 쇼케이스 스마트폰 거치대",
-    priceOriginal: "4,000원",
-    priceSale: "3,500원",
-    sale: "12%",
-    image: "https://placehold.co/300x300?text=smartphone",
-  },
-  {
-    id: 3,
-    title: "실시간 방송용 LED 조명",
-    priceOriginal: "3,000원",
-    priceSale: "2,900원",
-    sale: "3%",
-    image: "https://placehold.co/300x300?text=LED+lightening",
-  },
+const menus = [
+  { label: "홈", value: "home" },
+  { label: "카테고리", value: "category" },
+  { label: "라이브", value: "live" },
 ];
 
 export default function MainPage() {
-  const navigate = useNavigate();
+  const [active, setActive] = useState("home");
 
   return (
     <>
-      {/* Header */}
-      <HeaderComponent />
+      <Box px="lg" py="xs" style={{ borderBottom: "1px solid #eee" }}>
+        <Flex justify="space-between" align="center">
+          {/* 왼쪽: 로고 */}
+          <Box w={190}>
+            <Text fw={900} size="lg" c="blue">
+              Shoong
+            </Text>
+          </Box>
+
+          {/* 중앙: Anchor 기반 메뉴 */}
+          <Box style={{ flex: 1 }}>
+            <Group justify="center" gap="lg">
+              {menus.map((menu) => (
+                <Anchor
+                  key={menu.value}
+                  component="button"
+                  size="md"
+                  fw={active === menu.value ? 700 : 500}
+                  c={active === menu.value ? "blue" : "gray"}
+                  style={{
+                    borderBottom:
+                      active === menu.value ? "2px solid #3B61FF" : "none",
+                    paddingBottom: 4,
+                  }}
+                  onClick={() => setActive(menu.value)}
+                >
+                  {menu.label}
+                </Anchor>
+              ))}
+            </Group>
+          </Box>
+
+          {/* 오른쪽: 검색 및 로그인 메뉴 */}
+          <Group gap="sm" w={190} justify="flex-end">
+            <IconSearch size={16} />
+            <Anchor href="/login" underline="never" c="gray" size="sm">
+              로그인
+            </Anchor>
+            <Anchor href="/join" underline="never" c="gray" size="sm">
+              회원가입
+            </Anchor>
+            <Anchor href="#" underline="never" c="gray" size="sm">
+              장바구니
+            </Anchor>
+          </Group>
+        </Flex>
+      </Box>
 
       {/* Banner */}
       <Box
@@ -101,7 +123,7 @@ export default function MainPage() {
                   wrap="wrap"
                 >
                   <Image
-                    src={`https://placehold.co/60x60?text=${i + 1}`}
+                    src={`https://placehold.co/60x60?text=pr+${i + 1}`}
                     alt="상품 이미지"
                     radius="sm"
                     w={45}
@@ -130,15 +152,31 @@ export default function MainPage() {
         </Flex>
 
         <Grid gutter="md" mb={70}>
-          {bestItems.map((item) => (
-            <Grid.Col span={4} key={item.id}>
-              <Card
-                padding="sm"
-                radius="md"
-                withBorder
-                onClick={() => navigate(`/item/${item.id}`, { state: item })}
-                style={{ cursor: "pointer" }}
-              >
+          {[
+            {
+              title: "캠핑의자",
+              priceOriginal: "85,000원",
+              priceSale: "76,500원",
+              sale: "10%",
+              image: "https://placehold.co/300x300?text=campingchair",
+            },
+            {
+              title: "라이브 쇼케이스 스마트폰 거치대",
+              priceOriginal: "4,000원",
+              priceSale: "3,500원",
+              sale: "12%",
+              image: "https://placehold.co/300x300?text=smartphone",
+            },
+            {
+              title: "실시간 방송용 LED 조명",
+              priceOriginal: "3,000원",
+              priceSale: "2,900원",
+              sale: "3%",
+              image: "https://placehold.co/300x300?text=LED+lightening",
+            },
+          ].map((item, i) => (
+            <Grid.Col span={4} key={i}>
+              <Card padding="sm" radius="md" withBorder>
                 <Card.Section>
                   <Image
                     src={item.image}
@@ -206,7 +244,43 @@ export default function MainPage() {
       </Container>
 
       {/* Footer */}
-      <FooterComponent />
+      <Box bg="black" c="white" py="xl" mt="xl" w="100%" h={350}>
+        <Box
+          ta="center"
+          style={{
+            maxWidth: "100%",
+            padding: "0 24px",
+            margin: "0 auto",
+          }}
+        >
+          <Stack gap="xs">
+            <Text fw={700} size="lg">
+              Shoong
+            </Text>
+            <Text size="sm">
+              Shoong | 대표자 : 김슝 | 사업자번호 : 123-34-56789
+            </Text>
+            <Text size="sm">
+              통신판매업 : 0000-서울중구-0000호 | 개인정보보호책임자 : 김슝 |
+              이메일 : shoong@shoong.ai
+            </Text>
+            <Text size="sm">
+              전화번호 : 00-0000-0000 | 주소 : 서울시 중구 을지로 000
+            </Text>
+            <Group gap="lg" mt="xs" ta="center">
+              <Anchor href="#" c="white" size="xs">
+                이용약관
+              </Anchor>
+              <Anchor href="#" c="white" size="xs">
+                개인정보처리방침
+              </Anchor>
+            </Group>
+            <Text size="xs" mt="sm" c="dimmed">
+              © 2024 Shoong. All Rights Reserved.
+            </Text>
+          </Stack>
+        </Box>
+      </Box>
     </>
   );
 }

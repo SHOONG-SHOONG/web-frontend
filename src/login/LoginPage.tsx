@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from 'react-router-dom';
 import {
   TextInput,
   PasswordInput,
@@ -14,8 +15,9 @@ import {
 } from "@mantine/core";
 import { IconUser, IconLock, IconBuildingStore } from "@tabler/icons-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useLogin } from "../contexts/AuthContext";
-import BASE_URL from "../config";
+import { useLogin } from "../contexts/AuthContext.tsx";
+import BASE_URL from "../config.js";
+
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -66,14 +68,23 @@ export default function LoginPage() {
   return (
     <Center h="100vh">
       <Paper shadow="md" p={30} radius="md" withBorder w={400}>
-        <Tabs value={tab} onTabChange={setTab}>
+        <Tabs
+          value={tab}
+          onChange={(value) => {
+            if (value !== null) setTab(value);
+          }}
+        >
           <Tabs.List grow>
-            <Tabs.Tab value="user" icon={<IconUser size={14} />}>사용자</Tabs.Tab>
-            <Tabs.Tab value="biz" icon={<IconBuildingStore size={14} />}>사업자</Tabs.Tab>
+            <Tabs.Tab value="user" leftSection={<IconUser size={14} />}>
+              사용자
+            </Tabs.Tab>
+            <Tabs.Tab value="biz" leftSection={<IconBuildingStore size={14} />}>
+              사업자
+            </Tabs.Tab>
           </Tabs.List>
         </Tabs>
 
-        <Text size="xl" fw={700} align="center" mt="md" mb="lg">
+        <Text size="xl" fw={700} ta="center" mt="md" mb="lg">
           로그인
         </Text>
 
@@ -82,7 +93,7 @@ export default function LoginPage() {
             <TextInput
               label="사용자 아이디"
               placeholder="your-username"
-              icon={<IconUser size={16} />}
+              leftSection={<IconUser size={16} />}
               value={username}
               onChange={(e) => setUsername(e.currentTarget.value)}
               required
@@ -91,15 +102,17 @@ export default function LoginPage() {
             <PasswordInput
               label="비밀번호"
               placeholder="Enter your password"
-              icon={<IconLock size={16} />}
+              leftSection={<IconLock size={16} />}
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
               required
             />
 
-            <Group position="apart" mt="xs">
+            <Group justify="space-between" mt="xs">
               <div />
-              <Anchor href="#" size="sm">비밀번호 찾기</Anchor>
+              <Anchor href="#" size="sm">
+                비밀번호 찾기
+              </Anchor>
             </Group>
 
             <Button fullWidth mt="md" color="blue" type="submit">
@@ -112,14 +125,14 @@ export default function LoginPage() {
               mt="sm"
               component="a"
               href={`${BASE_URL}/oauth2/authorization/kakao`}
-              leftIcon={
+              leftSection={
                 <img
                   src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
                   width={18}
                   alt="Kakao"
                 />
               }
-              styles={{ root: { color: "black" } }}
+              style={{ color: "black" }}
             >
               카카오로 로그인
             </Button>
@@ -128,9 +141,16 @@ export default function LoginPage() {
 
         <Divider my="lg" />
 
-        <Text size="sm" align="center">
-          계정이 없으신가요? <Anchor href="#">회원가입</Anchor>
+        <Text size="sm" ta="center">
+          계정이 없으신가요?{" "}
+          <Anchor
+            component={Link}
+            to={tab === "biz" ? "/register-business" : "/register"}
+          >
+            회원가입
+          </Anchor>
         </Text>
+
       </Paper>
     </Center>
   );
