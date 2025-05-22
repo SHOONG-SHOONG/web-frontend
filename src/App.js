@@ -10,8 +10,8 @@ import LoginPage from "./apps/login/LoginPage.tsx";
 import LogoutPage from "./apps/login/LogoutPage.tsx";
 import RegisterUserPage from "./apps/login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./apps/login/RegisterBusinessPage.tsx";
-import AdminItemPage from "./apps/admin/registerItem/page.tsx";
-import ItemRegisterPage from "./apps/admin/manageItem/page.tsx";
+import AdminItemPage from "./apps/admin/manageItem/page.tsx";
+import ItemRegisterPage from "./apps/admin/registerItem/page.tsx";
 import ItemPage from "./apps/item/page.tsx";
 import ItemDetailPage from "./apps/item/[itemId]/page.tsx";
 import OrderPage from "./apps/order/page.tsx";
@@ -33,8 +33,8 @@ function App() {
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/item" element={<ItemPage />} />
           <Route path="/item/:itemId" element={<ItemDetailPage />} />
-          <Route path="/admin" element={<ItemRegisterPage />} />
-          <Route path="/admin/regist-item" element={<AdminItemPage />} />
+          <Route path="/admin" element={<AdminItemPage />} />
+          <Route path="/admin/regist-item" element={<ItemRegisterPage />} />
           <Route path="/register" element={<RegisterUserPage />} />
           <Route path="/register-business" element={<RegisterBusinessPage />} />
           <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />

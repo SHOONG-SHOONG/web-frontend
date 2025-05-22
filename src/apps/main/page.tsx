@@ -43,7 +43,11 @@ interface LiveItem {
   id: number;
   title: string;
   imageUrl: string;
-  itemId: number;
+  itemName: string;
+  price: number;
+  discountRate: number;
+  itemImageUrl: string;
+  status: string;
 }
 
 export default function MainPage() {
@@ -55,7 +59,7 @@ export default function MainPage() {
   );
 
   useEffect(() => {
-    const fetchLiveAndItems = async () => {
+    const fetchLiveItems = async () => {
       try {
         const response = await fetch("http://192.168.0.6:8080/live/main", {
           headers: { Accept: "*/*" },
@@ -64,29 +68,8 @@ export default function MainPage() {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const liveData: LiveItem[] = await response.json();
         setLiveItems(liveData);
-
-        // 각 라이브에 연결된 상품 정보 불러오기
-        const detailFetches = liveData.map((live) =>
-          fetch(`http://192.168.0.6:8080/item/${live.itemId}`)
-            .then((res) => {
-              if (!res.ok) throw new Error("Item fetch failed");
-              return res.json();
-            })
-            .then((item: Item) => ({ itemId: live.itemId, item }))
-            .catch((err) => {
-              console.error(`Error loading item ${live.itemId}:`, err);
-              return null;
-            })
-        );
-
-        const details = await Promise.all(detailFetches);
-        const detailMap: Record<number, Item> = {};
-        details.forEach((d) => {
-          if (d) detailMap[d.itemId] = d.item;
-        });
-        setLiveItemDetails(detailMap);
       } catch (err) {
-        console.error("라이브 및 상품 정보 불러오기 실패:", err);
+        console.error("라이브 방송 정보 불러오기 실패:", err);
       }
     };
 
@@ -122,7 +105,7 @@ export default function MainPage() {
     };
 
     fetchBestItems();
-    fetchLiveAndItems();
+    fetchLiveItems();
   }, []);
 
   return (
@@ -149,66 +132,59 @@ export default function MainPage() {
           LIVE 방송
         </Title>
         <Grid gutter="md" mb={70}>
-          {liveItems.map((live) => {
-            const item = liveItemDetails[live.itemId];
-            return (
-              <Grid.Col span={3} key={live.id}>
-                <Card
-                  shadow="sm"
-                  padding="sm"
-                  radius="md"
-                  withBorder
-                  onClick={() => navigate(`/live/${live.id}`)}
-                  style={{ cursor: "pointer" }}
+          {liveItems.map((live) => (
+            <Grid.Col span={3} key={live.id}>
+              <Card
+                shadow="sm"
+                padding="sm"
+                radius="md"
+                withBorder
+                onClick={() => navigate(`/live/${live.id}`)}
+                style={{ cursor: "pointer" }}
+              >
+                <Badge color="blue" variant="filled" size="sm">
+                  LIVE
+                </Badge>
+
+                <Image
+                  src={live.imageUrl || "https://placehold.co/240x320"}
+                  alt={live.title}
+                  mt="xs"
+                  radius="sm"
+                />
+
+                <Text mt="xs" fw={600} ta="center" size="sm">
+                  {live.title}
+                </Text>
+
+                <Flex
+                  mt="sm"
+                  gap="xs"
+                  justify="center"
+                  align="center"
+                  direction="row"
+                  wrap="wrap"
                 >
-                  <Badge color="blue" variant="filled" size="sm">
-                    LIVE
-                  </Badge>
-
                   <Image
-                    src={live.imageUrl || "https://placehold.co/240x320"}
-                    alt={live.title}
-                    mt="xs"
+                    src={live.itemImageUrl || "https://placehold.co/60x60"}
+                    alt="상품 이미지"
                     radius="sm"
+                    w={45}
                   />
-
-                  <Text mt="xs" fw={600} ta="center" size="sm">
-                    {live.title}
+                  <Text size="xs" fw={500}>
+                    {live.itemName}
                   </Text>
-
-                  {item && (
-                    <Flex
-                      mt="sm"
-                      gap="xs"
-                      justify="center"
-                      align="center"
-                      direction="row"
-                      wrap="wrap"
-                    >
-                      <Image
-                        src={
-                          item.itemImages?.[0]?.url ||
-                          "https://placehold.co/60x60"
-                        }
-                        alt="상품 이미지"
-                        radius="sm"
-                        w={45}
-                      />
-                      <Text size="xs" fw={500}>
-                        {item.itemName}
-                      </Text>
-                      <Text size="xs" c="red">
-                        {item.discountRate * 100}%{" "}
-                        <Text span fw={700} c="black">
-                          {item.finalPrice.toLocaleString()}원
-                        </Text>
-                      </Text>
-                    </Flex>
-                  )}
-                </Card>
-              </Grid.Col>
-            );
-          })}
+                  <Text size="xs" c="red">
+                    {live.discountRate * 100}%{" "}
+                    <Text span fw={700} c="black">
+                      {(live.price * (1 - live.discountRate)).toLocaleString()}
+                      원
+                    </Text>
+                  </Text>
+                </Flex>
+              </Card>
+            </Grid.Col>
+          ))}
         </Grid>
 
         {/* 실시간 Best 상품 */}
