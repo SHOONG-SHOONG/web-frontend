@@ -11,9 +11,14 @@ import {
   Table,
   Flex,
   Group,
-  Divider,
+  Box,
   Loader,
+  Divider,
+  Progress,
+  Select,
+  Input,
 } from "@mantine/core";
+import { IconStar } from "@tabler/icons-react";
 import { useParams } from "react-router-dom";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
@@ -116,43 +121,72 @@ export default function ItemDetailPage() {
 
       <Container size="lg" py="xl">
         {/* 상품 이미지 + 정보 */}
-        <Grid gutter="md">
+        <Grid gutter="md" mt={30} mb={60}>
           <Grid.Col span={{ base: 12, md: 6 }}>
             <Image
-              src={item.itemImages?.[0]?.url || "https://placehold.co/600x600"}
+              src={item.itemImages?.[0]?.url || "https://placehold.co/450x450"}
               alt={item.itemName}
               radius="md"
-              w={400}
+              w={450}
+              h={450}
             />
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <Title order={3}>{item.itemName}</Title>
-
-            {item.discountRate > 0 && (
-              <Text size="sm" c="dimmed" td="line-through">
-                {item.price.toLocaleString()}원
-              </Text>
-            )}
-
+            {/* 브랜드명 */}
             <Text
-              fw={700}
-              size="lg"
-              c={item.discountRate > 0 ? "red" : "black"}
+              size="xs"
+              color="dimmed"
+              style={{ textTransform: "uppercase" }}
+              mb={4}
             >
-              {item.discountRate > 0 && `${item.discountRate}% `}
-              <Text span fw={700} c="black">
-                {item.finalPrice.toLocaleString()}원
-              </Text>
+              CRASH BAGGAGE
             </Text>
 
-            <Text mt="xs">{item.description}</Text>
+            {/* 상품명 */}
+            <Text size="xl" fw={500} mb="xs">
+              {item.itemName}
+            </Text>
 
-            <Divider my="sm" />
+            {/* 정가 */}
+            <Text size="md" fw={600} color="dimmed" td="line-through" mb="xs">
+              {item.price.toLocaleString()}원
+            </Text>
 
-            <Text size="sm">배송: 택배배송 (CJ대한통운)</Text>
+            {/* 할인율 + 할인가 */}
+            <Flex align="center" gap={8} mb="md">
+              {item.discountRate > 0 && (
+                <Text size="xl" fw={700} color="red">
+                  {item.discountRate}%
+                </Text>
+              )}
+              <Text size="xl" fw={700}>
+                {item.finalPrice.toLocaleString()}원
+              </Text>
+            </Flex>
 
-            <Flex align="center" gap="md" mt="md">
+            {/* 배송 정보 */}
+            <Flex
+              justify="space-between"
+              py={8}
+              style={{ borderTop: "1px solid #eee" }}
+              mt={30}
+            >
+              <Text fw={500}>배송 정보</Text>
+            </Flex>
+
+            {/* 배송 설명 */}
+            <Text size="sm" color="dimmed" mb="sm">
+              무료배송
+              <br />
+              제주도 포함한 도서/산간지역은 추가배송비 5,000원
+            </Text>
+
+            {/* 수량 선택 */}
+            <Flex align="center" gap="md" mt="md" mb="md">
+              <Text size="sm" fw={500}>
+                수량
+              </Text>
               <NumberInput
                 value={quantity}
                 onChange={(val) =>
@@ -163,57 +197,150 @@ export default function ItemDetailPage() {
                 size="sm"
                 w={100}
               />
+            </Flex>
 
-              <Text fw={700}>
-                총 금액: {(item.finalPrice * quantity).toLocaleString()}원
+            {/* 총 금액 */}
+            <Flex justify="space-between" align="center" mb="md">
+              <Text size="sm" color="dimmed">
+                총 상품 금액
+              </Text>
+              <Text size="lg" fw={700}>
+                {(item.finalPrice * quantity).toLocaleString()}원
               </Text>
             </Flex>
 
-            <Group mt="md" grow>
-              <Button variant="outline" onClick={handleAddToCart}>
-                장바구니
+            {/* 버튼 영역 */}
+            <Flex gap="sm">
+              <Button
+                fullWidth
+                variant="default"
+                radius="sm"
+                style={{ height: "50px", fontWeight: 600 }}
+                onClick={handleAddToCart}
+              >
+                장바구니에 담기
               </Button>
-              <Button color="dark" onClick={handleBuy}>
-                구매하기
+              <Button
+                fullWidth
+                color="dark"
+                radius="sm"
+                style={{ height: "50px", fontWeight: 600 }}
+                onClick={handleBuy}
+              >
+                바로 구매하기
               </Button>
-            </Group>
+            </Flex>
           </Grid.Col>
         </Grid>
 
         {/* 상세 정보 탭 */}
-        <Tabs
-          color="#4d6ef4"
-          variant="pills"
-          radius="md"
-          defaultValue="detail"
-          mt="xl"
-        >
-          <Tabs.List>
+        <Tabs color="rgba(0, 0, 0, 1)" defaultValue="detail">
+          <Tabs.List grow>
             <Tabs.Tab value="detail">상품상세</Tabs.Tab>
-            <Tabs.Tab value="review">리뷰(0)</Tabs.Tab>
-            <Tabs.Tab value="inquiry">문의(0)</Tabs.Tab>
+            <Tabs.Tab value="review">리뷰[0]</Tabs.Tab>
+            <Tabs.Tab value="inquiry">문의[0]</Tabs.Tab>
             <Tabs.Tab value="notice">안내사항</Tabs.Tab>
           </Tabs.List>
 
-          <Tabs.Panel value="detail" pt="md">
-            <Image
-              src="https://placehold.co/800x100?text=item+detail"
-              alt="상세이미지"
-            />
-            <Text mt="sm">{item.description}</Text>
+          <Tabs.Panel value="detail" pt="xl">
+            {/* 상품 상세 이미지 (예시) */}
+            <Box style={{ textAlign: "center" }} mb="xl">
+              <Image
+                src="https://placehold.co/800x100?text=item+detail+banner"
+                alt="상세 이미지"
+                radius="sm"
+                width="100%"
+                maw={800}
+                mx="auto"
+              />
+            </Box>
+
+            {/* 상품 설명 */}
+            <Box px="md" style={{ maxWidth: 800, margin: "0 auto" }}>
+              <Text size="md" lh={1.8}>
+                {item.description}
+              </Text>
+            </Box>
           </Tabs.Panel>
 
           <Tabs.Panel value="review" pt="md">
-            <Text size="sm" c="dimmed">
-              가장 먼저 리뷰를 작성해주세요.
-            </Text>
+            <Box mt="xl">
+              {/* 리뷰 제목 */}
+              <Text fw={700} size="lg" mb="xs">
+                리뷰 (0)
+              </Text>
+              <Divider mb="md" />
+
+              <Flex gap="xl" align="start" mb="xl">
+                {/* 별점 박스 */}
+                <Flex direction="column" align="center" w={120}>
+                  <IconStar size={48} stroke={1.5} />
+                  <Text size="xl" fw={600} mt="xs">
+                    -
+                  </Text>
+                  <Button color="dark" size="xs" mt="xs" radius="xs">
+                    상품 리뷰 작성하기
+                  </Button>
+                </Flex>
+              </Flex>
+
+              {/* 필터 + 검색바 */}
+              <Flex
+                justify="space-between"
+                align="center"
+                px="sm"
+                py="sm"
+                style={{
+                  borderTop: "1px solid #eee",
+                  borderBottom: "1px solid #eee",
+                }}
+                mb="lg"
+              >
+                <Group>
+                  <Select
+                    data={["최신순", "평점 높은순", "평점 낮은순"]}
+                    defaultValue="최신순"
+                    size="xs"
+                    w={100}
+                  />
+                  <Select
+                    data={["별점"]}
+                    defaultValue="별점"
+                    size="xs"
+                    w={80}
+                  />
+                  <Select
+                    data={["사이즈"]}
+                    defaultValue="사이즈"
+                    size="xs"
+                    w={80}
+                  />
+                  <Select
+                    data={["색상 (밝기)"]}
+                    defaultValue="색상 (밝기)"
+                    size="xs"
+                    w={120}
+                  />
+                </Group>
+                <Input placeholder="리뷰 키워드 검색" size="xs" w={200} />
+              </Flex>
+
+              {/* 빈 리뷰 안내 */}
+              <Box py="xl" style={{ textAlign: "center" }}>
+                <Text size="sm" color="dimmed">
+                  리뷰가 없습니다.
+                  <br />
+                  리뷰를 작성해 보세요!
+                </Text>
+              </Box>
+            </Box>
           </Tabs.Panel>
 
           <Tabs.Panel value="inquiry" pt="md">
             <Text size="sm" c="dimmed">
               상품에 대해 궁금한 점을 작성해주세요.
             </Text>
-            <Button variant="outline" mt="sm" size="xs">
+            <Button color="dark" size="xs" mt="xs" radius="xs">
               상품 문의 작성하기
             </Button>
           </Tabs.Panel>

@@ -194,7 +194,7 @@ export default function ItemPage() {
         </Flex>
 
         {/* 상품 목록 */}
-        <Grid gutter="md" mt={40}>
+        {/* <Grid gutter="md" mt={40}>
           {items.map((item) => (
             <Grid.Col span={{ base: 6, md: 4 }} key={item.itemId}>
               <Card
@@ -245,6 +245,59 @@ export default function ItemPage() {
                   </Text>
                 </Flex>
               </Card>
+            </Grid.Col>
+          ))}
+        </Grid> */}
+        <Grid gutter="xl" mt={40}>
+          {items.map((item) => (
+            <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
+              <Box
+                onClick={() =>
+                  navigate(`/item/${item.itemId}`, { state: item })
+                }
+                style={{ cursor: "pointer" }}
+              >
+                {/* 이미지 */}
+                <Image
+                  src={
+                    item.itemImages?.[0]?.url || "https://placehold.co/400x400"
+                  }
+                  alt={item.itemName}
+                  radius="md"
+                  height={320}
+                  fit="cover"
+                  style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                />
+
+                {/* 브랜드명 */}
+                <Text mt="md" size="xs" fw={600}>
+                  {/* 예시: 브랜드 ID에 따라 임의 지정 가능 */}
+                  {item.brandId === 1
+                    ? "PISCESS"
+                    : item.brandId === 2
+                    ? "ROUGH SIDE WHITE LABEL"
+                    : item.brandId === 3
+                    ? "NOTIA"
+                    : "KINDERSALMON"}
+                </Text>
+
+                {/* 상품명 */}
+                <Text size="sm" mb="xs">
+                  {item.itemName}
+                </Text>
+
+                {/* 할인율 + 가격 */}
+                <Flex align="center" gap={6}>
+                  {item.discountRate > 0 && (
+                    <Text size="sm" fw={700} color="red">
+                      {item.discountRate * 100}%
+                    </Text>
+                  )}
+                  <Text size="sm" fw={700}>
+                    {item.finalPrice.toLocaleString()}원
+                  </Text>
+                </Flex>
+              </Box>
             </Grid.Col>
           ))}
         </Grid>

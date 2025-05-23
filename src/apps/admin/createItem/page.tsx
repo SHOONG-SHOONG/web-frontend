@@ -15,11 +15,12 @@ import {
   Text,
   Divider,
 } from "@mantine/core";
-import { DatePickerInput } from '@mantine/dates';
+import { DatePickerInput } from "@mantine/dates";
 import { IconCalendar, IconPhoto } from "@tabler/icons-react";
+import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
 import { Link } from "react-router-dom";
 
-export default function ItemRegisterPage() {
+export default function CreateItemPage() {
   const [productName, setProductName] = useState("");
   const [originalPrice, setOriginalPrice] = useState(0);
   const [salePrice, setSalePrice] = useState(0);
@@ -48,28 +49,7 @@ export default function ItemRegisterPage() {
     <>
       <Flex>
         {/* 사이드바 */}
-        <Box
-          w={220}
-          h="100vh"
-          bg="#f8f9fa"
-          p="md"
-          style={{ borderRight: "1px solid #e9ecef" }}
-        >
-          <Text fw={700} size="xl" c="#3b5bdb" mb="lg">
-            Shoong
-          </Text>
-          <Stack gap="xs">
-            <Button variant="subtle" color="#3b5bdb" fullWidth>
-              상품 관리
-            </Button>
-            <Button variant="subtle" color="gray" fullWidth>
-              라이브쇼 관리
-            </Button>
-            <Button variant="subtle" color="gray" fullWidth>
-              계정 관리
-            </Button>
-          </Stack>
-        </Box>
+        <AdminNavBarPage />
 
         {/* 메인 콘텐츠 */}
         <Box style={{ flex: 1 }} bg="#fefefe">
@@ -77,7 +57,12 @@ export default function ItemRegisterPage() {
             <Flex justify="space-between" align="center" mb="md">
               <Title order={4}>상품 관리</Title>
               <Link to="">
-                <Button color="#3b5bdb" radius="md" size="sm" onClick={handleSubmit}>
+                <Button
+                  color="#3b5bdb"
+                  radius="md"
+                  size="sm"
+                  onClick={handleSubmit}
+                >
                   등록
                 </Button>
               </Link>
