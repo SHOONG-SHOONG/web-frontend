@@ -11,7 +11,7 @@ import LogoutPage from "./apps/login/LogoutPage.tsx";
 import RegisterUserPage from "./apps/login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./apps/login/RegisterBusinessPage.tsx";
 import AdminItemPage from "./apps/admin/manageItem/page.tsx";
-import ItemRegisterPage from "./apps/admin/registerItem/page.tsx";
+import CreateItemPage from "./apps/admin/createItem/page.tsx";
 import ItemPage from "./apps/item/page.tsx";
 import ItemDetailPage from "./apps/item/[itemId]/page.tsx";
 import OrderPage from "./apps/order/page.tsx";
@@ -29,16 +29,8 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          {/* main */}
           <Route path="/" element={<MainPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/logout" element={<LogoutPage />} />
-          <Route path="/item" element={<ItemPage />} />
-          <Route path="/item/:itemId" element={<ItemDetailPage />} />
-          <Route path="/admin" element={<AdminItemPage />} />
-          <Route path="/admin/regist-item" element={<ItemRegisterPage />} />
-          <Route path="/register" element={<RegisterUserPage />} />
-          <Route path="/register-business" element={<RegisterBusinessPage />} />
-          <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/test" element={<Test />} />
@@ -46,6 +38,21 @@ function App() {
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/{barndId}" element={<BrandPage />} />
           <Route path="/item/search" element={<ProductPage />} />
+
+          {/* auth */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/logout" element={<LogoutPage />} />
+          <Route path="/register" element={<RegisterUserPage />} />
+          <Route path="/register-business" element={<RegisterBusinessPage />} />
+          <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
+
+          {/* item */}
+          <Route path="/item" element={<ItemPage />} />
+          <Route path="/item/:itemId" element={<ItemDetailPage />} />
+
+          {/* admin */}
+          <Route path="/admin" element={<AdminItemPage />} />
+          <Route path="/admin/item/create" element={<CreateItemPage />} />
           <Route path="/admin/live" element={<LiveListPage />} />
         </Routes>
       </BrowserRouter>

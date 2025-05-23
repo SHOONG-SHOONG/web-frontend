@@ -16,6 +16,7 @@ import { IconChevronDown } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
+import TitleComponent from "./components/titleComponent.tsx";
 
 interface ItemImage {
   id: number;
@@ -128,121 +129,149 @@ export default function MainPage() {
 
       <Container size="lg" py="md">
         {/* LIVE 방송 */}
-        <Title order={3} mt="xl" mb="sm">
+        <TitleComponent
+          label="LIVE 방송"
+          subLabel="지금 방송 중인 상품을 만나보세요."
+        />
+        {/* <Title order={3} mt="xl" mb="sm">
           LIVE 방송
-        </Title>
-        <Grid gutter="md" mb={70}>
+        </Title> */}
+        <Grid gutter="lg" mb={70}>
           {liveItems.map((live) => (
             <Grid.Col span={3} key={live.id}>
-              <Card
-                shadow="sm"
-                padding="sm"
-                radius="md"
-                withBorder
+              <Box
                 onClick={() => navigate(`/live/${live.id}`)}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", position: "relative" }}
               >
-                <Badge color="blue" variant="filled" size="sm">
-                  LIVE
-                </Badge>
-
+                {/* 썸네일 이미지 */}
                 <Image
-                  src={live.imageUrl || "https://placehold.co/240x320"}
+                  src={live.imageUrl || "https://placehold.co/400x500"}
                   alt={live.title}
-                  mt="xs"
-                  radius="sm"
+                  radius="md"
+                  h={400}
+                  fit="cover"
+                  style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
                 />
 
-                <Text mt="xs" fw={600} ta="center" size="sm">
+                {/* 시청 수 배지 */}
+                <Badge
+                  color="red"
+                  variant="filled"
+                  size="sm"
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    left: 10,
+                    zIndex: 1,
+                  }}
+                >
+                  live
+                </Badge>
+
+                {/* 방송 제목 */}
+                <Text mt="xs" size="sm" fw={600} lineClamp={2}>
                   {live.title}
                 </Text>
 
-                <Flex
-                  mt="sm"
-                  gap="xs"
-                  justify="center"
-                  align="center"
-                  direction="row"
-                  wrap="wrap"
-                >
+                {/* 상품 요약 정보 (썸네일, 상품명, 가격 등) */}
+                <Flex mt="xs" align="center" gap="xs">
                   <Image
                     src={live.itemImageUrl || "https://placehold.co/60x60"}
-                    alt="상품 이미지"
+                    alt="상품 썸네일"
+                    w={50}
+                    h={50}
+                    fit="cover"
                     radius="sm"
-                    w={45}
                   />
-                  <Text size="xs" fw={500}>
-                    {live.itemName}
-                  </Text>
-                  <Text size="xs" c="red">
-                    {live.discountRate * 100}%{" "}
-                    <Text span fw={700} c="black">
-                      {(live.price * (1 - live.discountRate)).toLocaleString()}
-                      원
-                    </Text>
-                  </Text>
+                  <Box>
+                    <Text size="xs">{live.itemName}</Text>
+                    <Flex align="baseline" gap={6}>
+                      {live.discountRate > 0 && (
+                        <Text size="sm" fw={700} color="red">
+                          {Math.round(live.discountRate * 100)}%
+                        </Text>
+                      )}
+                      <Text size="sm" fw={700}>
+                        {(
+                          live.price *
+                          (1 - live.discountRate)
+                        ).toLocaleString()}
+                        원
+                      </Text>
+                    </Flex>
+                  </Box>
                 </Flex>
-              </Card>
+              </Box>
             </Grid.Col>
           ))}
         </Grid>
 
         {/* 실시간 Best 상품 */}
-        <Flex justify="space-between" align="center" mt="xl" mb="md">
-          <Title order={3}>실시간 Best 상품</Title>
+        <Flex justify="space-between" align="center" mt="xl" mb="sm">
+          <TitleComponent
+            label="BEST SELLER"
+            subLabel="가장 많이 팔리는 아이템을 한 눈에!"
+          />
           <Anchor href="#" size="xs" c="dimmed">
             &gt; 더보기
           </Anchor>
         </Flex>
-
-        <Grid gutter="md" mb={70}>
+        <Grid gutter="xl">
           {bestItems.map((item) => (
-            <Grid.Col span={4} key={item.itemId}>
-              <Card
-                padding="sm"
-                radius="md"
-                withBorder
+            <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
+              <Box
                 onClick={() =>
                   navigate(`/item/${item.itemId}`, { state: item })
                 }
                 style={{ cursor: "pointer" }}
               >
-                <Card.Section>
-                  <Image
-                    src={
-                      item.itemImages?.[0]?.url ||
-                      "https://placehold.co/300x300"
-                    }
-                    alt={item.itemName}
-                    height={160}
-                    fit="cover"
-                  />
-                </Card.Section>
+                {/* 이미지 */}
+                <Image
+                  src={
+                    item.itemImages?.[0]?.url || "https://placehold.co/400x400"
+                  }
+                  alt={item.itemName}
+                  radius="md"
+                  height={320}
+                  fit="cover"
+                  style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                />
 
-                <Text mt="xs" fw={600} size="sm">
+                {/* 브랜드명 */}
+                <Text mt="md" size="xs" fw={600}>
+                  {/* 예시: 브랜드 ID에 따라 임의 지정 가능 */}
+                  {item.brandId === 1
+                    ? "PISCESS"
+                    : item.brandId === 2
+                    ? "ROUGH SIDE WHITE LABEL"
+                    : item.brandId === 3
+                    ? "NOTIA"
+                    : "KINDERSALMON"}
+                </Text>
+
+                {/* 상품명 */}
+                <Text size="sm" mb="xs">
                   {item.itemName}
                 </Text>
 
-                <Flex mt="xs" align="baseline" gap="xs">
-                  <Text size="xs" c="red" fw={600}>
-                    {item.discountRate > 0 ? `${item.discountRate}%` : ""}
-                  </Text>
-                  <Text size="xs" td="line-through" c="dimmed">
-                    {item.discountRate > 0
-                      ? `${item.price.toLocaleString()}원`
-                      : ""}
-                  </Text>
+                {/* 할인율 + 가격 */}
+                <Flex align="center" gap={6}>
+                  {item.discountRate > 0 && (
+                    <Text size="sm" fw={700} color="red">
+                      {item.discountRate * 100}%
+                    </Text>
+                  )}
                   <Text size="sm" fw={700}>
                     {item.finalPrice.toLocaleString()}원
                   </Text>
                 </Flex>
-              </Card>
+              </Box>
             </Grid.Col>
           ))}
         </Grid>
 
         {/* 자주 묻는 질문 */}
-        <Title order={4} mt="xl" mb="md">
+        <Title order={4} mt={150} mb="md">
           자주 묻는 질문
         </Title>
         <Accordion
