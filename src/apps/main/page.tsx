@@ -84,7 +84,7 @@ export default function MainPage() {
         });
 
         const response = await fetch(
-          `http://192.168.0.6:8080/item/search?${params.toString()}`,
+          `${BASE_URL}/item/search?${params.toString()}`,
           {
             method: "GET",
             headers: {

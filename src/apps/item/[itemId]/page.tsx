@@ -61,6 +61,11 @@ export default function ItemDetailPage() {
       setError: (error: string | null) => void
     ) => {
       try {
+<<<<<<< Updated upstream
+=======
+        // const token = localStorage.getItem("access");
+
+>>>>>>> Stashed changes
         const response = await fetch(`${BASE_URL}/item/${itemId}`, {
           method: "GET",
           headers: {
