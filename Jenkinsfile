@@ -86,26 +86,28 @@ pipeline {
               sh '''
                 echo "🔁 Manifest 레포 업데이트 시작"
         
-                # 1. clone manifest repo
                 rm -rf k8s-manifests
                 git clone https://${GIT_USER}:${GIT_TOKEN}@github.com/SHOONG-SHOONG/k8s-manifests.git
         
-                # 2. 경로 이동 (프론트엔드로 수정)
                 cd k8s-manifests/apps/web-frontend
         
-                # 3. 이미지 태그 교체
-                sed -i "s|image: harbor.shoong.store/web-frontend/develop:[^[:space:]]*|image: ${IMAGE_NAME}:${TAG}|" deployment.yaml
+                sed -i "s|image: harbor.shoong.store/shoong-frontend/develop:[^[:space:]]*|image: ${IMAGE_NAME}:${TAG}|" deployment.yaml
         
-                # 4. commit & push
                 git config user.name "jenkins-bot"
                 git config user.email "jenkins@shoong.store"
-                git add deployment.yaml
-                git commit -m "☑️ web-frontend: Update image tag to ${TAG}"
-                git push origin develop
+        
+                if ! git diff --quiet; then
+                  git add deployment.yaml
+                  git commit -m "☑️ web-frontend: Update image tag to ${TAG}"
+                  git push origin develop
+                else
+                  echo "✳︎ 이미지 태그 변경 없음, 커밋 스킵"
+                fi
               '''
             }
           }
         }
+
 
     }
 
