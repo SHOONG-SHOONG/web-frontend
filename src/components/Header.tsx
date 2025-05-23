@@ -22,7 +22,7 @@ const menus = [
   { label: "홈", value: "home", path: "/" },
   { label: "카테고리", value: "category", path: "/item" },
   // live page
-  { label: "라이브", value: "live", path: "/live/:liveId" },
+  { label: "라이브", value: "live", path: "/live" },
 ];
 
 export default function HeaderComponent() {

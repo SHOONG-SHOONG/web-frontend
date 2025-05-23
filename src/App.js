@@ -43,7 +43,7 @@ function App() {
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:brandId" element={<BrandPage />} />
           <Route path="/item/search" element={<ProductPage />} />
-          <Route path="/admin/live" element={<ManageLivePage />} />
+          <Route path="/live" element={<ListLivePage />} />
 
           {/* auth */}
           <Route path="/login" element={<LoginPage />} />
@@ -63,7 +63,7 @@ function App() {
           <Route path="/admin/regist-live/" element={<LiveRegisterPage />} />
           <Route path="/admin/user" element={<AdminUserPage />} />
           <Route path="/admin/brand" element={<RegisterBrandPage />} />
-          <Route path="/live" element={<ListLivePage />} />
+          <Route path="/admin/live" element={<ManageLivePage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
