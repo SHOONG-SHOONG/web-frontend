@@ -44,18 +44,29 @@ pipeline {
         }
         
         stage('Invalidate CloudFront Cache') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-basic-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'aws-basic-creds',
+                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+            ),
+            string(
+                credentialsId: 'CLOUDFRONT_DIST_ID',
+                variable: 'CLOUDFRONT_DIST_ID'
+            )
+        ]) {
+            sh '''
+                export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
-                    echo "➡️ CloudFront 캐시 무효화 시작"
-                    aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DIST_ID} --paths "/*"
-                    '''
-                }
-            }
+                echo "➡️ CloudFront 캐시 무효화 시작"
+                aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
+            '''
         }
+    }
+}
+
     }
 
     post {
