@@ -9,7 +9,7 @@ pipeline {
         SERVICE_NAME = "web-frontend"
         AWS_REGION = 'ap-northeast-2'
         S3_BUCKET = 'shoong-front'
-        CLOUDFRONT_DIST_ID = 'EOU0KTHUPG6CS'
+        CLOUDFRONT_DIST_ID = credentials('CLOUDFRONT_DIST_ID')
     }
 
     stages {
