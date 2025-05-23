@@ -12,7 +12,7 @@ const liveList = [
     { id: 3, title: 'Live 3', date: '2025.04.23', time: '14:00', status: '종료' },
 ];
 
-export default function LiveListPage() {
+export default function ManageLivePage() {
     return (
         <Flex>
             {/* 사이드바 */}

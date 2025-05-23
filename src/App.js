@@ -26,6 +26,8 @@ import LiveListPage from "./apps/admin/manageLive/page.tsx";
 import LiveRegisterPage from "./apps/admin/registerLive/page.tsx";
 import AdminUserPage from "./apps/admin/manageUser/page.tsx";
 import RegisterBrandPage from "./apps/admin/registerBrand/page.tsx";
+import ListLivePage from "./apps/live/listLive/page.tsx";
+import ManageLivePage from "./apps/admin/manageLive/page.tsx";
 
 function App() {
   return (
@@ -49,10 +51,11 @@ function App() {
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:brandId" element={<BrandPage />} />
           <Route path="/item/search" element={<ProductPage />} />
-          <Route path="/admin/live" element={<LiveListPage />} />
+          <Route path="/admin/live" element={<ManageLivePage />} />
           <Route path="/admin/regist-live/" element={<LiveRegisterPage />} />
           <Route path="/admin/user" element={<AdminUserPage />} />
           <Route path="/admin/brand" element={<RegisterBrandPage />} />
+          <Route path="/live" element={<ListLivePage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
