@@ -1,2 +1,2 @@
 # web-frontend
-jenkins test6
+jenkins test7
