@@ -6,7 +6,6 @@ import {
   Text,
   Title,
   Accordion,
-  Card,
   Badge,
   Box,
   Flex,
@@ -17,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 import TitleComponent from "./components/titleComponent.tsx";
+import BASE_URL from "../../config.js";
 
 interface ItemImage {
   id: number;
@@ -62,7 +62,7 @@ export default function MainPage() {
   useEffect(() => {
     const fetchLiveItems = async () => {
       try {
-        const response = await fetch("http://192.168.0.6:8080/live/main", {
+        const response = await fetch(`${BASE_URL}/live/main`, {
           headers: { Accept: "*/*" },
         });
 
@@ -117,20 +117,21 @@ export default function MainPage() {
       {/* Banner */}
       <Box
         w="100%"
+        h={45}
         style={{
-          background: "#3B61FF",
+          background: "#4d6ef4",
           color: "white",
           padding: "10px 0",
           textAlign: "center",
         }}
       >
-        🎉 지금 가입하면 50% 할인 쿠폰 증정 🎉
+        지금 가입하면 50% 할인 쿠폰 증정
       </Box>
 
       <Container size="lg" py="md">
         {/* LIVE 방송 */}
         <TitleComponent
-          label="LIVE 방송"
+          label="SHOONG LIVE"
           subLabel="지금 방송 중인 상품을 만나보세요."
         />
         {/* <Title order={3} mt="xl" mb="sm">

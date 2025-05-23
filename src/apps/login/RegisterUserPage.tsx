@@ -22,6 +22,7 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../config";
+import React from "react";
 
 declare global {
   interface Window {
@@ -113,15 +114,7 @@ export default function RegisterUserPage() {
   return (
     <Container size="xs" my={60}>
       <Flex justify="center">
-        <Paper
-          shadow="md"
-          p={30}
-          radius="md"
-          withBorder
-          w="100%"
-          miw={320}
-          maw={500}
-        >
+        <Paper p={30} radius="md" w="100%" miw={320} maw={500}>
           <Text size="xl" fw={700} ta="center" mt="md" mb="lg">
             회원가입
           </Text>
@@ -129,6 +122,8 @@ export default function RegisterUserPage() {
           <form onSubmit={handleRegister}>
             <Stack>
               <TextInput
+                size="md"
+                radius="sm"
                 label="아이디"
                 placeholder="username"
                 leftSection={<IconUser size={16} />}
@@ -138,6 +133,8 @@ export default function RegisterUserPage() {
               />
 
               <PasswordInput
+                size="md"
+                radius="sm"
                 label="비밀번호"
                 placeholder="Enter your password"
                 leftSection={<IconLock size={16} />}
@@ -147,6 +144,8 @@ export default function RegisterUserPage() {
               />
 
               <PasswordInput
+                size="md"
+                radius="sm"
                 label="비밀번호 확인"
                 placeholder="Enter your password again"
                 leftSection={<IconLock size={16} />}
@@ -161,6 +160,8 @@ export default function RegisterUserPage() {
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="이메일"
                 placeholder="example@gmail.com"
                 leftSection={<IconMail size={16} />}
@@ -171,6 +172,8 @@ export default function RegisterUserPage() {
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="이름"
                 placeholder="홍길동"
                 leftSection={<IconUser size={16} />}
@@ -180,6 +183,8 @@ export default function RegisterUserPage() {
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="전화번호"
                 placeholder="010-1234-5678"
                 leftSection={<IconPhone size={16} />}
@@ -190,6 +195,8 @@ export default function RegisterUserPage() {
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="생년월일"
                 placeholder="YYYY-MM-DD"
                 leftSection={<IconCalendar size={16} />}
@@ -199,8 +206,9 @@ export default function RegisterUserPage() {
                 required
               />
 
-
               <TextInput
+                size="md"
+                radius="sm"
                 label="주소"
                 placeholder="주소 검색"
                 leftSection={<IconMapPin size={16} />}
@@ -210,7 +218,14 @@ export default function RegisterUserPage() {
                 required
               />
 
-              <Button fullWidth mt="xl" color="blue" type="submit">
+              <Button
+                fullWidth
+                mt="md"
+                variant="filled"
+                color="rgba(0, 0, 0, 1)"
+                type="submit"
+                h={45}
+              >
                 계정 만들기
               </Button>
             </Stack>
@@ -220,7 +235,11 @@ export default function RegisterUserPage() {
 
           <Text size="sm" ta="center">
             이미 계정이 있으신가요?{" "}
-            <Anchor component="button" onClick={() => navigate("/login")}>
+            <Anchor
+              component="button"
+              onClick={() => navigate("/login")}
+              c="gray"
+            >
               로그인
             </Anchor>
           </Text>

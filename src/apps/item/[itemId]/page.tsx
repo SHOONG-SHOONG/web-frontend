@@ -14,14 +14,14 @@ import {
   Box,
   Loader,
   Divider,
-  Progress,
   Select,
   Input,
 } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
+import BASE_URL from "../../../config.js";
 
 // 타입 정의
 interface ItemImage {
@@ -47,6 +47,7 @@ interface Item {
 }
 
 export default function ItemDetailPage() {
+  const navigate = useNavigate();
   const { itemId } = useParams(); // <- 주소에서 itemId 추출
   const [item, setItem] = useState<Item | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -60,15 +61,11 @@ export default function ItemDetailPage() {
       setError: (error: string | null) => void
     ) => {
       try {
-        // const token = localStorage.getItem("access");
-
-        const response = await fetch(`http://192.168.0.6:8080/item/${itemId}`, {
+        const response = await fetch(`${BASE_URL}/item/${itemId}`, {
           method: "GET",
           headers: {
             Accept: "*/*",
-            // access: token || "",
           },
-          // credentials: "include",
         });
 
         if (!response.ok) {

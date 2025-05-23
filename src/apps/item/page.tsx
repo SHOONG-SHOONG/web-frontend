@@ -16,6 +16,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { IconArrowUp } from "@tabler/icons-react";
+import BASE_URL from "../../config.js";
 
 // filter 처리 하기
 const categories = [
@@ -77,7 +78,7 @@ export default function ItemPage() {
       const size = 10;
       const sort = "itemId,desc";
 
-      const url = `http://192.168.0.6:8080/item/search?keyword=${encodeURIComponent(
+      const url = `${BASE_URL}/item/search?keyword=${encodeURIComponent(
         keyword
       )}&page=${page}&size=${size}&sort=${sort}`;
 

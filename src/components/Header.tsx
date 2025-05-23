@@ -74,7 +74,7 @@ export default function HeaderComponent() {
           <UnstyledButton component={Link} to="/item/search">
             <IconSearch size={20} />
           </UnstyledButton>
-          <UnstyledButton component={Link} to="/mypage">
+          <UnstyledButton component={Link} to="/login">
             <IconUser size={20} />
           </UnstyledButton>
           <UnstyledButton component={Link} to="/logout">

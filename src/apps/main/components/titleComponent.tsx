@@ -20,7 +20,7 @@ function TitleComponent({
       <Flex
         align="center"
         gap={6}
-        style={{ fontSize: "32px", fontWeight: 700 }}
+        style={{ fontSize: "32px", fontWeight: 600 }}
       >
         {label}
         {onClick && (

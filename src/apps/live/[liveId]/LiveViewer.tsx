@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Hls from 'hls.js';
+import React, { useEffect, useRef, useState } from "react";
+import Hls from "hls.js";
 import {
   Badge,
   Text,
@@ -8,16 +8,16 @@ import {
   ActionIcon,
   Paper,
   Flex,
-  rem
-} from '@mantine/core';
+  rem,
+} from "@mantine/core";
 import {
   IconPlayerPlay,
   IconPlayerPause,
   IconVolume,
   IconVolumeOff,
   IconMaximize,
-  IconSettings
-} from '@tabler/icons-react';
+  IconSettings,
+} from "@tabler/icons-react";
 
 interface LiveViewerProps {
   streamKey: string;
@@ -31,8 +31,8 @@ function LiveViewer({
   streamKey,
   viewers = 0,
   onBack,
-  title = '라이브 방송',
-  streamerName = '스트리머'
+  title = "라이브 방송",
+  streamerName = "스트리머",
 }: LiveViewerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [error, setError] = useState(false);
@@ -45,7 +45,7 @@ function LiveViewer({
     const video = videoRef.current;
     if (!video) return;
 
-    const streamUrl = `http://192.168.0.6:8088/hls/${streamKey}/index.m3u8`;
+    const streamUrl = `${process.env.REACT_APP_RTMP_SERVER}/hls/${streamKey}/index.m3u8`;
 
     let hls: Hls | null = null;
 
@@ -53,27 +53,27 @@ function LiveViewer({
       hls = new Hls({
         enableWorker: false,
         lowLatencyMode: true,
-        backBufferLength: 90
+        backBufferLength: 90,
       });
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         setIsLoading(false);
-        video.play().catch((e) => console.error('재생 자동 시작 실패:', e));
+        video.play().catch((e) => console.error("재생 자동 시작 실패:", e));
       });
 
       hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error('HLS 오류:', data);
+        console.error("HLS 오류:", data);
         if (data.fatal) {
           setError(true);
           setIsLoading(false);
         }
       });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = streamUrl;
-      video.addEventListener('loadstart', () => setIsLoading(false));
-      video.addEventListener('error', () => {
+      video.addEventListener("loadstart", () => setIsLoading(false));
+      video.addEventListener("error", () => {
         setError(true);
         setIsLoading(false);
       });
@@ -84,8 +84,8 @@ function LiveViewer({
 
     return () => {
       if (hls) hls.destroy();
-      video.removeEventListener('error', () => {});
-      video.removeEventListener('loadstart', () => {});
+      video.removeEventListener("error", () => {});
+      video.removeEventListener("loadstart", () => {});
     };
   }, [streamKey]);
 
@@ -135,10 +135,10 @@ function LiveViewer({
         shadow="md"
         radius="lg"
         style={{
-          position: 'relative',
-          backgroundColor: '#000',
-          overflow: 'hidden',
-          aspectRatio: '16/9'
+          position: "relative",
+          backgroundColor: "#000",
+          overflow: "hidden",
+          aspectRatio: "16/9",
         }}
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={() => setShowControls(false)}
@@ -169,25 +169,25 @@ function LiveViewer({
               muted={false}
               playsInline
               style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                display: 'block'
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
               }}
             />
 
             {isLoading && (
               <Box
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: 0,
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(0,0,0,0.8)'
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(0,0,0,0.8)",
                 }}
               >
                 <Text c="white" size="lg">
@@ -198,11 +198,11 @@ function LiveViewer({
 
             <Box
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: rem(16),
                 left: rem(16),
                 right: rem(16),
-                zIndex: 10
+                zIndex: 10,
               }}
             >
               <Group justify="space-between">
@@ -213,8 +213,8 @@ function LiveViewer({
                   style={{
                     fontSize: rem(12),
                     fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
                   }}
                 >
                   🔴 LIVE
@@ -224,15 +224,15 @@ function LiveViewer({
 
             <Box
               style={{
-                position: 'absolute',
+                position: "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
-                background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+                background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
                 padding: rem(16),
                 opacity: showControls ? 1 : 0,
-                transition: 'opacity 0.3s ease',
-                zIndex: 10
+                transition: "opacity 0.3s ease",
+                zIndex: 10,
               }}
             >
               <Group justify="space-between">
@@ -269,11 +269,13 @@ function LiveViewer({
                     max={1}
                     step={0.01}
                     value={volume}
-                    onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                    onChange={(e) =>
+                      handleVolumeChange(parseFloat(e.target.value))
+                    }
                     style={{
                       width: rem(100),
-                      accentColor: 'white',
-                      cursor: 'pointer'
+                      accentColor: "white",
+                      cursor: "pointer",
                     }}
                   />
                 </Group>

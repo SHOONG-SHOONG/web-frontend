@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
 
-// 페이지들들
+// 페이지들
 import MainPage from "./apps/main/page.tsx";
 import LoginPage from "./apps/login/LoginPage.tsx";
 import LogoutPage from "./apps/login/LogoutPage.tsx";
@@ -18,7 +18,7 @@ import OrderPage from "./apps/order/page.tsx";
 import CartPage from "./apps/cart/page.tsx";
 import LivePage from "./apps/live/[liveId]/page.tsx";
 import BrandPage from "./apps/brand/page.tsx";
-import ProductPage from "./apps/search/Search.js";
+import SearchPage from "./apps/search/Search.tsx";
 
 // 테스트용 페이지지
 import Test from "./apps/login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
@@ -42,8 +42,8 @@ function App() {
           <Route path="/live/:liveId" element={<LivePage />} />
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/brand/:brandId" element={<BrandPage />} />
-          <Route path="/item/search" element={<ProductPage />} />
           <Route path="/live" element={<ListLivePage />} />
+          <Route path="/item/search" element={<SearchPage />} />
 
           {/* auth */}
           <Route path="/login" element={<LoginPage />} />
