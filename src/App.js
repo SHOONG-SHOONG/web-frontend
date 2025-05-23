@@ -23,6 +23,9 @@ import ProductPage from "./apps/search/Search.js";
 // 테스트용 페이지지
 import Test from "./apps/login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
 import LiveListPage from "./apps/admin/manageLive/page.tsx";
+import LiveRegisterPage from "./apps/admin/registerLive/page.tsx";
+import AdminUserPage from "./apps/admin/manageUser/page.tsx";
+import RegisterBrandPage from "./apps/admin/registerBrand/page.tsx";
 
 function App() {
   return (
@@ -36,7 +39,7 @@ function App() {
           <Route path="/test" element={<Test />} />
           <Route path="/live/:liveId" element={<LivePage />} />
           <Route path="/brand" element={<BrandPage />} />
-          <Route path="/brand/{barndId}" element={<BrandPage />} />
+          <Route path="/brand/:brandId" element={<BrandPage />} />
           <Route path="/item/search" element={<ProductPage />} />
 
           {/* auth */}
@@ -54,6 +57,9 @@ function App() {
           <Route path="/admin" element={<AdminItemPage />} />
           <Route path="/admin/item/create" element={<CreateItemPage />} />
           <Route path="/admin/live" element={<LiveListPage />} />
+          <Route path="/admin/regist-live/" element={<LiveRegisterPage />} />
+          <Route path="/admin/user" element={<AdminUserPage />} />
+          <Route path="/admin/brand" element={<RegisterBrandPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
