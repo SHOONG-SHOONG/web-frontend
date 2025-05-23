@@ -16,14 +16,9 @@ import {
   IconVolume,
   IconVolumeOff,
   IconMaximize,
-<<<<<<< Updated upstream
   IconSettings,
 } from "@tabler/icons-react";
-=======
-  IconSettings
-} from '@tabler/icons-react';
 import STREAM_URL from "../../../stream_config";
->>>>>>> Stashed changes
 
 interface LiveViewerProps {
   streamKey: string;
@@ -51,11 +46,7 @@ function LiveViewer({
     const video = videoRef.current;
     if (!video) return;
 
-<<<<<<< Updated upstream
-    const streamUrl = `${process.env.REACT_APP_RTMP_SERVER}/hls/${streamKey}/index.m3u8`;
-=======
     const streamUrl = `${STREAM_URL}/hls/${streamKey}/index.m3u8`;
->>>>>>> Stashed changes
 
     let hls: Hls | null = null;
 
