@@ -56,59 +56,6 @@ pipeline {
                 }
             }
         }
-
-        
-        stage('Build Docker Image') {
-            steps {
-                sh "docker build -t ${IMAGE_NAME}:latest ."
-                sh "docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${TAG}"
-            }
-        }
-
-        stage('Login to Harbor') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: "${HARBOR_CREDENTIALS_ID}", usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
-                    sh "echo $HARBOR_PASS | docker login http://harbor.shoong.store -u $HARBOR_USER --password-stdin"
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                sh "docker push ${IMAGE_NAME}:latest"
-                sh "docker push ${IMAGE_NAME}:${TAG}"
-            }
-        }
-
-        stage('Update Manifest Repo') {
-          steps {
-            withCredentials([usernamePassword(credentialsId: 'webhook', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
-              sh '''
-                echo "🔁 Manifest 레포 업데이트 시작"
-        
-                rm -rf k8s-manifests
-                git clone https://${GIT_USER}:${GIT_TOKEN}@github.com/SHOONG-SHOONG/k8s-manifests.git
-        
-                cd k8s-manifests/apps/web-frontend
-        
-                sed -i "s|image: harbor.shoong.store/shoong-frontend/develop:[^[:space:]]*|image: ${IMAGE_NAME}:${TAG}|" deployment.yaml
-        
-                git config user.name "jenkins-bot"
-                git config user.email "jenkins@shoong.store"
-        
-                if ! git diff --quiet; then
-                  git add deployment.yaml
-                  git commit -m "☑️ web-frontend: Update image tag to ${TAG}"
-                  git push origin develop
-                else
-                  echo "✳︎ 이미지 태그 변경 없음, 커밋 스킵"
-                fi
-              '''
-            }
-          }
-        }
-
-
     }
 
     post {
