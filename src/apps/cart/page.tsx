@@ -3,23 +3,20 @@ import {
   Container,
   Flex,
   Grid,
-  Group,
-  Image,
   Stack,
   Text,
   Title,
   Button,
-  Divider,
   Checkbox,
-  Anchor,
+  Input,
 } from "@mantine/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 import BASE_URL from "../../config.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-type CartItem = {
+export type CartItem = {
   cartId: number;
   itemId: number;
   cartQuantity: number;
@@ -34,16 +31,22 @@ type CartItem = {
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const isAllSelected =
-    selectedIds.length === cartItems.length && cartItems.length > 0;
-
+  const hasFetched = useRef(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    const token = localStorage.getItem("access");
+    if(!token) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+    
     const fetchCartItems = async () => {
       try {
-        const token = localStorage.getItem("access");
-
         const response = await fetch(`${BASE_URL}/cart/get`, {
           method: "GET",
           headers: {
@@ -51,6 +54,13 @@ export default function CartPage() {
           },
           credentials: "include",
         });
+
+        if (response.status === 401) {
+          alert("로그인이 필요한 서비스입니다.");
+          // localStorage.removeItem("access"); // 필요 시 제거
+          navigate("/login");
+          return;
+        }
 
         if (!response.ok) {
           throw new Error(`서버 오류: ${response.status}`);
@@ -67,7 +77,9 @@ export default function CartPage() {
     };
 
     fetchCartItems();
-  }, []);
+  }, [navigate]);  
+
+  const isAllSelected = selectedIds.length === cartItems.length && cartItems.length > 0;
 
   // 전체 선택 핸들러
   const toggleAll = () => {
@@ -105,6 +117,19 @@ export default function CartPage() {
     0
   );
 
+  const handleOrder = () => {
+    if (selectedIds.length === 0) {
+      alert("주문할 상품을 선택해주세요.");
+      return;
+    }
+    
+    navigate("/order", {
+      state: {
+        cartItemsIds: selectedIds,
+      },
+    });
+  };
+
   return (
     <>
       {/* Header */}
@@ -127,46 +152,82 @@ export default function CartPage() {
             }}
           >
             <Grid.Col span={1}>
-              <Checkbox checked={isAllSelected} onChange={toggleAll} ml={12} />
+              <Flex  justify="center" mr={10}>
+                <Checkbox 
+                  checked={isAllSelected}
+                  onChange={toggleAll} 
+                  ml={12}
+                  color="#364fc6"
+                />
+              </Flex>
             </Grid.Col>
-            <Grid.Col span={4} ml={30}>
-              상품정보
+            <Grid.Col span={5}>
+              <Flex align="center" justify="center">
+                상품정보
+              </Flex>  
             </Grid.Col>
-            <Grid.Col span={2}>수량</Grid.Col>
-            <Grid.Col span={2}>상품금액</Grid.Col>
-            <Grid.Col span={1} ml={30}>
-              배송
+            <Grid.Col span={2} ta="center">
+              <Flex align="center" justify="center">
+                수량
+              </Flex>  
+            </Grid.Col>
+            <Grid.Col span={2.5} ta="center">
+              <Flex align="center" justify="center">
+                상품금액
+              </Flex>  
+            </Grid.Col>
+            <Grid.Col span={1} ta="center">
+              <Flex align="center" justify="center">
+                배송
+              </Flex>  
             </Grid.Col>
           </Grid>
 
           {/* Cart Items */}
           {cartItems.map((item) => (
-            <Grid
-              key={item.cartId}
-              align="center"
-              py="sm"
-              style={{ borderBottom: "1px solid #ddd", fontSize: 14 }}
-            >
-              <Grid.Col span={1}>
+          <Grid
+            key={item.cartId}
+            align="center"
+            py="sm"
+            style={{ borderBottom: "1px solid #ddd", fontSize: 14 }}
+          >
+            <Grid.Col span={1}>
+              <Flex align="center" justify="center">
                 <Checkbox
+                  color="#364fc6"
                   checked={selectedIds.includes(item.cartId)}
                   onChange={() => toggleItem(item.cartId)}
                 />
-              </Grid.Col>
-              <Grid.Col span={5}>
-                <Flex align="center" gap="sm">
-                  <Image
+              </Flex>
+            </Grid.Col>
+
+            <Grid.Col span={5}>
+              <Flex align="center" gap="sm">
+                <Link to={`/item/${item.itemId}`} style={{ textDecoration: "none" }}>
+
+                  <img
                     src={item.imageUrl}
                     alt={item.itemName}
-                    width={60}
-                    height={60}
-                    radius="sm"
+                    style={{ 
+                      width: 200,
+                      height: 200,
+                      objectFit: "cover",
+                      display: "block",
+                      borderRadius: 6,
+                    }}
                   />
-                  <Text fw={500}>{item.itemName}</Text>
-                </Flex>
-              </Grid.Col>
-              <Grid.Col span={2}>
-                <Flex align="center" gap="xs">
+                </Link>
+                <Link to={`/item/${item.itemId}`} style={{ textDecoration: "none" }}>
+                  <Text fw={500} c="black" style={{ cursor: "pointer" }}>
+                    {item.itemName}
+                  </Text>
+                </Link>
+              </Flex>
+            </Grid.Col>
+
+            <Grid.Col span={2}>
+              <Flex direction="column" align="center" gap="xs">
+                <Flex align="center" gap="sm">
                   <Button
                     size="xs"
                     variant="default"
@@ -174,7 +235,27 @@ export default function CartPage() {
                   >
                     -
                   </Button>
-                  <Text>{item.cartQuantity}</Text>
+                  <Input
+                    value={item.cartQuantity}
+                    type="number"
+                    size="xs"
+                    w={35}
+                    styles={{
+                      input:{
+                        textAlign: "center",
+                      }
+                    }}
+                    onChange={(e) => {
+                      const value = Math.max(1, parseInt(e.target.value));
+                      setCartItems((prev) =>
+                        prev.map((el) =>
+                          el.cartId === item.cartId
+                            ? { ...el, cartQuantity: value }
+                            : el
+                        )
+                      );
+                    }}
+                  />
                   <Button
                     size="xs"
                     variant="default"
@@ -183,26 +264,65 @@ export default function CartPage() {
                     +
                   </Button>
                 </Flex>
-              </Grid.Col>
-              <Grid.Col span={2}>
-                <Stack gap={0}>
-                  <Text fw={700}>
-                    {(
-                      item.price *
-                      (1 - item.discountRate) *
-                      item.cartQuantity
-                    ).toLocaleString()}
-                    원
-                  </Text>
-                  <Text size="xs" td="line-through" c="gray">
-                    {(item.price * item.cartQuantity).toLocaleString()}원
-                  </Text>
-                </Stack>
-              </Grid.Col>
-              <Grid.Col span={2}>
-                <Text fw={500}>무료배송</Text>
-              </Grid.Col>
-            </Grid>
+
+                <Button
+                  size="xs"
+                  color="#364fc6"
+                  w={80}
+                  px={15}
+                  mt="xs"
+                  onClick={async () => {
+                    const token = localStorage.getItem("access");
+
+                    try {
+                      const res = await fetch(
+                        `${BASE_URL}/cart/change/${item.cartId}?quantity=${item.cartQuantity}`,
+                        {
+                          method: "PATCH",
+                          headers: {
+                            "Content-Type": "application/json",
+                            access: token || "",
+                          },
+                          credentials: "include",
+                        }
+                      );
+
+                      if (res.ok) {
+                        alert("수량이 업데이트되었습니다.");
+                      } else {
+                        alert("수정 실패");
+                      }
+                    } catch (error) {
+                      console.error("수정 요청 실패:", error);
+                      alert("서버와의 통신 중 오류가 발생했습니다.");
+                    }
+                  }}
+                >
+                  수량 변경
+                </Button>
+              </Flex>
+            </Grid.Col>
+
+
+            <Grid.Col span={2} ta="center">
+              <Stack gap={0}>
+                <Text fw={700}>
+                  {(
+                    item.price *
+                    (1 - item.discountRate) *
+                    item.cartQuantity
+                  ).toLocaleString()}
+                  원
+                </Text>
+                <Text size="xs" td="line-through" c="gray">
+                  {(item.price * item.cartQuantity).toLocaleString()}원
+                </Text>
+              </Stack>
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <Text fw={500}>무료배송</Text>
+            </Grid.Col>
+          </Grid>
           ))}
         </Box>
 
@@ -223,7 +343,7 @@ export default function CartPage() {
                 {totalPrice.toLocaleString()}원
               </Text>
               <Text size="xs" c="gray">
-                총 {cartItems.length}건
+                총 {selectedIds.length}건
               </Text>
             </Box>
 
