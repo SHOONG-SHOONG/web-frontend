@@ -9,17 +9,13 @@ import {
   Badge,
   Card,
   Box,
-  Tabs,
-  Stack,
-  Group,
-  Anchor,
   Divider,
 } from "@mantine/core";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
 import { useNavigate } from "react-router-dom";
 import TitleComponent from "../../main/components/titleComponent.tsx";
-import BASE_URL from "../../../config.js";
+import STREAM_URL from "../../../config.js";
 
 interface ItemImage {
   id: number;
@@ -54,35 +50,57 @@ interface LiveItem {
   status: string;
 }
 
-const menus = [
-  { label: "홈", value: "home" },
-  { label: "카테고리", value: "category" },
-  { label: "라이브", value: "live" },
-];
-
 export default function ListLivePage() {
   const navigate = useNavigate();
-  const [liveItems, setLiveItems] = useState<LiveItem[]>([]);
-  const [liveItemDetails, setLiveItemDetails] = useState<Record<number, Item>>(
-    {}
-  );
+  const [liveItem, setLiveItem] = useState<LiveItem | null>(null);
+  const [latestLiveItems, setLatestLiveItems] = useState<LiveItem[]>([]);
 
   useEffect(() => {
-    const fetchLiveItems = async () => {
+    const fetchLatestLiveItems = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/live/main`, {
-          headers: { Accept: "*/*" },
+        const token = localStorage.getItem("access");
+
+        const response = await fetch(`${STREAM_URL}/live/list`, {
+          method: "GET",
+          headers: {
+            access: token || "",
+          },
+          credentials: "include",
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const liveData: LiveItem[] = await response.json();
-        setLiveItems(liveData);
+
+        const data: LiveItem[] = await response.json();
+        setLatestLiveItems(data);
+      } catch (err) {
+        console.error("최신 다시보기 정보 불러오기 실패:", err);
+      }
+    };
+
+    const fetchLiveItem = async () => {
+      try {
+        const token = localStorage.getItem("access");
+
+        const response = await fetch(`${STREAM_URL}/live/main`, {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            access: token || "",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data: LiveItem = await response.json();
+        setLiveItem(data);
       } catch (err) {
         console.error("라이브 방송 정보 불러오기 실패:", err);
       }
     };
 
-    fetchLiveItems();
+    fetchLiveItem();
+    fetchLatestLiveItems();
   }, []);
 
   return (
@@ -98,27 +116,22 @@ export default function ListLivePage() {
             label="LIVE 방송"
             subLabel="지금 방송 중인 상품을 만나보세요."
           />
-          {/* <Title order={3} mt="xl" mb="sm">
-                        LIVE 방송
-                        </Title> */}
+
           <Grid gutter="lg" mb={70}>
-            {liveItems.map((live) => (
-              <Grid.Col span={3} key={live.id}>
+            {liveItem && (
+              <Grid.Col span={3}>
                 <Box
-                  onClick={() => navigate(`/live/${live.id}`)}
+                  onClick={() => navigate(`/live/${liveItem.id}`)}
                   style={{ cursor: "pointer", position: "relative" }}
                 >
-                  {/* 썸네일 이미지 */}
                   <Image
-                    src={live.imageUrl || "https://placehold.co/400x500"}
-                    alt={live.title}
+                    src={liveItem.imageUrl || "https://placehold.co/400x500"}
+                    alt={liveItem.title}
                     radius="md"
                     h={400}
                     fit="cover"
                     style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
                   />
-
-                  {/* 시청 수 배지 */}
                   <Badge
                     color="red"
                     variant="filled"
@@ -132,16 +145,14 @@ export default function ListLivePage() {
                   >
                     live
                   </Badge>
-
-                  {/* 방송 제목 */}
                   <Text mt="xs" size="sm" fw={600} lineClamp={2}>
-                    {live.title}
+                    {liveItem.title}
                   </Text>
-
-                  {/* 상품 요약 정보 (썸네일, 상품명, 가격 등) */}
                   <Flex mt="xs" align="center" gap="xs">
                     <Image
-                      src={live.itemImageUrl || "https://placehold.co/60x60"}
+                      src={
+                        liveItem.itemImageUrl || "https://placehold.co/60x60"
+                      }
                       alt="상품 썸네일"
                       w={50}
                       h={50}
@@ -149,83 +160,114 @@ export default function ListLivePage() {
                       radius="sm"
                     />
                     <Box>
-                      <Text size="xs">{live.itemName}</Text>
+                      <Text size="xs">{liveItem.itemName}</Text>
                       <Flex align="baseline" gap={6}>
-                        {live.discountRate > 0 && (
+                        {liveItem.discountRate > 0 && (
                           <Text size="sm" fw={700} color="red">
-                            {Math.round(live.discountRate * 100)}%
+                            {Math.round(liveItem.discountRate * 100)}%
                           </Text>
                         )}
-                        <Text size="sm" fw={700}>
-                          {(
-                            live.price *
-                            (1 - live.discountRate)
-                          ).toLocaleString()}
-                          원
-                        </Text>
+                        {liveItem.price !== null && (
+                          <Text size="sm" fw={700}>
+                            {(
+                              liveItem.price *
+                              (1 - liveItem.discountRate)
+                            ).toLocaleString()}
+                            원
+                          </Text>
+                        )}
                       </Flex>
                     </Box>
                   </Flex>
                 </Box>
               </Grid.Col>
-            ))}
+            )}
           </Grid>
-          <Divider my="sm" />
-          <Title order={3}>다시보기</Title>
-          <Text size="sm" c="dimmed">
-            <Grid gutter="md" pt={10} mb={70}>
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Grid.Col span={3} key={i}>
-                  <Card shadow="sm" padding="sm" radius="md" withBorder>
-                    <Badge color="blue" variant="filled" size="sm">
-                      LIVE
-                    </Badge>
 
+          <Divider my="sm" />
+
+          <TitleComponent label="다시보기" subLabel="지난 방송을 확인하세요." />
+
+          <Grid gutter="lg" mb={70}>
+            {latestLiveItems.length > 0 ? (
+              latestLiveItems.map((live) => (
+                <Grid.Col span={3} key={live.id}>
+                  <Box
+                    onClick={() => navigate(`/live/${live.id}`)}
+                    style={{ cursor: "pointer", position: "relative" }}
+                  >
+                    {/* 썸네일 이미지 */}
                     <Image
-                      src={`https://placehold.co/240x320?text=Live+${i + 1}`}
-                      alt="방송 이미지"
-                      mt="xs"
-                      radius="sm"
+                      src={live.imageUrl || "https://placehold.co/400x500"}
+                      alt={live.title}
+                      radius="md"
+                      h={400}
+                      fit="cover"
+                      style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
                     />
 
-                    <Text mt="xs" fw={600} ta="center" size="sm">
-                      라이브 방송 제목
+                    {/* 배지 */}
+                    <Badge
+                      color="gray"
+                      variant="filled"
+                      size="sm"
+                      style={{
+                        position: "absolute",
+                        top: 10,
+                        left: 10,
+                        zIndex: 1,
+                      }}
+                    >
+                      다시보기
+                    </Badge>
+
+                    {/* 방송 제목 */}
+                    <Text mt="xs" size="sm" fw={600} lineClamp={2}>
+                      {live.title}
                     </Text>
 
-                    <Flex
-                      mt="sm"
-                      gap="xs"
-                      justify="center"
-                      align="center"
-                      direction="row"
-                      wrap="wrap"
-                    >
+                    {/* 상품 요약 정보 */}
+                    <Flex mt="xs" align="center" gap="xs">
                       <Image
-                        src={`https://placehold.co/60x60?text=pr+${i + 1}`}
-                        alt="상품 이미지"
+                        src={live.itemImageUrl || "https://placehold.co/60x60"}
+                        alt="상품 썸네일"
+                        w={50}
+                        h={50}
+                        fit="cover"
                         radius="sm"
-                        w={45}
                       />
-                      <Text size="xs" fw={500}>
-                        상품명
-                      </Text>
-                      <Text size="xs" c="red">
-                        50%{" "}
-                        <Text span fw={700} c="black">
-                          19,800원
-                        </Text>
-                      </Text>
+                      <Box>
+                        <Text size="xs">{live.itemName}</Text>
+                        <Flex align="baseline" gap={6}>
+                          {live.discountRate > 0 && (
+                            <Text size="sm" fw={700} color="red">
+                              {Math.round(live.discountRate * 100)}%
+                            </Text>
+                          )}
+                          <Text size="sm" fw={700}>
+                            {(
+                              live.price *
+                              (1 - live.discountRate)
+                            ).toLocaleString()}
+                            원
+                          </Text>
+                        </Flex>
+                      </Box>
                     </Flex>
-                  </Card>
+                  </Box>
                 </Grid.Col>
-              ))}
-            </Grid>
-          </Text>
+              ))
+            ) : (
+              <Text size="sm" c="dimmed">
+                최근 방송이 없습니다.
+              </Text>
+            )}
+          </Grid>
         </Container>
-
-        {/* Footer */}
-        <FooterComponent />
       </Container>
+
+      {/* Footer */}
+      <FooterComponent />
     </>
   );
 }

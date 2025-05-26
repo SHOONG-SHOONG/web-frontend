@@ -1,32 +1,4 @@
-/* @import url("//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css"); */
-
-/* @font-face {
-  font-family: "Pretendard-Regular";
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
-    format("woff");
-  font-weight: 400;
-  font-style: normal;
-} */
-
-/* body {
-  font-family: "Noto Sans KR", sans-serif;
-} */
-
-/* @font-face {
-  font-family: "SpoqaHanSansNeo-Regular";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-} */
-
-/* @font-face {
-  font-family: "ChosunSg";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunSg.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-} */
+@import url("https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css");
 
 @font-face {
   font-family: "goorm-sans-bold";
@@ -34,4 +6,37 @@
     format("woff2");
   font-weight: 700;
   font-style: normal;
+}
+
+.tossface {
+  font-family: Tossface;
+}
+
+.tossface {
+  font-family: "Tossface", sans-serif;
+  font-size: 36px;
+  display: inline-block;
+  transition: transform 0.2s ease, text-shadow 0.2s ease;
+}
+
+.tossface:hover {
+  animation: tossface-wiggle 1s ease-in-out;
+}
+
+@keyframes tossface-wiggle {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.15) rotate(-5deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(5deg);
+  }
+  75% {
+    transform: scale(1.15) rotate(-5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
