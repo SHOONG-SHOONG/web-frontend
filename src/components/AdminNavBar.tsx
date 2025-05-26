@@ -22,10 +22,12 @@ import {
 } from "@mantine/core";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
+import { useLogin } from "../contexts/AuthContext.tsx";
 
 export default function AdminNavBarPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isLoggedIn, loginUser } = useLogin();
 
   const navItems = [
     { label: "상품 관리", icon: IconBell, path: "/admin" },
@@ -100,12 +102,21 @@ export default function AdminNavBarPage() {
                   <Group gap="sm">
                     <IconUserCircle size="1.5rem" />
                     <div>
-                      <Text size="sm" fw={500}>
-                        M
-                      </Text>
-                      <Text size="xs" c="dimmed">
-                        Change account
-                      </Text>
+
+                      {isLoggedIn ? (
+                        <>
+                          <Text size="md" fw={500} mb={5}>
+                            {loginUser}님
+                          </Text>
+                          <UnstyledButton component={Link} to="/logout">
+                            <IconLogout size={20} />
+                          </UnstyledButton>
+                        </>
+                      ) : (
+                        <UnstyledButton component={Link} to="/login">
+                          <IconUser size={20} />
+                        </UnstyledButton>
+                      )}
                     </div>
                   </Group>
                 </UnstyledButton>
