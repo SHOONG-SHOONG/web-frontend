@@ -22,6 +22,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
 import BASE_URL from "../../../config.js";
+import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 
 // 타입 정의
 interface ItemImage {
@@ -48,11 +49,12 @@ interface Item {
 
 export default function ItemDetailPage() {
   const navigate = useNavigate();
-  const { itemId } = useParams(); // <- 주소에서 itemId 추출
+  const { itemId } = useParams();
   const [item, setItem] = useState<Item | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   useEffect(() => {
     const fetchItemDetail = async (
@@ -88,8 +90,42 @@ export default function ItemDetailPage() {
     }
   }, [itemId]);
 
+  const toggleWishlist = async (credentials: any) => {
+    setIsWishlisted((prev) => !prev);
+    // const token = localStorage.getItem("access");
+
+    // if (!token) {
+    //   alert("로그인이 필요합니다.");
+    //   return;
+    // }
+
+    // try {
+    //   const response = await fetch(
+    //     `${BASE_URL}/wishlist/toggle/${item?.itemId}`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         access: token || "",
+    //       },
+    //       credentials: "include",
+    //     }
+    //   );
+
+    //   if (response.ok) {
+    //     setIsWishlisted((prev) => !prev);
+    //   } else if (response.status === 401) {
+    //     alert("로그인이 만료되었거나 잘못되었습니다. 다시 로그인해주세요.");
+    //   } else {
+    //     alert("찜 처리 중 오류가 발생했습니다.");
+    //   }
+    // } catch (error) {
+    //   console.error("찜 요청 실패:", error);
+    // }
+  };
+
   const handleAddToCart = () => {
     alert("장바구니에 담았습니다!");
+    navigate("/cart");
   };
 
   const handleBuy = () => {
@@ -141,9 +177,18 @@ export default function ItemDetailPage() {
             </Text>
 
             {/* 상품명 */}
-            <Text size="xl" fw={500} mb="xs">
-              {item.itemName}
-            </Text>
+            <Flex justify="space-between" align="center" mb="xs">
+              <Text size="xl" fw={500}>
+                {item.itemName}
+              </Text>
+              <Box onClick={toggleWishlist} style={{ cursor: "pointer" }}>
+                {isWishlisted ? (
+                  <IconHeartFilled size={24} color="#ff4d6d" />
+                ) : (
+                  <IconHeart size={24} color="#aaa" />
+                )}
+              </Box>
+            </Flex>
 
             {/* 정가 */}
             <Text size="md" fw={600} color="dimmed" td="line-through" mb="xs">

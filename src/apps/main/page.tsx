@@ -17,6 +17,8 @@ import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 import TitleComponent from "./components/titleComponent.tsx";
 import BASE_URL from "../../config.js";
+import { useLogin } from "../../contexts/AuthContext.tsx";
+import CountdownBanner from "./components/CountdownBanner.tsx";
 
 interface ItemImage {
   id: number;
@@ -58,53 +60,76 @@ export default function MainPage() {
   const [liveItemDetails, setLiveItemDetails] = useState<Record<number, Item>>(
     {}
   );
+  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>();
+  const [loginUser, setLoginUser] = useState<string | null>("");
+
+  const fetchLiveItems = async () => {
+    try {
+      const token = localStorage.getItem("access");
+
+      const response = await fetch(`${BASE_URL}/live/main`, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          access: token || "",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const liveData: LiveItem[] = await response.json();
+      setLiveItems(liveData);
+    } catch (err) {
+      console.error("라이브 방송 정보 불러오기 실패:", err);
+    }
+  };
+
+  const fetchBestItems = async () => {
+    try {
+      const params = new URLSearchParams({
+        sortBy: "wishlist", // condition.sortBy
+        page: "0",
+        size: "6",
+        sort: "wishlistCount,DESC",
+      });
+
+      const response = await fetch(
+        `${BASE_URL}/item/search?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`HTTP ${response.status} - ${errText}`);
+      }
+
+      const data = await response.json();
+      setBestItems(data.content || []);
+    } catch (err) {
+      console.error("Error fetching best items:", err);
+    }
+  };
+
+  const checkLogin = async () => {
+    const token = localStorage.getItem("access");
+    const name = localStorage.getItem("name");
+
+    if (token && name) {
+      setIsLoggedIn(true);
+      setLoginUser(name);
+    } else {
+      setIsLoggedIn(false);
+      setLoginUser(null);
+    }
+  };
 
   useEffect(() => {
-    const fetchLiveItems = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/live/main`, {
-          headers: { Accept: "*/*" },
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const liveData: LiveItem[] = await response.json();
-        setLiveItems(liveData);
-      } catch (err) {
-        console.error("라이브 방송 정보 불러오기 실패:", err);
-      }
-    };
-
-    const fetchBestItems = async () => {
-      try {
-        const params = new URLSearchParams({
-          sortBy: "wishlist", // condition.sortBy
-          page: "0",
-          size: "6",
-          sort: "wishlistCount,DESC",
-        });
-
-        const response = await fetch(
-          `${BASE_URL}/item/search?${params.toString()}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "*/*",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          const errText = await response.text();
-          throw new Error(`HTTP ${response.status} - ${errText}`);
-        }
-
-        const data = await response.json();
-        setBestItems(data.content || []);
-      } catch (err) {
-        console.error("Error fetching best items:", err);
-      }
-    };
-
+    checkLogin();
     fetchBestItems();
     fetchLiveItems();
   }, []);
@@ -128,15 +153,13 @@ export default function MainPage() {
         지금 가입하면 50% 할인 쿠폰 증정
       </Box>
 
+      {/* LIVE 방송 */}
       <Container size="lg" py="md">
-        {/* LIVE 방송 */}
         <TitleComponent
           label="SHOONG LIVE"
           subLabel="지금 방송 중인 상품을 만나보세요."
         />
-        {/* <Title order={3} mt="xl" mb="sm">
-          LIVE 방송
-        </Title> */}
+
         <Grid gutter="lg" mb={70}>
           {liveItems.map((live) => (
             <Grid.Col span={3} key={live.id}>
@@ -217,6 +240,7 @@ export default function MainPage() {
             &gt; 더보기
           </Anchor>
         </Flex>
+
         <Grid gutter="xl">
           {bestItems.map((item) => (
             <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
@@ -271,8 +295,11 @@ export default function MainPage() {
           ))}
         </Grid>
 
+        {/* 특가 배너 */}
+        <CountdownBanner />
+
         {/* 자주 묻는 질문 */}
-        <Title order={4} mt={150} mb="md">
+        <Title order={4} mt={80} mb="md">
           자주 묻는 질문
         </Title>
         <Accordion
@@ -286,24 +313,25 @@ export default function MainPage() {
               라이브 방송은 어떻게 참여하나요?
             </Accordion.Control>
             <Accordion.Panel>
-              가입 후 방송 게시판에서 정보를 확인하세요.
+              라이브 탭을 클릭하여 실시간 방송 중인 라이브 방송에 참여할 수
+              있습니다.
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q2">
             <Accordion.Control>상품 구매는 어떻게 하나요?</Accordion.Control>
             <Accordion.Panel>
-              개발자 방송을 시청하면 복잡할 수 있습니다.
+              상품 탭에 접속하여 구매를 진행할 수 있습니다.
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q3">
-            <Accordion.Control>반통 정책은 어떻게 되나요?</Accordion.Control>
+            <Accordion.Control>반품 정책은 어떻게 되나요?</Accordion.Control>
             <Accordion.Panel>
-              상품의 상태에 따라 다른 조차로 처리됩니다.
+              상품의 상태에 따라 다른 조치로 처리됩니다.
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q4">
             <Accordion.Control>배송은 얼마나 걸린가요?</Accordion.Control>
-            <Accordion.Panel>2~3일 정도 속에 배송됩니다.</Accordion.Panel>
+            <Accordion.Panel>2~3일 정도 후에 배송됩니다.</Accordion.Panel>
           </Accordion.Item>
         </Accordion>
       </Container>

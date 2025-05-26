@@ -7,19 +7,15 @@ import {
   Title,
   Avatar,
   TextInput,
-  Card,
   Flex,
   Badge,
   Paper,
   Box,
   Button,
-  Stack,
   Group,
-  Anchor,
   Divider,
   ActionIcon,
 } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
 import {
   IconBrandFacebook,
   IconBrandTwitter,

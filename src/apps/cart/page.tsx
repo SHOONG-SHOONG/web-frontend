@@ -67,6 +67,7 @@ export default function CartPage() {
         }
 
         const data = await response.json();
+        console.log(data);
         setCartItems(data);
         setSelectedIds(data.map((item: CartItem) => item.cartId));
       } catch (error) {
@@ -107,7 +108,9 @@ export default function CartPage() {
   };
 
   // 선택된 항목 기준 계산
-  const selectedItems = cartItems.filter((item) => selectedIds.includes(item.cartId));
+  const selectedItems = cartItems.filter((item) =>
+    selectedIds.includes(item.cartId)
+  );
   const totalPrice = selectedItems.reduce(
     (sum, item) =>
       sum + item.price * (1 - item.discountRate) * item.cartQuantity,
@@ -130,7 +133,7 @@ export default function CartPage() {
   return (
     <>
       {/* Header */}
-      <HeaderComponent/>
+      <HeaderComponent />
 
       {/* Content */}
       <Container size="lg" py="xl">
@@ -325,7 +328,12 @@ export default function CartPage() {
 
         {/* 가격 요약 */}
         <Box mt="xl" px="sm" py="lg" style={{ borderTop: "1px solid #ccc" }}>
-          <Flex justify="center" align="center" gap="lg" style={{ fontWeight: 600 }}>
+          <Flex
+            justify="center"
+            align="center"
+            gap="lg"
+            style={{ fontWeight: 600 }}
+          >
             {/* 총 주문 금액 */}
             <Box ta="center">
               <Text size="sm" c="gray">
@@ -371,7 +379,6 @@ export default function CartPage() {
           </Flex>
         </Box>
 
-
         <Stack mt="md" bg="#f9f9f9" p="md" m="xs">
           <Text size="xs" c="gray">
             • 장바구니 상품은 최대 30일까지 저장됩니다.
@@ -380,13 +387,15 @@ export default function CartPage() {
             • 가격, 할인 등 정보가 변경될 시점 주문이 불가할 수 있습니다.
           </Text>
           <Text size="xs" c="gray">
-            • 옵션 선택 상품은 선택 이후에 옵션이 변경될 수 있으니 재확인해주세요.
+            • 옵션 선택 상품은 선택 이후에 옵션이 변경될 수 있으니
+            재확인해주세요.
           </Text>
           <Text size="xs" c="gray">
             • 결제 시점에 따라 상품 품절 시 주문이 불가합니다.
           </Text>
           <Text size="xs" c="gray">
-            • 동일한 유형 상품이 포함될 수 있으며, 주문 완료 후 다른 유형의 상품은 추가되지 않습니다.
+            • 동일한 유형 상품이 포함될 수 있으며, 주문 완료 후 다른 유형의
+            상품은 추가되지 않습니다.
           </Text>
         </Stack>
 
@@ -411,7 +420,7 @@ export default function CartPage() {
         </Flex>
       </Container>
 
-      <FooterComponent/>
+      <FooterComponent />
     </>
   );
 }
