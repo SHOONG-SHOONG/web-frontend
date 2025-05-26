@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Grid,
@@ -19,7 +19,6 @@ import {
   Divider,
   ActionIcon,
 } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
 import {
   IconBrandFacebook,
   IconBrandTwitter,
@@ -29,24 +28,105 @@ import {
 import LiveViewer from "./LiveViewer.tsx";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
+import BASE_CHAT_URL from '../../../chat_config.js';
 
-const menus = [
-  { label: "홈", value: "home" },
-  { label: "카테고리", value: "category" },
-  { label: "라이브", value: "live" },
-];
 
 export default function LivePage() {
-  const [active, setActive] = useState("home");
+  const [chatMessages, setChatMessages] = useState<string[]>([]);
+  const [messageInput, setMessageInput] = useState("");
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null); // ✅ 채팅창 ref
+  const [viewerCount, setViewerCount] = useState<number>(0);
+
+  console.log(BASE_CHAT_URL);
+  // WebSocket 연결
+  useEffect(() => {
+    const ws = new WebSocket(`wss://${BASE_CHAT_URL}/chat/ws/chat`);
+
+    ws.onopen = () => {
+      console.log("WebSocket 연결됨");
+      // setChatMessages((prev) => [...prev, "[시스템] 채팅방에 연결되었습니다."]);
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const json = JSON.parse(event.data); // JSON 문자열 → 객체
+        const formatted = `${json.name} : ${json.content}`;
+        setChatMessages((prev) => [...prev, formatted]);
+      } catch (e) {
+        // JSON 파싱 실패 시 그냥 출력 (예: 시스템 메시지)
+        setChatMessages((prev) => [...prev, event.data]);
+      }
+    };
+
+    ws.onclose = () => {
+      // setChatMessages((prev) => [...prev, "[시스템] 채팅방 연결이 종료되었습니다."]);
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket 오류:", error);
+      // setChatMessages((prev) => [...prev, "[시스템] 오류가 발생했습니다."]);
+    };
+
+    setSocket(ws);
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  // 채팅 추가될 때마다 채팅창 스크롤 아래로 이동
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  useEffect(() => {
+  const fetchViewerCount = () => {
+    fetch(`https://${BASE_CHAT_URL}/chat/viewer-count`)
+      .then((res) => res.json())
+      .then((count) => setViewerCount(count))
+      .catch((err) => {
+        console.error("시청자 수 가져오기 실패:", err);
+      });
+  };
+
+  fetchViewerCount(); // 최초 한 번 호출
+
+  const interval = setInterval(fetchViewerCount, 5000); // 3초마다 갱신
+
+  return () => clearInterval(interval); // 컴포넌트 unmount 시 정리
+}, []);
+
+  // 메시지 전송
+  const sendMessage = () => {
+    const name = localStorage.getItem("name");
+    if (!messageInput.trim() || !name) return;
+
+    const payload = {
+      name: name,
+      content: messageInput,
+    };
+
+    fetch(`https://${BASE_CHAT_URL}/chat/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.text())
+      .then(() => setMessageInput(""))
+      .catch((err) => {
+        console.error("메시지 전송 오류:", err);
+        setChatMessages((prev) => [...prev, "[시스템] 메시지 전송 실패"]);
+      });
+  };
 
   return (
     <>
-      {/* Header */}
       <HeaderComponent />
 
-      {/* 본문 내용 */}
       <Container size="lg" pt={40}>
-        {/* 제목 & 상태 표시 */}
         <Group align="center" mb="md">
           <Avatar src="/your-logo-path.png" size="md" />
           <Title order={3} style={{ flexGrow: 1 }}>
@@ -56,7 +136,7 @@ export default function LivePage() {
             LIVE
           </Badge>
           <Text size="sm" c="dimmed">
-            3,000 시청
+            {viewerCount.toLocaleString()} 명 시청
           </Text>
         </Group>
 
@@ -64,8 +144,6 @@ export default function LivePage() {
           {/* 왼쪽: 영상 + 공유 */}
           <Grid.Col span={{ base: 12, md: 8 }}>
             <LiveViewer streamKey="shoong" />
-
-            {/* 공유 버튼 */}
             <Group mt="md">
               <ActionIcon size="lg" variant="default">
                 <IconBrandFacebook />
@@ -82,10 +160,9 @@ export default function LivePage() {
             </Group>
           </Grid.Col>
 
-          {/* 오른쪽: 채팅 & 상품 */}
+          {/* 오른쪽: 채팅창 + 상품 */}
           <Grid.Col span={{ base: 12, md: 4 }}>
             <Flex direction="column" gap="lg">
-              {/* 채팅창 */}
               <Paper
                 shadow="sm"
                 radius="md"
@@ -97,12 +174,11 @@ export default function LivePage() {
                   flexDirection: "column",
                 }}
               >
-                {/* 제목 (고정) */}
                 <Text size="sm">실시간 채팅</Text>
                 <Divider my="sm" />
 
-                {/* 채팅 메시지 (스크롤 영역) */}
                 <Box
+                  ref={chatContainerRef} // ✅ ref 등록
                   style={{
                     flex: 1,
                     overflowY: "auto",
@@ -110,25 +186,28 @@ export default function LivePage() {
                   }}
                 >
                   <Flex direction="column" gap={8}>
-                    <Text size="xs">나는SOLO: 두구두구두구</Text>
-                    {Array.from({ length: 12 }).map((_, i) => (
-                      <Text size="xs" key={i}>
-                        zumba999: 다 던져~
+                    {chatMessages.map((msg, idx) => (
+                      <Text size="xs" key={idx}>
+                        {msg}
                       </Text>
                     ))}
-                    <Text size="xs" fw={700} c="red">
-                      ⚠️ 인증이 없으면 주문 불가!
-                    </Text>
                   </Flex>
                 </Box>
 
-                {/* 입력창 (고정 하단) */}
                 <Group>
                   <TextInput
                     placeholder="메세지를 입력하세요"
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.currentTarget.value)}
                     style={{ flex: 1 }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
                   />
-                  <Button>전송</Button>
+                  <Button onClick={sendMessage}>전송</Button>
                 </Group>
               </Paper>
 
@@ -139,7 +218,6 @@ export default function LivePage() {
                   style={{ width: 60, height: 60 }}
                   radius="md"
                 />
-
                 <Box>
                   <Text mt="xs" fw={600} size="sm">
                     상품명
@@ -162,7 +240,6 @@ export default function LivePage() {
         </Grid>
       </Container>
 
-      {/* Footer */}
       <FooterComponent />
     </>
   );
