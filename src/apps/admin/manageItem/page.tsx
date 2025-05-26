@@ -169,7 +169,6 @@ export default function AdminItemPage() {
         breakpoint: "sm",
       }}
     >
-      {/* <NavbarComponent activeNav={undefined} setActiveNav={undefined} /> */}
       <AppShell.Navbar p="xs">
         <AppShell.Section grow mt="md">
           <Box px="md" mb="xl">

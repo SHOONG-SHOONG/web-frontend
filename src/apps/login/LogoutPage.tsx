@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLogin } from "../../contexts/AuthContext.tsx";
 import BASE_URL from "../../config.js";
 
-
-const Logout = () => {
+const LogoutPage = () => {
   const navigate = useNavigate();
   const { setIsLoggedIn, setLoginUser } = useLogin();
 
@@ -49,4 +48,4 @@ const Logout = () => {
   return null;
 };
 
-export default Logout;
+export default LogoutPage;

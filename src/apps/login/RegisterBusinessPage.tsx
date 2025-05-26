@@ -10,20 +10,20 @@ import {
   Divider,
   Container,
   Flex,
-  Group, // Group 컴포넌트 추가 (주소 검색 버튼과 입력 필드 정렬용)
+  Group,
 } from "@mantine/core";
 import {
   IconMail,
   IconLock,
   IconUser,
   IconPhone,
-  IconCalendar,
-  IconBuilding, // 사업자 관련 아이콘
+  IconBuilding,
   IconMapPin,
-  IconBuildingStore, // 사업자 아이콘 (이미 로그인 페이지에서 사용됨)
+  IconBuildingStore,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../config";
+import React from "react";
 
 // Daum Postcode API를 위한 전역 선언 (public/index.html에 스크립트를 추가하는 것이 일반적)
 declare global {
@@ -35,20 +35,18 @@ declare global {
 export default function RegisterBusinessPage() {
   const navigate = useNavigate();
 
-  // 사업자 회원가입에 필요한 상태들
-  const [businessEmail, setBusinessEmail] = useState(""); // 이메일
-  const [businessPassword, setBusinessPassword] = useState(""); // 비밀번호
-  const [confirmPassword, setConfirmPassword] = useState(""); // 비밀번호 확인
-  const [businessName, setBusinessName] = useState(""); // 사업자명 (회사 이름)
-  const [representativeName, setRepresentativeName] = useState(""); // 대표자 이름
-  const [businessPhoneNumber, setBusinessPhoneNumber] = useState(""); // 회사 전화번호
-  const [businessRegistrationNumber, setBusinessRegistrationNumber] = useState(""); // 사업자 등록 번호 (이미지에서 확인)
-  const [businessAddress, setBusinessAddress] = useState(""); // 사업장 주소
-  const [businessType, setBusinessType] = useState(""); // 업종 (필요 시 추가)
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [userName, setUserName] = useState("");
+  const [name, setName] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+  const [registrationNumber, setRegistrationNumber] = useState("");
+  const [userAddress, setUserAddress] = useState("");
 
   const fetchBusinessJoin = async (credentials: any) => {
     try {
-      const response = await fetch(`${BASE_URL}/business-join`, { // 사업자 회원가입용 엔드포인트 변경 (예시)
+      const response = await fetch(`${BASE_URL}/join`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -74,20 +72,19 @@ export default function RegisterBusinessPage() {
   const handleBusinessRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (businessPassword !== confirmPassword) {
+    if (userPassword !== confirmPassword) {
       alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
       return;
     }
 
     const credentials = {
-      businessEmail,
-      businessPassword,
-      businessName,
-      representativeName,
-      businessPhoneNumber,
-      businessRegistrationNumber,
-      businessAddress,
-      businessType, // 필요 시 포함
+      userEmail,
+      userPassword,
+      userName,
+      name,
+      userPhone,
+      registrationNumber,
+      userAddress,
     };
     await fetchBusinessJoin(credentials);
   };
@@ -105,7 +102,7 @@ export default function RegisterBusinessPage() {
               extraAddress += `${extraAddress ? ", " : ""}${data.buildingName}`;
             fullAddress += extraAddress ? ` (${extraAddress})` : "";
           }
-          setBusinessAddress(fullAddress);
+          setUserAddress(fullAddress);
         },
       }).open();
     } else {
@@ -117,15 +114,7 @@ export default function RegisterBusinessPage() {
   return (
     <Container size="xs" my={60}>
       <Flex justify="center">
-        <Paper
-          shadow="md"
-          p={30}
-          radius="md"
-          withBorder
-          w="100%"
-          miw={320}
-          maw={500}
-        >
+        <Paper p={30} radius="md" w="100%" miw={320} maw={500}>
           <Text size="xl" fw={700} ta="center" mt="md" mb="lg">
             사업자 회원가입
           </Text>
@@ -133,43 +122,53 @@ export default function RegisterBusinessPage() {
           <form onSubmit={handleBusinessRegister}>
             <Stack>
               <TextInput
+                size="md"
+                radius="sm"
                 label="사업자명"
                 placeholder="회사명 또는 상호"
                 leftSection={<IconBuildingStore size={16} />}
-                value={businessName}
-                onChange={(e) => setBusinessName(e.currentTarget.value)}
+                value={name}
+                onChange={(e) => setName(e.currentTarget.value)}
                 required
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="대표자 이름"
                 placeholder="홍길동"
                 leftSection={<IconUser size={16} />}
-                value={representativeName}
-                onChange={(e) => setRepresentativeName(e.currentTarget.value)}
+                value={userName}
+                onChange={(e) => setUserName(e.currentTarget.value)}
                 required
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="이메일"
                 placeholder="business@example.com"
                 leftSection={<IconMail size={16} />}
-                value={businessEmail}
-                onChange={(e) => setBusinessEmail(e.currentTarget.value)}
+                value={userEmail}
+                onChange={(e) => setUserEmail(e.currentTarget.value)}
                 type="email"
                 required
               />
 
               <PasswordInput
+                size="md"
+                radius="sm"
                 label="비밀번호"
                 placeholder="Enter your password"
                 leftSection={<IconLock size={16} />}
-                value={businessPassword}
-                onChange={(e) => setBusinessPassword(e.currentTarget.value)}
+                value={userPassword}
+                onChange={(e) => setUserPassword(e.currentTarget.value)}
                 required
               />
 
               <PasswordInput
+                size="md"
+                radius="sm"
                 label="비밀번호 확인"
                 placeholder="Enter your password again"
                 leftSection={<IconLock size={16} />}
@@ -177,29 +176,31 @@ export default function RegisterBusinessPage() {
                 onChange={(e) => setConfirmPassword(e.currentTarget.value)}
                 required
                 error={
-                  businessPassword !== confirmPassword
+                  userPassword !== confirmPassword
                     ? "비밀번호가 일치하지 않습니다."
                     : undefined
                 }
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="사업자 등록 번호"
                 placeholder="000-00-00000"
                 leftSection={<IconBuilding size={16} />}
-                value={businessRegistrationNumber}
-                onChange={(e) =>
-                  setBusinessRegistrationNumber(e.currentTarget.value)
-                }
+                value={registrationNumber}
+                onChange={(e) => setRegistrationNumber(e.currentTarget.value)}
                 required
               />
 
               <TextInput
+                size="md"
+                radius="sm"
                 label="전화번호"
                 placeholder="02-1234-5678 또는 010-1234-5678"
                 leftSection={<IconPhone size={16} />}
-                value={businessPhoneNumber}
-                onChange={(e) => setBusinessPhoneNumber(e.currentTarget.value)}
+                value={userPhone}
+                onChange={(e) => setUserPhone(e.currentTarget.value)}
                 type="tel"
                 required
               />
@@ -207,28 +208,25 @@ export default function RegisterBusinessPage() {
               {/* 주소 검색 필드 */}
               <Group grow>
                 <TextInput
+                  size="md"
+                  radius="sm"
                   label="사업장 주소"
                   placeholder="사업장 주소 검색"
                   leftSection={<IconMapPin size={16} />}
-                  value={businessAddress}
+                  value={userAddress}
                   onClick={handleAddressSearch}
                   readOnly
                   required
                 />
               </Group>
 
-              {/* 필요 시 업종 필드 추가 */}
-              {/*
-              <TextInput
-                label="업종"
-                placeholder="서비스업, 제조업 등"
-                leftSection={<IconCategory size={16} />} // 적절한 아이콘 선택
-                value={businessType}
-                onChange={(e) => setBusinessType(e.currentTarget.value)}
-              />
-              */}
-
-              <Button fullWidth mt="xl" color="blue" type="submit">
+              <Button
+                fullWidth
+                mt="xl"
+                type="submit"
+                variant="filled"
+                color="rgba(0, 0, 0, 1)"
+              >
                 사업자 계정 만들기
               </Button>
             </Stack>
@@ -238,7 +236,11 @@ export default function RegisterBusinessPage() {
 
           <Text size="sm" ta="center">
             이미 계정이 있으신가요?{" "}
-            <Anchor component="button" onClick={() => navigate("/login")}>
+            <Anchor
+              component="button"
+              onClick={() => navigate("/login")}
+              c="gray"
+            >
               로그인
             </Anchor>
           </Text>
