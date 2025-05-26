@@ -15,6 +15,7 @@ import CreateItemPage from "./apps/admin/createItem/page.tsx";
 import ItemPage from "./apps/item/page.tsx";
 import ItemDetailPage from "./apps/item/[itemId]/page.tsx";
 import OrderPage from "./apps/order/page.tsx";
+import OrderCompletePage from "./apps/order/complete.tsx";
 import CartPage from "./apps/cart/page.tsx";
 import LivePage from "./apps/live/[liveId]/page.tsx";
 import BrandPage from "./apps/brand/page.tsx";
@@ -37,6 +38,7 @@ function App() {
           {/* main */}
           <Route path="/" element={<MainPage />} />
           <Route path="/order" element={<OrderPage />} />
+          <Route path="/order/complete" element={<OrderCompletePage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/test" element={<Test />} />
           <Route path="/live/:liveId" element={<LivePage />} />

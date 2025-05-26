@@ -4,7 +4,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const PlaneEmoji = () => (
+export const PlaneEmoji = () => (
   <motion.span
     className="tossface"
     animate={{ rotate: [0, -5, 5, -5, 0] }}
@@ -15,7 +15,7 @@ const PlaneEmoji = () => (
   </motion.span>
 );
 
-const CloudEmoji = () => (
+export const CloudEmoji = () => (
   <motion.span
     className="tossface"
     animate={{ y: [0, -6, 0, 6, 0] }}
@@ -26,7 +26,7 @@ const CloudEmoji = () => (
   </motion.span>
 );
 
-const LuggageEmoji = () => (
+export const LuggageEmoji = () => (
   <motion.span
     className="tossface"
     animate={{ y: [0, -4, 0] }}
