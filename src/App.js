@@ -10,8 +10,8 @@ import LoginPage from "./apps/login/LoginPage.tsx";
 import LogoutPage from "./apps/login/LogoutPage.tsx";
 import RegisterUserPage from "./apps/login/RegisterUserPage.tsx";
 import RegisterBusinessPage from "./apps/login/RegisterBusinessPage.tsx";
-import AdminItemPage from "./apps/admin/manageItem/page.tsx";
-import CreateItemPage from "./apps/admin/createItem/page.tsx";
+import SellerItemPage from "./apps/seller/manageItem/page.tsx";
+import CreateItemPage from "./apps/seller/createItem/page.tsx";
 import ItemPage from "./apps/item/page.tsx";
 import ItemDetailPage from "./apps/item/[itemId]/page.tsx";
 import OrderPage from "./apps/order/page.tsx";
@@ -22,12 +22,12 @@ import SearchPage from "./apps/search/Search.tsx";
 import NotFoundPage from "./apps/error/NotFoundPage.tsx";
 
 // 테스트용 페이지지
-import Test from "./apps/login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
-import LiveRegisterPage from "./apps/admin/registerLive/page.tsx";
-import AdminUserPage from "./apps/admin/manageUser/page.tsx";
-import RegisterBrandPage from "./apps/admin/registerBrand/page.tsx";
+import Test from "./apps/login/CartViewer.tsx";
+import LiveRegisterPage from "./apps/seller/registerLive/page.tsx";
+import SellerUserPage from "./apps/seller/manageUser/page.tsx";
+import RegisterBrandPage from "./apps/seller/registerBrand/page.tsx";
 import ListLivePage from "./apps/live/listLive/page.tsx";
-import ManageLivePage from "./apps/admin/manageLive/page.tsx";
+import ManageLivePage from "./apps/seller/manageLive/page.tsx";
 
 function App() {
   return (
@@ -56,14 +56,14 @@ function App() {
           <Route path="/item" element={<ItemPage />} />
           <Route path="/item/:itemId" element={<ItemDetailPage />} />
 
-          {/* admin */}
-          <Route path="/admin" element={<AdminItemPage />} />
-          <Route path="/admin/item/create" element={<CreateItemPage />} />
-          <Route path="/admin/live" element={<ManageLivePage />} />
-          <Route path="/admin/regist-live" element={<LiveRegisterPage />} />
-          <Route path="/admin/user" element={<AdminUserPage />} />
-          <Route path="/admin/brand" element={<RegisterBrandPage />} />
-          <Route path="/admin/live" element={<ManageLivePage />} />
+          {/* seller */}
+          <Route path="/seller" element={<SellerItemPage />} />
+          <Route path="/seller/item/create" element={<CreateItemPage />} />
+          <Route path="/seller/live" element={<ManageLivePage />} />
+          <Route path="/seller/regist-live" element={<LiveRegisterPage />} />
+          <Route path="/seller/user" element={<SellerUserPage />} />
+          <Route path="/seller/brand" element={<RegisterBrandPage />} />
+          <Route path="/seller/live" element={<ManageLivePage />} />
 
           {/* 404 page */}
           <Route path="*" element={<NotFoundPage />} />

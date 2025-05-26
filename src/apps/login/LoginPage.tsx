@@ -57,9 +57,13 @@ export default function LoginPage() {
         setLoginUser(name);
 
         alert("Login successful");
-        navigate(prevUrl, { replace: true });
-      } else {
-        alert("Login failed");
+
+        // 사업자 로그인
+        if (tab === "biz") {
+          navigate("/seller", { replace: true });
+        } else {
+          navigate(prevUrl, { replace: true });
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
