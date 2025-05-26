@@ -7,13 +7,11 @@ import {
   Text,
   UnstyledButton,
   Badge,
-  Center,
 } from "@mantine/core";
 import {
   IconSearch,
   IconUser,
   IconLogout,
-  IconMenu2,
   IconShoppingBag,
 } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
@@ -73,7 +71,7 @@ export default function HeaderComponent() {
         </Group>
 
         {/* 오른쪽 아이콘 메뉴 */}
-        <Group gap="lg" w={180} align="center" justify="flex-end">
+        <Group gap="lg" w={220} align="center" justify="flex-end">
           <UnstyledButton component={Link} to="/item/search">
             <IconSearch size={20} />
           </UnstyledButton>

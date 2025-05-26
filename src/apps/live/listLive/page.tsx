@@ -52,7 +52,7 @@ interface LiveItem {
 
 export default function ListLivePage() {
   const navigate = useNavigate();
-  const [liveItems, setLiveItems] = useState<LiveItem[]>([]);
+  const [liveItem, setLiveItem] = useState<LiveItem | null>(null);
   const [latestLiveItems, setLatestLiveItems] = useState<LiveItem[]>([]);
 
   useEffect(() => {
@@ -71,34 +71,35 @@ export default function ListLivePage() {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data: LiveItem[] = await response.json();
-        console.log("다시보기 응답:", data);
         setLatestLiveItems(data);
       } catch (err) {
         console.error("최신 다시보기 정보 불러오기 실패:", err);
       }
     };
 
-    const fetchLiveItems = async () => {
+    const fetchLiveItem = async () => {
       try {
         const token = localStorage.getItem("access");
 
         const response = await fetch(`${STREAM_URL}/live/main`, {
           method: "GET",
           headers: {
+            Accept: "*/*",
             access: token || "",
           },
           credentials: "include",
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const liveData: LiveItem[] = await response.json();
-        setLiveItems(liveData);
+
+        const data: LiveItem = await response.json();
+        setLiveItem(data);
       } catch (err) {
         console.error("라이브 방송 정보 불러오기 실패:", err);
       }
     };
 
-    fetchLiveItems();
+    fetchLiveItem();
     fetchLatestLiveItems();
   }, []);
 
@@ -115,24 +116,22 @@ export default function ListLivePage() {
             label="LIVE 방송"
             subLabel="지금 방송 중인 상품을 만나보세요."
           />
+
           <Grid gutter="lg" mb={70}>
-            {liveItems.map((live) => (
-              <Grid.Col span={3} key={live.id}>
+            {liveItem && (
+              <Grid.Col span={3}>
                 <Box
-                  onClick={() => navigate(`/live/${live.id}`)}
+                  onClick={() => navigate(`/live/${liveItem.id}`)}
                   style={{ cursor: "pointer", position: "relative" }}
                 >
-                  {/* 썸네일 이미지 */}
                   <Image
-                    src={live.imageUrl || "https://placehold.co/400x500"}
-                    alt={live.title}
+                    src={liveItem.imageUrl || "https://placehold.co/400x500"}
+                    alt={liveItem.title}
                     radius="md"
                     h={400}
                     fit="cover"
                     style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
                   />
-
-                  {/* 시청 수 배지 */}
                   <Badge
                     color="red"
                     variant="filled"
@@ -146,16 +145,14 @@ export default function ListLivePage() {
                   >
                     live
                   </Badge>
-
-                  {/* 방송 제목 */}
                   <Text mt="xs" size="sm" fw={600} lineClamp={2}>
-                    {live.title}
+                    {liveItem.title}
                   </Text>
-
-                  {/* 상품 요약 정보 (썸네일, 상품명, 가격 등) */}
                   <Flex mt="xs" align="center" gap="xs">
                     <Image
-                      src={live.itemImageUrl || "https://placehold.co/60x60"}
+                      src={
+                        liveItem.itemImageUrl || "https://placehold.co/60x60"
+                      }
                       alt="상품 썸네일"
                       w={50}
                       h={50}
@@ -163,27 +160,30 @@ export default function ListLivePage() {
                       radius="sm"
                     />
                     <Box>
-                      <Text size="xs">{live.itemName}</Text>
+                      <Text size="xs">{liveItem.itemName}</Text>
                       <Flex align="baseline" gap={6}>
-                        {live.discountRate > 0 && (
+                        {liveItem.discountRate > 0 && (
                           <Text size="sm" fw={700} color="red">
-                            {Math.round(live.discountRate * 100)}%
+                            {Math.round(liveItem.discountRate * 100)}%
                           </Text>
                         )}
-                        <Text size="sm" fw={700}>
-                          {(
-                            live.price *
-                            (1 - live.discountRate)
-                          ).toLocaleString()}
-                          원
-                        </Text>
+                        {liveItem.price !== null && (
+                          <Text size="sm" fw={700}>
+                            {(
+                              liveItem.price *
+                              (1 - liveItem.discountRate)
+                            ).toLocaleString()}
+                            원
+                          </Text>
+                        )}
                       </Flex>
                     </Box>
                   </Flex>
                 </Box>
               </Grid.Col>
-            ))}
+            )}
           </Grid>
+
           <Divider my="sm" />
 
           <TitleComponent label="다시보기" subLabel="지난 방송을 확인하세요." />

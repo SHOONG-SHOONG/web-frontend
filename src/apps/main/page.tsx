@@ -17,7 +17,6 @@ import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 import TitleComponent from "./components/titleComponent.tsx";
 import BASE_URL from "../../config.js";
-import { useLogin } from "../../contexts/AuthContext.tsx";
 import CountdownBanner from "./components/CountdownBanner.tsx";
 
 interface ItemImage {
@@ -56,17 +55,19 @@ interface LiveItem {
 export default function MainPage() {
   const navigate = useNavigate();
   const [bestItems, setBestItems] = useState<Item[]>([]);
-  const [liveItems, setLiveItems] = useState<LiveItem[]>([]);
-  const [liveItemDetails, setLiveItemDetails] = useState<Record<number, Item>>(
-    {}
-  );
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>();
   const [loginUser, setLoginUser] = useState<string | null>("");
 
-  const fetchLiveItems = async () => {
+  const [currentLiveItem, setCurrentLiveItem] = useState<LiveItem | null>(null);
+  const [endedLiveItems, setEndedLiveItems] = useState<LiveItem[]>([]);
+  const mergedLiveItems = [
+    ...(currentLiveItem ? [currentLiveItem] : []),
+    ...endedLiveItems,
+  ];
+
+  const fetchCurrentLive = async () => {
     try {
       const token = localStorage.getItem("access");
-
       const response = await fetch(`${BASE_URL}/live/main`, {
         method: "GET",
         headers: {
@@ -77,10 +78,30 @@ export default function MainPage() {
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const liveData: LiveItem[] = await response.json();
-      setLiveItems(liveData);
+      const data: LiveItem = await response.json();
+      setCurrentLiveItem(data);
     } catch (err) {
-      console.error("라이브 방송 정보 불러오기 실패:", err);
+      console.error("현재 라이브 정보 불러오기 실패:", err);
+    }
+  };
+
+  const fetchEndedLives = async () => {
+    try {
+      const token = localStorage.getItem("access");
+      const response = await fetch(`${BASE_URL}/live/list`, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          access: token || "",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data: LiveItem[] = await response.json();
+      setEndedLiveItems(data);
+    } catch (err) {
+      console.error("종료된 라이브 불러오기 실패:", err);
     }
   };
 
@@ -131,7 +152,9 @@ export default function MainPage() {
   useEffect(() => {
     checkLogin();
     fetchBestItems();
-    fetchLiveItems();
+
+    fetchCurrentLive();
+    fetchEndedLives();
   }, []);
 
   return (
@@ -157,17 +180,16 @@ export default function MainPage() {
       <Container size="lg" py="md">
         <TitleComponent
           label="SHOONG LIVE"
-          subLabel="지금 방송 중인 상품을 만나보세요."
+          subLabel="지금 방송 중이거나 종료된 방송을 한 눈에!"
         />
 
         <Grid gutter="lg" mb={70}>
-          {liveItems.map((live) => (
+          {mergedLiveItems.map((live) => (
             <Grid.Col span={3} key={live.id}>
               <Box
                 onClick={() => navigate(`/live/${live.id}`)}
                 style={{ cursor: "pointer", position: "relative" }}
               >
-                {/* 썸네일 이미지 */}
                 <Image
                   src={live.imageUrl || "https://placehold.co/400x500"}
                   alt={live.title}
@@ -176,10 +198,8 @@ export default function MainPage() {
                   fit="cover"
                   style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
                 />
-
-                {/* 시청 수 배지 */}
                 <Badge
-                  color="red"
+                  color={live.status === "ONGOING" ? "red" : "gray"}
                   variant="filled"
                   size="sm"
                   style={{
@@ -189,15 +209,11 @@ export default function MainPage() {
                     zIndex: 1,
                   }}
                 >
-                  live
+                  {live.status === "ONGOING" ? "LIVE" : "종료됨"}
                 </Badge>
-
-                {/* 방송 제목 */}
                 <Text mt="xs" size="sm" fw={600} lineClamp={2}>
                   {live.title}
                 </Text>
-
-                {/* 상품 요약 정보 (썸네일, 상품명, 가격 등) */}
                 <Flex mt="xs" align="center" gap="xs">
                   <Image
                     src={live.itemImageUrl || "https://placehold.co/60x60"}
@@ -215,13 +231,15 @@ export default function MainPage() {
                           {Math.round(live.discountRate * 100)}%
                         </Text>
                       )}
-                      <Text size="sm" fw={700}>
-                        {(
-                          live.price *
-                          (1 - live.discountRate)
-                        ).toLocaleString()}
-                        원
-                      </Text>
+                      {live.price !== null && (
+                        <Text size="sm" fw={700}>
+                          {(
+                            live.price *
+                            (1 - live.discountRate)
+                          ).toLocaleString()}
+                          원
+                        </Text>
+                      )}
                     </Flex>
                   </Box>
                 </Flex>

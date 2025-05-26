@@ -51,7 +51,7 @@ export default function LoginPage() {
           "access",
           response.headers.get("access") || ""
         );
-        window.localStorage.setItem("name", name);
+        window.localStorage.setItem("name", encodeURIComponent(name));
 
         setIsLoggedIn(true);
         setLoginUser(name);
