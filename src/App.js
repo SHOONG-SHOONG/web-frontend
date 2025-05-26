@@ -59,7 +59,8 @@ function App() {
           {/* admin */}
           <Route path="/admin" element={<AdminItemPage />} />
           <Route path="/admin/item/create" element={<CreateItemPage />} />
-          <Route path="/admin/regist-live/" element={<LiveRegisterPage />} />
+          <Route path="/admin/live" element={<ManageLivePage />} />
+          <Route path="/admin/regist-live" element={<LiveRegisterPage />} />
           <Route path="/admin/user" element={<AdminUserPage />} />
           <Route path="/admin/brand" element={<RegisterBrandPage />} />
           <Route path="/admin/live" element={<ManageLivePage />} />
