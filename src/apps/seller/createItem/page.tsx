@@ -171,8 +171,7 @@ import {
 import { DatePickerInput } from "@mantine/dates";
 import { IconCalendar, IconPhoto } from "@tabler/icons-react";
 import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
-
-const BASE_URL = "http://192.168.0.6:8080";
+import BASE_URL from "../../../config.js";
 
 export default function CreateItemPage() {
   const [productName, setProductName] = useState("");
@@ -185,7 +184,15 @@ export default function CreateItemPage() {
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSubmit = async () => {
-    if (!productName || !originalPrice || !salePrice || !stock || !image || !description || !endDate) {
+    if (
+      !productName ||
+      !originalPrice ||
+      !salePrice ||
+      !stock ||
+      !image ||
+      !description ||
+      !endDate
+    ) {
       alert("필수 정보를 모두 입력해주세요.");
       return;
     }
@@ -194,7 +201,9 @@ export default function CreateItemPage() {
       itemName: productName,
       price: originalPrice,
       finalPrice: salePrice,
-      discountRate: Math.round(((originalPrice - salePrice) / originalPrice) * 100),
+      discountRate: Math.round(
+        ((originalPrice - salePrice) / originalPrice) * 100
+      ),
       description,
       itemQuantity: stock,
       category: category[0] || "",
@@ -328,7 +337,7 @@ export default function CreateItemPage() {
                 placeholder="날짜를 선택하세요"
                 leftSection={<IconCalendar size={16} />}
                 value={endDate}
-                onChange={setEndDate}
+                // onChange={setEndDate}
                 valueFormat="YYYY-MM-DD"
                 type="default"
               />
