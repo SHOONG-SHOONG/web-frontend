@@ -7,6 +7,7 @@ import {
   Text,
   UnstyledButton,
   Badge,
+  Center,
 } from "@mantine/core";
 import {
   IconSearch,
@@ -17,6 +18,7 @@ import {
 } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
+import { useLogin } from "../contexts/AuthContext.tsx";
 
 const menus = [
   { label: "홈", value: "home", path: "/" },
@@ -28,6 +30,7 @@ const menus = [
 export default function HeaderComponent() {
   const location = useLocation();
   const activePath = location.pathname;
+  const { isLoggedIn, loginUser } = useLogin();
 
   return (
     <Box
@@ -70,16 +73,26 @@ export default function HeaderComponent() {
         </Group>
 
         {/* 오른쪽 아이콘 메뉴 */}
-        <Group gap="lg" w={180} justify="flex-end">
+        <Group gap="lg" w={180} align="center" justify="flex-end">
           <UnstyledButton component={Link} to="/item/search">
             <IconSearch size={20} />
           </UnstyledButton>
-          <UnstyledButton component={Link} to="/login">
-            <IconUser size={20} />
-          </UnstyledButton>
-          <UnstyledButton component={Link} to="/logout">
-            <IconLogout size={20} />
-          </UnstyledButton>
+
+          {isLoggedIn ? (
+            <>
+              <Text size="md" fw={500} mb={5}>
+                {loginUser}님
+              </Text>
+              <UnstyledButton component={Link} to="/logout">
+                <IconLogout size={20} />
+              </UnstyledButton>
+            </>
+          ) : (
+            <UnstyledButton component={Link} to="/login">
+              <IconUser size={20} />
+            </UnstyledButton>
+          )}
+
           <UnstyledButton
             component={Link}
             to="/cart"

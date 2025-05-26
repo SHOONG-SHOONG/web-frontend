@@ -19,10 +19,10 @@ import CartPage from "./apps/cart/page.tsx";
 import LivePage from "./apps/live/[liveId]/page.tsx";
 import BrandPage from "./apps/brand/page.tsx";
 import SearchPage from "./apps/search/Search.tsx";
+import NotFoundPage from "./apps/error/NotFoundPage.tsx";
 
 // 테스트용 페이지지
 import Test from "./apps/login/CartViewer.tsx"; // 임시로 사용 중이라면 유지
-import LiveListPage from "./apps/admin/manageLive/page.tsx";
 import LiveRegisterPage from "./apps/admin/registerLive/page.tsx";
 import AdminUserPage from "./apps/admin/manageUser/page.tsx";
 import RegisterBrandPage from "./apps/admin/registerBrand/page.tsx";
@@ -59,11 +59,14 @@ function App() {
           {/* admin */}
           <Route path="/admin" element={<AdminItemPage />} />
           <Route path="/admin/item/create" element={<CreateItemPage />} />
-          <Route path="/admin/live" element={<LiveListPage />} />
+          <Route path="/admin/live" element={<ManageLivePage />} />
           <Route path="/admin/regist-live" element={<LiveRegisterPage />} />
           <Route path="/admin/user" element={<AdminUserPage />} />
           <Route path="/admin/brand" element={<RegisterBrandPage />} />
           <Route path="/admin/live" element={<ManageLivePage />} />
+
+          {/* 404 page */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

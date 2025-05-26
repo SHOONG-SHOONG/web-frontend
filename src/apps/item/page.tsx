@@ -18,14 +18,50 @@ import {
 import { IconArrowUp } from "@tabler/icons-react";
 import BASE_URL from "../../config.js";
 
-// filter 처리 하기
+// filter
 const categories = [
-  { label: "전체", value: "", icon: "⚪️" },
-  { label: "여행", value: "TRAVEL", icon: "🏖️" },
-  { label: "숙박", value: "STAY", icon: "🛏️" },
-  { label: "항공", value: "AIR", icon: "✈️" },
-  { label: "캠핑", value: "CAMP", icon: "⛺" },
-  { label: "교통", value: "CAR", icon: "🚗" },
+  {
+    label: "전체",
+    value: "",
+    icon: "⭐️",
+    url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/star_2b50.png",
+    murl: "https://em-content.zobj.net/source/microsoft-teams/363/star_2b50.png",
+  },
+  {
+    label: "여행",
+    value: "TRAVEL",
+    icon: "🏖️",
+    url: "https://em-content.zobj.net/source/microsoft-teams/363/palm-tree_1f334.png",
+    murl: "https://em-content.zobj.net/source/microsoft-teams/363/palm-tree_1f334.png",
+  },
+  {
+    label: "숙박",
+    value: "STAY",
+    icon: "🛏️",
+    url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/bed_1f6cf-fe0f.png",
+    murl: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/bed_1f6cf-fe0f.png",
+  },
+  {
+    label: "항공",
+    value: "AIR",
+    icon: "✈️",
+    url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/airplane-departure_1f6eb.png",
+    murl: "https://em-content.zobj.net/source/microsoft-teams/363/airplane-departure_1f6eb.png",
+  },
+  {
+    label: "캠핑",
+    value: "CAMP",
+    icon: "🏕",
+    url: "https://em-content.zobj.net/source/microsoft-teams/363/camping_1f3d5-fe0f.png",
+    murl: "https://em-content.zobj.net/source/microsoft-teams/363/camping_1f3d5-fe0f.png",
+  },
+  {
+    label: "교통",
+    value: "CAR",
+    icon: "🚗",
+    url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/automobile_1f697.png",
+    murl: "https://em-content.zobj.net/source/microsoft-teams/363/automobile_1f697.png",
+  },
 ];
 
 interface ItemImage {
@@ -65,10 +101,6 @@ export default function ItemPage() {
   const [selected, setSelected] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchItemListByKeyword("");
-  }, []);
 
   const fetchItemListByKeyword = async (keyword: string) => {
     try {
@@ -114,7 +146,7 @@ export default function ItemPage() {
 
       const page = 0;
       const size = 10;
-      const sort = "itemId,desc"; // sort="string" 말고 실제 정렬 기준 명시
+      const sort = "itemId,desc";
 
       const url = `http://192.168.0.6:8080/item/search?category=${encodeURIComponent(
         category
@@ -159,21 +191,14 @@ export default function ItemPage() {
       <HeaderComponent />
 
       <Container size="lg" py="xl">
-        {/* 검색창 */}
-        <TextInput
-          placeholder="검색어를 입력하세요"
-          value={searchKeyword}
-          onChange={(e) => {
-            setSearchKeyword(e.currentTarget.value);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") fetchItemListByKeyword(searchKeyword);
-          }}
-          mb="lg"
-        />
-
-        {/* 카테고리 필터 */}
-        <Flex justify="center" gap="lg" wrap="wrap" mb="lg">
+        {/* Filter */}
+        <Flex
+          mb={32}
+          gap={24}
+          wrap="nowrap"
+          style={{ overflowX: "auto", paddingBottom: 8 }}
+          justify="center"
+        >
           {categories.map((cat) => (
             <Box
               key={cat.value}
@@ -181,74 +206,35 @@ export default function ItemPage() {
                 setSelected(cat.value);
                 fetchItemListByCategory(cat.value);
               }}
-              style={{
-                cursor: "pointer",
-                textAlign: "center",
-                fontWeight: selected === cat.value ? 700 : 500,
-                color: selected === cat.value ? "black" : "#999",
-              }}
+              style={{ textAlign: "center", cursor: "pointer", minWidth: 72 }}
             >
-              <Text fz={30}>{cat.icon}</Text>
-              <Text fz="sm">{cat.label}</Text>
+              <Box
+                w={50}
+                h={50}
+                style={{
+                  borderRadius: "50%",
+                  fontSize: 33,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto",
+                }}
+              >
+                <span className="tossface">{cat.icon}</span>
+              </Box>
+              <Text
+                mt={6}
+                size="xs"
+                fw={selected === cat.value ? 700 : 400}
+                truncate
+              >
+                {cat.label}
+              </Text>
             </Box>
           ))}
         </Flex>
 
         {/* 상품 목록 */}
-        {/* <Grid gutter="md" mt={40}>
-          {items.map((item) => (
-            <Grid.Col span={{ base: 6, md: 4 }} key={item.itemId}>
-              <Card
-                withBorder
-                shadow="xs"
-                radius="md"
-                padding="sm"
-                style={{ cursor: "pointer" }}
-                onClick={() =>
-                  navigate(`/item/${item.itemId}`, { state: item })
-                }
-              >
-                {item.discountRate > 0 && (
-                  <Badge color="red" variant="filled" size="sm">
-                    {item.discountRate * 100}%
-                  </Badge>
-                )}
-
-                {item.status === "SOLD_OUT" && (
-                  <Badge color="gray" variant="filled" size="sm" mt="xs">
-                    품절
-                  </Badge>
-                )}
-
-                <Image
-                  src={
-                    item.itemImages?.[0]?.url || "https://placehold.co/600x600"
-                  }
-                  alt={item.itemName}
-                  radius="sm"
-                  height={200}
-                  fit="cover"
-                  mt="sm"
-                />
-
-                <Text mt="sm" fw={600} size="sm">
-                  {item.itemName}
-                </Text>
-
-                <Flex mt="xs" align="baseline" gap="xs">
-                  {item.discountRate > 0 && (
-                    <Text size="xs" td="line-through" c="dimmed">
-                      {item.price.toLocaleString()}원
-                    </Text>
-                  )}
-                  <Text size="sm" fw={700}>
-                    {item.finalPrice.toLocaleString()}원
-                  </Text>
-                </Flex>
-              </Card>
-            </Grid.Col>
-          ))}
-        </Grid> */}
         <Grid gutter="xl" mt={40}>
           {items.map((item) => (
             <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
