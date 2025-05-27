@@ -11,6 +11,7 @@ import {
   Container,
   Flex,
   Group,
+  FileInput,
 } from "@mantine/core";
 import {
   IconMail,
@@ -43,6 +44,10 @@ export default function RegisterBusinessPage() {
   const [userPhone, setUserPhone] = useState("");
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [userAddress, setUserAddress] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [brandDescription, setBrandDescription] = useState("");
+  const [brandImageFile, setBrandImageFile] = useState<File | null>(null);
+
 
   const fetchBusinessJoin = async (credentials: any) => {
     try {
@@ -87,6 +92,7 @@ export default function RegisterBusinessPage() {
       userAddress,
     };
     await fetchBusinessJoin(credentials);
+    await fetchBrandRegister();
   };
 
   const handleAddressSearch = () => {
@@ -110,6 +116,38 @@ export default function RegisterBusinessPage() {
       console.error("Daum Postcode API script not loaded.");
     }
   };
+
+  const fetchBrandRegister = async () => {
+    if (!brandImageFile) {
+      alert("브랜드 이미지를 등록해주세요.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("imageFile", brandImageFile);
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/brand/create?name=${encodeURIComponent(brandName)}&description=${encodeURIComponent(brandDescription)}`,
+        {
+          method: "POST",
+          headers: {
+            access: localStorage.getItem("access") || "",
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) throw new Error("브랜드 등록 실패");
+
+      alert("브랜드가 등록되었습니다.");
+    } catch (err) {
+      console.error("브랜드 등록 에러:", err);
+      alert("브랜드 등록에 실패했습니다.");
+    }
+  };
+
+
 
   return (
     <Container size="xs" my={60}>
@@ -159,7 +197,7 @@ export default function RegisterBusinessPage() {
                 size="md"
                 radius="sm"
                 label="비밀번호"
-                placeholder="Enter your password"
+                placeholder="비밀번호"
                 leftSection={<IconLock size={16} />}
                 value={userPassword}
                 onChange={(e) => setUserPassword(e.currentTarget.value)}
@@ -170,7 +208,7 @@ export default function RegisterBusinessPage() {
                 size="md"
                 radius="sm"
                 label="비밀번호 확인"
-                placeholder="Enter your password again"
+                placeholder="비밀번호 확인"
                 leftSection={<IconLock size={16} />}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.currentTarget.value)}
@@ -219,6 +257,38 @@ export default function RegisterBusinessPage() {
                   required
                 />
               </Group>
+
+              <TextInput
+                size="md"
+                radius="sm"
+                label="브랜드명"
+                placeholder="브랜드명"
+                value={brandName}
+                onChange={(e) => setBrandName(e.currentTarget.value)}
+                required
+              />
+
+              <TextInput
+                size="md"
+                radius="sm"
+                label="브랜드 설명"
+                placeholder="브랜드에 대한 설명"
+                value={brandDescription}
+                onChange={(e) => setBrandDescription(e.currentTarget.value)}
+                required
+              />
+
+              <FileInput
+                size="md"
+                radius="sm"
+                label="브랜드 대표 이미지"
+                placeholder="이미지를 업로드하세요"
+                value={brandImageFile}
+                onChange={setBrandImageFile}
+                accept="image/png,image/jpeg"
+                required
+              />
+
 
               <Button
                 fullWidth
