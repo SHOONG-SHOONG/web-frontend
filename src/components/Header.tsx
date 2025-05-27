@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -14,21 +14,29 @@ import {
   IconLogout,
   IconShoppingBag,
 } from "@tabler/icons-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 
 const menus = [
   { label: "홈", value: "home", path: "/" },
   { label: "카테고리", value: "category", path: "/item" },
-  // live page
   { label: "라이브", value: "live", path: "/live" },
 ];
 
 export default function HeaderComponent() {
   const location = useLocation();
+  const navigate = useNavigate();
   const activePath = location.pathname;
   const { isLoggedIn, loginUser } = useLogin();
+
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <Box

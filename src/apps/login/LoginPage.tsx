@@ -45,6 +45,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("서버에서 받은 이름:", data.name);
         const { name } = data;
 
         window.localStorage.setItem(
