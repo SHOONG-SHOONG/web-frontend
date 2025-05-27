@@ -6,51 +6,185 @@ import {
   Title,
   Box,
   Flex,
-  Group,
   Anchor,
   Stack,
-  Input,
   Radio,
   Checkbox,
   Button,
+  TextInput,
 } from "@mantine/core";
+import {
+  IconMapPin,
+} from "@tabler/icons-react";
 import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from "react-router-dom";
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
+import BASE_URL from "../../config.js";
 
-// 백엔드에서 받아올 상품 데이터 타입 정의
-type OrderDetail = {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-  discountRate: number;
+declare global {
+  interface Window {
+    IMP: any;
+  }
 }
 
+// 백엔드에서 받아올 상품 데이터 타입 정의
+type OrdersDetailDto = {
+  orderId: number;
+  totalPrice: number;
+  orderDate: Date;
+  orderAddress: string;
+  orderItems: OrderItemDetailDto[];
+};
+
+type OrderItemDetailDto = {
+  orderItemId: number;
+  orderId: number;
+  itemId: number;
+  imageUrl: string;
+  itemName: string;
+  quantity: number;
+  price: number;
+};
+
 export default function OrderPage() {
-  const [orderDetails, setOrderDetails] = useState<OrderDetail[]>([]);
+  const [orderDetails, setOrderDetails] = useState<OrdersDetailDto[]>([]);
+  const [userAddress, setUserAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [agreements, setAgreements] = useState({
     privacy: false,
     thirdParty: false,
     paymentAgency: false,
   });
-
-  // 백엔드에서 상품 데이터 가져오기 (실제로는 API 호출)
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const allChecked = Object.values(agreements).every(Boolean);
     setAgreed(allChecked);
-
-    // ✨ 실제 API 주소로 교체
-    fetch("/api/order")
-      .then((res) => res.json())
-      .then((data) => setOrderDetails(data));
   }, [agreements]);
 
+  // 백엔드에서 상품 데이터 가져오기 (실제로는 API 호출)
+  useEffect(() => {
+    const fetchOrderItems = async () => {
+      const token = localStorage.getItem("access");
+
+      try {
+        const response = await fetch(`${BASE_URL}/orders/list`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            access: token || "",
+          },
+          credentials: "include",
+        });
+
+        if (response.status === 401) {
+          alert("로그인이 필요한 서비스입니다.");
+          // localStorage.removeItem("access"); // 필요 시 제거
+          navigate("/login");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`서버 오류: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setOrderDetails(data);
+      } catch (error) {
+        console.error("결제할 상품 조회 실패:", error);
+        setOrderDetails([]); // 오류 시 빈 배열로 초기화
+      }
+    }
+    fetchOrderItems();
+  }, []);
+
+  const handleAddressSearch = () => {
+    if (window.daum && window.daum.Postcode) {
+      new window.daum.Postcode({
+        oncomplete: function (data: any) {
+          let fullAddress = data.address;
+          let extraAddress = "";
+
+          if (data.addressType === "R") {
+            if (data.bname !== "") extraAddress += data.bname;
+            if (data.buildingName !== "")
+              extraAddress += `${extraAddress ? ", " : ""}${data.buildingName}`;
+            fullAddress += extraAddress ? ` (${extraAddress})` : "";
+          }
+          setUserAddress(fullAddress);
+        },
+      }).open();
+    } else {
+      alert("다음 주소 검색 API 스크립트가 로드되지 않았습니다.");
+      console.error("Daum Postcode API script not loaded.");
+    }
+  };
+
   const handleSubmit = () => {
-    if (!agreed) return alert("약관에 동의해주세요.");
-    alert("주문이 완료되었습니다!");
+    if (!agreed) {
+      alert("약관에 동의해주세요.");
+      return;
+    }
+  
+    if (!window.IMP) {
+      alert("결제 모듈이 로드되지 않았습니다.");
+      return;
+    }
+  
+    const { IMP } = window;
+    IMP.init("imp77656432"); // 네 가맹점 식별코드
+  
+    IMP.request_pay(
+      {
+        pg: "danal_tpay", // 사용할 PG사
+        pay_method: "card",
+        merchant_uid: `ORD-${Date.now()}`, // 주문 고유 번호
+        name: "포트원 테스트 결제",
+        amount: orderDetails.reduce((acc, o) => acc + o.totalPrice, 0),
+        buyer_email: "shoong@shoong.com",
+        buyer_name: "구매자 이름",
+        buyer_tel: "010-1234-5678",
+        buyer_addr: userAddress,
+        buyer_postcode: "12345",
+      },
+      async function (rsp) {
+        if (rsp.success) {
+          try {
+            const token = localStorage.getItem("access");
+            const orderId = orderDetails[0]?.orderId;
+  
+            const res = await fetch(`${BASE_URL}/orders/success`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                access: token || "",
+              },
+              credentials: "include",
+              body: JSON.stringify({
+                orderId: orderId,
+              }),
+            });
+  
+            if (!res.ok) {
+              throw new Error("백엔드 주문 확정 API 실패");
+            }
+  
+            // 성공 시 이동
+            navigate("/order/complete", {
+              state: { orderId: orderId }, 
+            });
+            
+          } catch (error) {
+            console.error("결제 후 주문 확정 실패:", error);
+            alert("결제는 완료되었지만 주문 처리 중 오류가 발생했습니다.");
+          }
+        } else {
+          alert("결제에 실패했습니다: " + rsp.error_msg);
+        }
+      }
+    );
   };
 
   return (
@@ -75,90 +209,147 @@ export default function OrderPage() {
               </Grid.Col>
             </Grid>
 
-            {orderDetails.map((orderDetail) => (  
+            {orderDetails.length > 0 && orderDetails[0].orderItems.map((orderItemDetail) => (
               <Grid columns={12} p="md" align="center" style={{ borderBottom: "1px solid #eee" }}>
                 <Grid.Col span={6}>
                   <Flex gap="md" align="center">
-                    <Image src={orderDetail.image} alt="상품 이미지" w={80} h={80} />
-                    <Text fw={500}>{orderDetail.name}</Text>
+                    <Image src={orderItemDetail.imageUrl} alt="상품 이미지" w={80} h={80} />
+                    <Text fw={500}>{orderItemDetail.itemName}</Text>
                   </Flex>
                 </Grid.Col>
                 <Grid.Col span={3} ta="center">
                   <Flex align="center" justify="center" style={{ border: "1px solid #eee", padding: "4px 8px", width: "120px", margin: "0 auto" }}>
-                    <Text mx="xs" fw={500}>{orderDetail.quantity}</Text>
+                    <Text mx="xs" fw={500}>{orderItemDetail.quantity}</Text>
                   </Flex>
                 </Grid.Col>
                 <Grid.Col span={3} ta="right">
                   <Box>
-                    <Text fw={600}>{(orderDetail.price * orderDetail.quantity).toLocaleString()}원</Text>
-                    <Text c="dimmed" td="line-through" size="xs">{(orderDetail.price * orderDetail.quantity).toLocaleString()}원</Text>
-                    <Text c="red" size="xs">{orderDetail.discountRate}% 할인</Text>
+                    <Text fw={600}>{(orderItemDetail.price * orderItemDetail.quantity).toLocaleString()}원</Text>
                   </Box>
                 </Grid.Col>
               </Grid>
             ))}
             
-            {/* 총 금액 정보 */}
-            {orderDetails.map((orderDetail) => (  
-              <Grid columns={3} style={{ borderBottom: "1px solid #eee", padding: "24px 0" }}>
-                <Grid.Col span={1}>
-                  <Box ta="center">
-                    <Text c="dimmed" size="sm" mb="xs">총 주문 금액</Text>
-                    <Text fw={600}>{orderDetail.price.toLocaleString()}원</Text>
-                    <Text c="dimmed" size="xs" mt="xs">총 {orderDetails.length}건</Text>
-                  </Box>
-                </Grid.Col>
-                <Grid.Col span={1}>
-                  <Box ta="center">
-                    <Text c="dimmed" size="sm" mb="xs">배송비</Text>
-                    <Text fw={600}>무료</Text>
-                  </Box>
-                </Grid.Col>
-                <Grid.Col span={1}>
-                  <Box ta="center">
-                    <Text c="dimmed" size="sm" mb="xs">총 결제 금액</Text>
-                    <Text fw={600}>{orderDetail.price.toLocaleString()}원</Text>
-                  </Box>
-                </Grid.Col>
-              </Grid>
-            ))}
+            {/* 가격 요약 */}
+            <Box mt="xl" px="sm" py="lg" style={{ borderTop: "1px solid #ccc" }}>
+              <Flex
+                justify="center"
+                align="center"
+                gap="lg"
+                style={{ fontWeight: 600 }}
+              >
+                {/* 총 주문 금액 */}
+                <Box ta="center">
+                  <Text size="sm" c="gray">
+                    총 주문 금액
+                  </Text>
+                  <Text fw={700} size="xl">
+                    {orderDetails
+                      .reduce((acc, order) => acc + order.totalPrice, 0)
+                      .toLocaleString()}원
+                  </Text>
+                  <Text size="xs" c="gray">
+                    총 {orderDetails.length}건
+                  </Text>
+                </Box>
+
+                {/* + 기호 */}
+                <Text fw={500} size="lg" px="sm" ml={60} mr={60}>
+                  +
+                </Text>
+
+                {/* 총 배송비 */}
+                <Box ta="center">
+                  <Text size="sm" c="gray">
+                    총 배송비
+                  </Text>
+                  <Text fw={700} size="xl">무료</Text>
+                </Box>
+
+                {/* = 기호 */}
+                <Text fw={500} size="lg" px="sm" ml={60} mr={60}>
+                  =
+                </Text>
+
+                {/* 총 결제 금액 */}
+                <Box ta="center">
+                  <Text size="sm" c="gray">
+                    총 결제 금액
+                  </Text>
+                  <Text fw={700} size="xl">
+                    {orderDetails
+                      .reduce((acc, order) => acc + order.totalPrice, 0)
+                      .toLocaleString()}원
+                  </Text>
+                </Box>
+              </Flex>
+            </Box>
+
 
             {/* 주문자 정보 */}
             <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
               <Text fw={700} size="sm" mb="md">주문자 정보</Text>
-              <Stack gap="md">
-                <Box>
-                  <Text size="sm" mb="xs">이메일 *</Text>
-                  <Input placeholder="shoong@shoong.com" />
-                </Box>
-                <Box>
-                  <Text size="sm" mb="xs">
-                    휴대전화 번호 <Text size="sm" c="red">*</Text>
-                  </Text>
-                  <Input placeholder="주문자 휴대전화 번호를 입력해 주세요." />
-                </Box>
-              </Stack>
+              <TextInput
+                size="md"
+                radius="sm"
+                label="주소"
+                placeholder="주소 검색"
+                leftSection={<IconMapPin size={16} />}
+                value={userAddress}
+                onClick={handleAddressSearch}
+                readOnly
+                required
+              />
             </Box>
 
             {/* 결제 수단 */}
-            {orderDetails.map((orderDetail) => (  
-              <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
-                <Text fw={700} size="sm" mb="md">결제 수단</Text>
-                <Radio checked label="무통장입금" />
-              </Box>
-            ))}
-          
+            <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
+              <Text fw={700} size="sm" mb="md">결제 수단</Text>
+              <Radio.Group
+                value={paymentMethod}
+                onChange={setPaymentMethod}
+                name="payment-method"
+              >
+                <Stack gap="sm" mt="sm">
+                  <Radio value="card" label="카드" />
+                  <Radio value="virtual" label="가상계좌" />
+                  <Radio value="mobile" label="휴대폰" />
+                </Stack>
+              </Radio.Group>
+            </Box>
+
             {/* 약관 동의 */}
             <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
               <Text fw={700} size="sm" mb="md">약관 동의</Text>
               <Box bg="gray.1" p="md">
-                <Text mb="sm">✔ 주문 내용을 확인하였으며, 아래 내용에 모두 동의합니다.</Text>
                 <Stack gap="xs">
+                  {/* 모두 동의 */}
                   <Flex align="center" gap="xs">
                     <Checkbox
+                      color="#364fc6"
+                      checked={Object.values(agreements).every(Boolean)}
+                      onChange={(e) => {
+                        const checked = e.currentTarget?.checked ?? false;
+                        setAgreements({
+                          privacy: checked,
+                          thirdParty: checked,
+                          paymentAgency: checked,
+                        });
+                      }}
+                    />
+                    <Text size="sm" fw={600}>주문 내용을 확인하였으며, 아래 내용에 모두 동의합니다.</Text>
+                  </Flex>
+
+                  {/* 개별 항목 */}
+                  <Flex align="center" gap="xs">
+                    <Checkbox
+                      color="#364fc6"
                       checked={agreements.privacy}
                       onChange={(e) =>
-                        setAgreements((prev) => ({ ...prev, privacy: e.currentTarget.checked }))
+                        setAgreements((prev) => ({
+                          ...prev,
+                          privacy: e.currentTarget?.checked ?? false,
+                        }))
                       }
                     />
                     <Text size="sm">개인정보 수집 및 이용 동의</Text>
@@ -166,18 +357,26 @@ export default function OrderPage() {
                   </Flex>
                   <Flex align="center" gap="xs">
                     <Checkbox
+                      color="#364fc6"
                       checked={agreements.thirdParty}
                       onChange={(e) =>
-                        setAgreements((prev) => ({ ...prev, thirdParty: e.currentTarget.checked }))
+                        setAgreements((prev) => ({
+                          ...prev,
+                          thirdParty: e.currentTarget?.checked ?? false,
+                        }))
                       }
                     />
                     <Text size="sm">개인정보 제 3자 제공 동의</Text>
                   </Flex>
                   <Flex align="center" gap="xs">
                     <Checkbox
+                      color="#364fc6"
                       checked={agreements.paymentAgency}
                       onChange={(e) =>
-                        setAgreements((prev) => ({ ...prev, paymentAgency: e.currentTarget.checked }))
+                        setAgreements((prev) => ({
+                          ...prev,
+                          paymentAgency: e.currentTarget?.checked ?? false,
+                        }))
                       }
                     />
                     <Text size="sm">전자결제대행 이용 동의</Text>

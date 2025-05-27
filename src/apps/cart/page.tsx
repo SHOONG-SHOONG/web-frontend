@@ -117,17 +117,39 @@ export default function CartPage() {
     0
   );
 
-  const handleOrder = () => {
-    if (selectedIds.length === 0) {
-      alert("주문할 상품을 선택해주세요.");
-      return;
+  const handleOrder = async () => {
+    const token = localStorage.getItem("access");
+
+    try {
+      const res = await fetch(`${BASE_URL}/orders/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          access: token || "",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          selectedCartIds: selectedIds,
+        }),
+      });
+
+      if (res.ok) {
+        // 성공 시 주문 완료 페이지로 이동
+        navigate("/order");
+      } else {
+        const text = await res.text(); // JSON이 아닐 수도 있으니 텍스트로 먼저 받기
+        
+        try {
+          const error = JSON.parse(text);
+          alert(`주문 실패: ${error.message || "알 수 없는 오류"}`);
+        } catch {
+          alert("주문 실패: 응답 본문이 없습니다.");
+        }
+      }
+    } catch (error) {
+      console.error("주문 실패:", error);
+      alert("서버와의 통신 중 오류가 발생했습니다.");
     }
-    
-    navigate("/order", {
-      state: {
-        cartItemsIds: selectedIds,
-      },
-    });
   };
 
   return (
@@ -413,7 +435,7 @@ export default function CartPage() {
             color="dark"
             size="lg"
             w="50%"
-            onClick={() => navigate("/order")}
+            onClick={handleOrder}
           >
             {totalPrice.toLocaleString()}원 주문하기
           </Button>
