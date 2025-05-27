@@ -9,9 +9,7 @@ import {
   Text,
   Flex,
   Avatar,
-  Progress,
   Group,
-  Badge,
   Button,
   ActionIcon,
   Tooltip,
@@ -20,6 +18,7 @@ import {
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
+import BASE_URL from "../../../config.js";
 
 interface Item {
   itemId: number;
@@ -40,7 +39,7 @@ export default function SellerItemPage() {
     const fetchItems = async () => {
       const token = localStorage.getItem("access");
       try {
-        const res = await fetch("http://192.168.0.6:8080/admin/item-list", {
+        const res = await fetch(`${BASE_URL}/seller/item-list`, {
           headers: { access: token || "" },
         });
         const data = await res.json();
@@ -78,11 +77,12 @@ export default function SellerItemPage() {
                 leftSection={<IconPlus size={16} />}
                 color="black"
                 variant="light"
-                onClick={() => navigate("/admin/item/create")}
+                onClick={() => navigate("/seller/item/create")}
               >
                 상품 등록
               </Button>
             </Flex>
+
             <Grid mt="md">
               <Grid.Col span={3}>
                 <Card radius="md" shadow="sm" p="lg" withBorder bg="white">

@@ -14,9 +14,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!window.localStorage.getItem("access")
   );
-  // const [loginUser, setLoginUser] = useState<string | null>(
-  //   window.localStorage.getItem("name")
-  // );
+
   const [loginUser, setLoginUser] = useState<string | null>(() => {
     const raw = window.localStorage.getItem("name");
     return raw ? decodeURIComponent(raw) : null;

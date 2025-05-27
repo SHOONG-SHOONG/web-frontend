@@ -17,13 +17,19 @@ import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 
 export default function RegisterBrandPage() {
     const [file, setFile] = React.useState<File | null>(null);
-
     return (
         <AppShell layout="default">
             <SellerNavBarPage />
             <AppShell.Main style={{ backgroundColor: "#f8f9fa" }}>
                 <Container size="xl" px={0}>
-                    <Box mb="lg" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Box
+                        mb="lg"
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
                         <Title order={3} fw={600}>
                             브랜드 관리
                         </Title>
@@ -47,20 +53,37 @@ export default function RegisterBrandPage() {
                     </Box>
 
                     <Card shadow="sm" padding="lg" radius="md" withBorder>
-                        <Stack spacing="md">
-                            <TextInput label="브랜드명" placeholder="Field text goes here" required />
+                        <Stack justify="md">
+                            <TextInput
+                                label="브랜드명"
+                                placeholder="Field text goes here"
+                                required
+                            />
 
                             <Box>
                                 <Text mb={4} fw={500}>
                                     대표 썸네일 이미지
                                 </Text>
                                 <FileButton onChange={setFile} accept="image/png,image/jpeg">
-                                    {(props) => <Button variant="outline" {...props}>업로드</Button>}
+                                    {(props) => (
+                                        <Button variant="outline" {...props}>
+                                            업로드
+                                        </Button>
+                                    )}
                                 </FileButton>
-                                {file && <Text size="sm" mt="xs">{file.name}</Text>}
+                                {file && (
+                                    <Text size="sm" mt="xs">
+                                        {file.name}
+                                    </Text>
+                                )}
                             </Box>
 
-                            <Textarea label="소개 문구" placeholder="Field text goes here" autosize minRows={3} />
+                            <Textarea
+                                label="소개 문구"
+                                placeholder="Field text goes here"
+                                autosize
+                                minRows={3}
+                            />
                         </Stack>
                     </Card>
                 </Container>
