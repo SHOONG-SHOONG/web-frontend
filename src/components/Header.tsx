@@ -17,6 +17,7 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
+import { useCart } from "../contexts/CartContext.tsx";
 
 const menus = [
   { label: "홈", value: "home", path: "/" },
@@ -29,6 +30,7 @@ export default function HeaderComponent() {
   const navigate = useNavigate();
   const activePath = location.pathname;
   const { isLoggedIn, loginUser } = useLogin();
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const token = localStorage.getItem("access");
@@ -110,7 +112,7 @@ export default function HeaderComponent() {
               color="#4d6ef4"
               style={{ position: "absolute", top: -6, right: -6 }}
             >
-              0
+              {cartCount}
             </Badge>
           </UnstyledButton>
         </Group>
