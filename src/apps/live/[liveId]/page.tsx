@@ -38,7 +38,7 @@ export default function LivePage() {
   console.log(BASE_CHAT_URL);
   // WebSocket 연결
   useEffect(() => {
-    const ws = new WebSocket(`wss://${BASE_CHAT_URL}/chat/ws/chat`);
+    const ws = new WebSocket(`ws://${BASE_CHAT_URL}/chat/ws/chat`);
 
     ws.onopen = () => {
       console.log("WebSocket 연결됨");
@@ -81,7 +81,7 @@ export default function LivePage() {
 
   useEffect(() => {
   const fetchViewerCount = () => {
-    fetch(`https://${BASE_CHAT_URL}/chat/viewer-count`)
+    fetch(`http://${BASE_CHAT_URL}/chat/viewer-count`)
       .then((res) => res.json())
       .then((count) => setViewerCount(count))
       .catch((err) => {
@@ -106,7 +106,7 @@ export default function LivePage() {
       content: messageInput,
     };
 
-    fetch(`https://${BASE_CHAT_URL}/chat/send`, {
+    fetch(`http://${BASE_CHAT_URL}/chat/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
