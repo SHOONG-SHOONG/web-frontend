@@ -85,14 +85,14 @@ export default function AuthItemPage() {
                     <Container>
                         <Flex justify="space-between" align="center">
                             <Title order={2}>상품 관리</Title>
-                            <Button
+                            {/* <Button
                                 leftSection={<IconPlus size={16} />}
                                 color="black"
                                 variant="light"
                                 onClick={() => navigate("/seller/item/create")}
                             >
                                 확인
-                            </Button>
+                            </Button> */}
                         </Flex>
                         <Grid mt="md">
                             <Grid.Col span={3}>

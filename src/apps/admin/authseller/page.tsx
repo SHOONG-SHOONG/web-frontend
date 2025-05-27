@@ -74,14 +74,14 @@ export default function AuthSellerPage() {
                     <Container>
                         <Flex justify="space-between" align="center">
                             <Title order={2}>판매자 관리</Title>
-                            <Button
+                            {/* <Button
                                 leftSection={<IconPlus size={16} />}
                                 color="black"
                                 variant="light"
                                 onClick={() => navigate("/admin/item/create")}
                             >
                                 확인
-                            </Button>
+                            </Button> */}
                         </Flex>
                     </Container>
                 </Box>
@@ -103,7 +103,10 @@ export default function AuthSellerPage() {
                                     mb="sm"
                                     style={{ borderBottom: "1px solid #eee" }}
                                 >
-                                    <Text fw={500} w={200}>
+                                    <Text fw={500} w={100}>
+                                        승인 상태
+                                    </Text>
+                                    <Text fw={500} w={120}>
                                         이름
                                     </Text>
                                     <Text fw={500} w={120}>

@@ -74,90 +74,20 @@ export default function StatisticsPage() {
                     <Container>
                         <Flex justify="space-between" align="center">
                             <Title order={2}>통계</Title>
-                            <Button
+                            {/* <Button
                                 leftSection={<IconPlus size={16} />}
                                 color="black"
                                 variant="light"
                                 onClick={() => navigate("/admin/item/create")}
                             >
                                 확인
-                            </Button>
+                            </Button> */}
                         </Flex>
                     </Container>
                 </Box>
-
                 <Container py="xl">
-                    <Title order={4} mb="md">
-                        통계 목록
-                    </Title>
                     <Card withBorder p="lg" radius="md">
-                        {!items ? (
-                            <Flex justify="center" align="center" py="xl">
-                                <Loader size="lg" />
-                            </Flex>
-                        ) : (
-                            <Box>
-                                <Flex
-                                    justify="space-between"
-                                    pb="sm"
-                                    mb="sm"
-                                    style={{ borderBottom: "1px solid #eee" }}
-                                >
-                                    <Text fw={500} w={200}>
-                                        상품명
-                                    </Text>
-                                    <Text fw={500} w={120}>
-                                        카테고리
-                                    </Text>
-                                    <Text fw={500} w={100}>
-                                        정가
-                                    </Text>
-                                    <Text fw={500} w={100}>
-                                        할인율
-                                    </Text>
-                                    <Text fw={500} w={120}>
-                                        재고
-                                    </Text>
-                                    <Text fw={500} w={200}>
-                                        작업
-                                    </Text>
-                                </Flex>
-                                {items.map((item) => (
-                                    <Flex
-                                        key={item.itemId}
-                                        align="center"
-                                        justify="space-between"
-                                        py="sm"
-                                        style={{ borderBottom: "1px solid #f1f3f5" }}
-                                    >
-                                        <Group w={200}>
-                                            <Avatar
-                                                src={item.itemImages?.[0]?.url}
-                                                size="sm"
-                                                radius="xl"
-                                            />
-                                            <Text>{item.itemName}</Text>
-                                        </Group>
-                                        <Text w={120}>{item.category}</Text>
-                                        <Text w={100}>{item.price.toLocaleString()}원</Text>
-                                        <Text w={100}>{item.discountRate}%</Text>
-                                        <Text w={120}>{item.itemQuantity}개</Text>
-                                        <Group w={200}>
-                                            <Tooltip label="승인">
-                                                <ActionIcon variant="light" color="blue" radius="xl">
-                                                    <IconEdit size={16} />
-                                                </ActionIcon>
-                                            </Tooltip>
-                                            <Tooltip label="거절">
-                                                <ActionIcon variant="light" color="red" radius="xl">
-                                                    <IconTrash size={16} />
-                                                </ActionIcon>
-                                            </Tooltip>
-                                        </Group>
-                                    </Flex>
-                                ))}
-                            </Box>
-                        )}
+                        dkdk
                     </Card>
                 </Container>
             </AppShell.Main>

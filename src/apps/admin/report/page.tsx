@@ -74,14 +74,14 @@ export default function ReportPage() {
                     <Container>
                         <Flex justify="space-between" align="center">
                             <Title order={2}>신고 관리</Title>
-                            <Button
+                            {/* <Button
                                 leftSection={<IconPlus size={16} />}
                                 color="black"
                                 variant="light"
                                 onClick={() => navigate("/admin/item/create")}
                             >
                                 확인
-                            </Button>
+                            </Button> */}
                         </Flex>
                     </Container>
                 </Box>
@@ -103,20 +103,21 @@ export default function ReportPage() {
                                     mb="sm"
                                     style={{ borderBottom: "1px solid #eee" }}
                                 >
+
                                     <Text fw={500} w={200}>
-                                        상품명
+                                        라이브 썸네일
+                                    </Text>
+                                    <Text fw={500} w={200}>
+                                        라이브 아이디
                                     </Text>
                                     <Text fw={500} w={120}>
-                                        카테고리
+                                        라이브 명
                                     </Text>
                                     <Text fw={500} w={100}>
-                                        정가
+                                        라이브 시간
                                     </Text>
                                     <Text fw={500} w={100}>
-                                        할인율
-                                    </Text>
-                                    <Text fw={500} w={120}>
-                                        재고
+                                        라이브 상태
                                     </Text>
                                     <Text fw={500} w={200}>
                                         작업
