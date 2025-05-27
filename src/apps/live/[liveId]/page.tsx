@@ -38,7 +38,7 @@ export default function LivePage() {
   console.log(BASE_CHAT_URL);
   // WebSocket 연결
   useEffect(() => {
-    const ws = new WebSocket(`wss://${BASE_CHAT_URL}/chat/ws/chat`);
+    const ws = new WebSocket(`ws://${BASE_CHAT_URL}/chat/ws/chat`);
 
     ws.onopen = () => {
       console.log("WebSocket 연결됨");
@@ -80,21 +80,21 @@ export default function LivePage() {
   }, [chatMessages]);
 
   useEffect(() => {
-  const fetchViewerCount = () => {
-    fetch(`https://${BASE_CHAT_URL}/chat/viewer-count`)
-      .then((res) => res.json())
-      .then((count) => setViewerCount(count))
-      .catch((err) => {
-        console.error("시청자 수 가져오기 실패:", err);
-      });
-  };
+    const fetchViewerCount = () => {
+      fetch(`http://${BASE_CHAT_URL}/chat/viewer-count`)
+        .then((res) => res.json())
+        .then((count) => setViewerCount(count))
+        .catch((err) => {
+          console.error("시청자 수 가져오기 실패:", err);
+        });
+    };
 
-  fetchViewerCount(); // 최초 한 번 호출
+    fetchViewerCount(); // 최초 한 번 호출
 
-  const interval = setInterval(fetchViewerCount, 5000); // 3초마다 갱신
+    const interval = setInterval(fetchViewerCount, 5000); // 3초마다 갱신
 
-  return () => clearInterval(interval); // 컴포넌트 unmount 시 정리
-}, []);
+    return () => clearInterval(interval); // 컴포넌트 unmount 시 정리
+  }, []);
 
   // 메시지 전송
   const sendMessage = () => {
@@ -106,7 +106,7 @@ export default function LivePage() {
       content: messageInput,
     };
 
-    fetch(`https://${BASE_CHAT_URL}/chat/send`, {
+    fetch(`http://${BASE_CHAT_URL}/chat/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
