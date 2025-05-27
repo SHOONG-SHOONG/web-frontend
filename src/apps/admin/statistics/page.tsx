@@ -32,7 +32,7 @@ interface Item {
     itemImages: { url: string }[];
 }
 
-export default function ReportPage() {
+export default function StatisticsPage() {
     const navigate = useNavigate();
     const [items, setItems] = useState<Item[] | null>(null);
 
@@ -73,7 +73,7 @@ export default function ReportPage() {
                 <Box py="xl" px="xl">
                     <Container>
                         <Flex justify="space-between" align="center">
-                            <Title order={2}>신고 관리</Title>
+                            <Title order={2}>통계</Title>
                             <Button
                                 leftSection={<IconPlus size={16} />}
                                 color="black"
@@ -88,7 +88,7 @@ export default function ReportPage() {
 
                 <Container py="xl">
                     <Title order={4} mb="md">
-                        신고 목록
+                        통계 목록
                     </Title>
                     <Card withBorder p="lg" radius="md">
                         {!items ? (
