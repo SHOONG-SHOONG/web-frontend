@@ -13,14 +13,14 @@ import {
     Card,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
-import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
+import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 
 export default function RegisterBrandPage() {
     const [file, setFile] = React.useState<File | null>(null);
 
     return (
         <AppShell layout="default">
-            <AdminNavBarPage />
+            <SellerNavBarPage />
             <AppShell.Main style={{ backgroundColor: "#f8f9fa" }}>
                 <Container size="xl" px={0}>
                     <Box mb="lg" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

@@ -19,6 +19,9 @@ import CartPage from "./apps/cart/page.tsx";
 import LivePage from "./apps/live/[liveId]/page.tsx";
 import BrandPage from "./apps/brand/page.tsx";
 import SearchPage from "./apps/search/Search.tsx";
+import AuthItemPage from "./apps/admin/authitem/page.tsx"
+import AuthSellerPage from "./apps/admin/authseller/page.tsx"
+import ReportPage from "./apps/admin/report/page.tsx"
 import NotFoundPage from "./apps/error/NotFoundPage.tsx";
 
 // 테스트용 페이지지
@@ -64,6 +67,11 @@ function App() {
           <Route path="/seller/user" element={<SellerUserPage />} />
           <Route path="/seller/brand" element={<RegisterBrandPage />} />
           <Route path="/seller/live" element={<ManageLivePage />} />
+
+          {/* admin */}
+          <Route path="/admin" element={<AuthItemPage />} />
+          <Route path="/admin/seller" element={<AuthSellerPage />} />
+          <Route path="/admin/report" element={<ReportPage />} />
 
           {/* 404 page */}
           <Route path="*" element={<NotFoundPage />} />

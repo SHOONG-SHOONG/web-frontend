@@ -13,7 +13,7 @@ import {
     Card,
 } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
-import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
+import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 
 const liveList = [
     { id: 1, title: "Live 1", date: "2025.04.23", time: "14:00", status: "대기" },
@@ -26,7 +26,7 @@ export default function ManageLivePage() {
 
     return (
         <AppShell layout="default">
-            <AdminNavBarPage />
+            <SellerNavBarPage />
             <AppShell.Main style={{ backgroundColor: "#f8f9fa" }}>
                 <Container size="xl" px={0}>
                     <Flex justify="space-between" align="center" mb="lg">
