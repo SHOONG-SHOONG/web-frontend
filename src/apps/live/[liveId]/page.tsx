@@ -25,15 +25,27 @@ import {
 import LiveViewer from "./LiveViewer.tsx";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
-import BASE_CHAT_URL from '../../../chat_config.js';
-
+import BASE_CHAT_URL from "../../../chat_config.js";
+import LoginModal from "../../../components/LoginModal.tsx";
 
 export default function LivePage() {
   const [chatMessages, setChatMessages] = useState<string[]>([]);
   const [messageInput, setMessageInput] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const chatContainerRef = useRef<HTMLDivElement | null>(null); // ✅ 채팅창 ref
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const [viewerCount, setViewerCount] = useState<number>(0);
+
+  const [loginModalOpened, setLoginModalOpened] = useState(false);
+
+  const handleChatInputClick = () => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      setLoginModalOpened(true);
+    } else {
+      sendMessage(); // 채팅 입력 가능
+    }
+  };
 
   console.log(BASE_CHAT_URL);
   // WebSocket 연결
@@ -75,7 +87,8 @@ export default function LivePage() {
   // 채팅 추가될 때마다 채팅창 스크롤 아래로 이동
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [chatMessages]);
 
@@ -204,9 +217,15 @@ export default function LivePage() {
                       }
                     }}
                   />
-                  <Button onClick={sendMessage}>전송</Button>
+
+                  <Button onClick={handleChatInputClick}>전송</Button>
                 </Group>
               </Paper>
+
+              <LoginModal
+                opened={loginModalOpened}
+                onClose={() => setLoginModalOpened(false)}
+              />
 
               {/* 상품 정보 */}
               <Flex gap="md" align="flex-start">

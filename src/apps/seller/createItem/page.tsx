@@ -7,31 +7,27 @@ import {
   Stack,
   TextInput,
   NumberInput,
-  MultiSelect,
   FileInput,
   Textarea,
   Flex,
   Card,
   Box,
+  Select,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { IconCalendar, IconPhoto, IconPlus } from "@tabler/icons-react";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
-import { useNavigate } from "react-router-dom";
 import { DateValue } from "@mantine/dates";
 
 export default function CreateItemPage() {
-  const navigate = useNavigate();
-
   const [itemName, setItemName] = useState("");
   const [price, setPrice] = useState(0);
   const [discountRate, setDiscountRate] = useState(0);
-  const [category, setCategory] = useState<string[]>([]);
+  const [category, setCategory] = useState<string | null>(null);
   const [stock, setStock] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [description, setDescription] = useState("");
-  // const [endDate, setEndDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<DateValue>(null);
 
   const handleSubmit = async () => {
@@ -49,20 +45,26 @@ export default function CreateItemPage() {
     }
 
     const itemData = {
-      itemName: itemName,
-      price: price,
+      itemName,
+      price,
       discountRate: Math.round(((price - discountRate) / price) * 100),
       description,
       itemQuantity: stock,
-      category: category[0] || "",
+      category: category || "",
       createdAt: new Date().toISOString(),
-      discountExpiredAt: endDate instanceof Date ? endDate.toISOString() : "",
-      status: "pending",
+      discountExpiredAt:
+        endDate instanceof Date && !isNaN(endDate.getTime())
+          ? endDate.toISOString()
+          : new Date().toISOString(), // fallback 처리
     };
 
     const formData = new FormData();
     formData.append("item", JSON.stringify(itemData));
     formData.append("imageFiles", image);
+
+    for (const pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
 
     try {
       const token = localStorage.getItem("access");
@@ -80,8 +82,15 @@ export default function CreateItemPage() {
         throw new Error(`등록 실패: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log("등록 성공:", data);
+      // body가 있을 때만 json 파싱
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        console.log("등록 성공:", data);
+      } else {
+        console.log("등록 성공 (응답 본문 없음)");
+      }
+
       alert("상품이 등록되었습니다!");
     } catch (error) {
       console.error("등록 에러:", error);
@@ -94,10 +103,12 @@ export default function CreateItemPage() {
       <SellerNavBarPage />
       <AppShell.Main style={{ backgroundColor: "#ffffff" }}>
         <Box py="xl" px="xl">
-          <Container>
+          <Container w={800}>
             <Flex justify="space-between" align="center">
               <Title order={2}>상품 등록</Title>
               <Button
+                radius="lg"
+                h={40}
                 leftSection={<IconPlus size={16} />}
                 color="black"
                 variant="light"
@@ -107,9 +118,11 @@ export default function CreateItemPage() {
               </Button>
             </Flex>
 
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
-              <Stack gap="md">
+            <Card p="lg" mt="lg">
+              <Stack gap="lg">
                 <TextInput
+                  radius="sm"
+                  size="md"
                   label="상품 이름"
                   placeholder="상품 이름을 입력하세요"
                   value={itemName}
@@ -118,6 +131,8 @@ export default function CreateItemPage() {
                 />
 
                 <NumberInput
+                  radius="sm"
+                  size="md"
                   label="기존 가격"
                   value={price}
                   onChange={(val) =>
@@ -128,6 +143,8 @@ export default function CreateItemPage() {
                 />
 
                 <NumberInput
+                  radius="sm"
+                  size="md"
                   label="할인율"
                   value={discountRate}
                   onChange={(val) =>
@@ -137,7 +154,9 @@ export default function CreateItemPage() {
                   required
                 />
 
-                <MultiSelect
+                <Select
+                  radius="sm"
+                  size="md"
                   label="카테고리"
                   placeholder="카테고리를 선택하세요"
                   data={["여행", "숙박", "항공", "교통", "캠핑"]}
@@ -148,16 +167,21 @@ export default function CreateItemPage() {
                 />
 
                 <NumberInput
+                  radius="sm"
+                  size="md"
                   label="수량"
                   value={stock}
                   onChange={(val) =>
                     setStock(typeof val === "number" ? val : 0)
                   }
                   min={0}
+                  max={10000}
                   required
                 />
 
                 <FileInput
+                  radius="sm"
+                  size="md"
                   label="상품 이미지 등록"
                   placeholder="이미지를 업로드하세요"
                   leftSection={<IconPhoto size={16} />}
@@ -167,6 +191,8 @@ export default function CreateItemPage() {
                 />
 
                 <Textarea
+                  radius="sm"
+                  size="md"
                   label="상품 설명"
                   placeholder="상품에 대한 상세 설명을 입력하세요"
                   value={description}
@@ -175,6 +201,8 @@ export default function CreateItemPage() {
                 />
 
                 <DatePickerInput
+                  radius="sm"
+                  size="md"
                   label="할인 종료일자"
                   placeholder="날짜를 선택하세요"
                   leftSection={<IconCalendar size={16} />}

@@ -36,7 +36,7 @@ export default function SellerNavBarPage() {
   const navItems = [
     { label: "상품 관리", icon: IconPackage, path: "/seller" },
     { label: "라이브 관리", icon: IconDeviceImac, path: "/seller/live" },
-    { label: "계정 설정", icon: IconSettings, path: "/seller/user" },
+    { label: "브랜드 등록", icon: IconSettings, path: "/seller/brand" },
   ];
 
   useEffect(() => {

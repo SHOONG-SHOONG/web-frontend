@@ -13,12 +13,12 @@ import {
   Button,
   ActionIcon,
   Tooltip,
-  Loader,
 } from "@mantine/core";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
+import { RingLoader } from "../../../components/RingLoader.tsx";
 
 interface Item {
   itemId: number;
@@ -39,7 +39,7 @@ export default function SellerItemPage() {
     const fetchItems = async () => {
       const token = localStorage.getItem("access");
       try {
-        const res = await fetch(`${BASE_URL}/seller/item-list`, {
+        const res = await fetch(`${BASE_URL}/admin/item-list`, {
           headers: { access: token || "" },
         });
         const data = await res.json();
@@ -74,6 +74,8 @@ export default function SellerItemPage() {
             <Flex justify="space-between" align="center">
               <Title order={2}>상품 관리</Title>
               <Button
+                radius="lg"
+                h={40}
                 leftSection={<IconPlus size={16} />}
                 color="black"
                 variant="light"
@@ -83,9 +85,9 @@ export default function SellerItemPage() {
               </Button>
             </Flex>
 
-            <Grid mt="md">
+            <Grid mt="lg">
               <Grid.Col span={3}>
-                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                <Card radius="lg" shadow="sm" p="lg" withBorder bg="white">
                   <Text size="sm" c="dimmed">
                     총 상품 수
                   </Text>
@@ -93,7 +95,7 @@ export default function SellerItemPage() {
                 </Card>
               </Grid.Col>
               <Grid.Col span={3}>
-                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                <Card radius="lg" shadow="sm" p="lg" withBorder bg="white">
                   <Text size="sm" c="dimmed">
                     총 재고 수량
                   </Text>
@@ -101,7 +103,7 @@ export default function SellerItemPage() {
                 </Card>
               </Grid.Col>
               <Grid.Col span={3}>
-                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                <Card radius="lg" shadow="sm" p="lg" withBorder bg="white">
                   <Text size="sm" c="dimmed">
                     카테고리 수
                   </Text>
@@ -109,7 +111,7 @@ export default function SellerItemPage() {
                 </Card>
               </Grid.Col>
               <Grid.Col span={3}>
-                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                <Card radius="lg" shadow="sm" p="lg" withBorder bg="white">
                   <Text size="sm" c="dimmed">
                     평균 할인율
                   </Text>
@@ -124,10 +126,10 @@ export default function SellerItemPage() {
           <Title order={4} mb="md">
             상품 목록
           </Title>
-          <Card withBorder p="lg" radius="md">
+          <Card withBorder p="lg" radius="lg">
             {!items ? (
               <Flex justify="center" align="center" py="xl">
-                <Loader size="lg" />
+                <RingLoader />
               </Flex>
             ) : (
               <Box>

@@ -39,12 +39,12 @@ export default function CartPage() {
     hasFetched.current = true;
 
     const token = localStorage.getItem("access");
-    if(!token) {
+    if (!token) {
       alert("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
-    
+
     const fetchCartItems = async () => {
       try {
         const response = await fetch(`${BASE_URL}/cart/get`, {
@@ -77,9 +77,10 @@ export default function CartPage() {
     };
 
     fetchCartItems();
-  }, [navigate]);  
+  }, [navigate]);
 
-  const isAllSelected = selectedIds.length === cartItems.length && cartItems.length > 0;
+  const isAllSelected =
+    selectedIds.length === cartItems.length && cartItems.length > 0;
 
   // 전체 선택 핸들러
   const toggleAll = () => {
@@ -138,7 +139,7 @@ export default function CartPage() {
         navigate("/order");
       } else {
         const text = await res.text(); // JSON이 아닐 수도 있으니 텍스트로 먼저 받기
-        
+
         try {
           const error = JSON.parse(text);
           alert(`주문 실패: ${error.message || "알 수 없는 오류"}`);
@@ -174,10 +175,10 @@ export default function CartPage() {
             }}
           >
             <Grid.Col span={1}>
-              <Flex  justify="center" mr={10}>
-                <Checkbox 
+              <Flex justify="center" mr={10}>
+                <Checkbox
                   checked={isAllSelected}
-                  onChange={toggleAll} 
+                  onChange={toggleAll}
                   ml={12}
                   color="#364fc6"
                 />
@@ -186,165 +187,169 @@ export default function CartPage() {
             <Grid.Col span={5}>
               <Flex align="center" justify="center">
                 상품정보
-              </Flex>  
+              </Flex>
             </Grid.Col>
             <Grid.Col span={2} ta="center">
               <Flex align="center" justify="center">
                 수량
-              </Flex>  
+              </Flex>
             </Grid.Col>
             <Grid.Col span={2.5} ta="center">
               <Flex align="center" justify="center">
                 상품금액
-              </Flex>  
+              </Flex>
             </Grid.Col>
             <Grid.Col span={1} ta="center">
               <Flex align="center" justify="center">
                 배송
-              </Flex>  
+              </Flex>
             </Grid.Col>
           </Grid>
 
           {/* Cart Items */}
           {cartItems.map((item) => (
-          <Grid
-            key={item.cartId}
-            align="center"
-            py="sm"
-            style={{ borderBottom: "1px solid #ddd", fontSize: 14 }}
-          >
-            <Grid.Col span={1}>
-              <Flex align="center" justify="center">
-                <Checkbox
-                  color="#364fc6"
-                  checked={selectedIds.includes(item.cartId)}
-                  onChange={() => toggleItem(item.cartId)}
-                />
-              </Flex>
-            </Grid.Col>
-
-            <Grid.Col span={5}>
-              <Flex align="center" gap="sm">
-                <Link to={`/item/${item.itemId}`} style={{ textDecoration: "none" }}>
-
-                  <img
-                    src={item.imageUrl}
-                    alt={item.itemName}
-                    style={{ 
-                      width: 200,
-                      height: 200,
-                      objectFit: "cover",
-                      display: "block",
-                      borderRadius: 6,
-                    }}
+            <Grid
+              key={item.cartId}
+              align="center"
+              py="sm"
+              style={{ borderBottom: "1px solid #ddd", fontSize: 14 }}
+            >
+              <Grid.Col span={1}>
+                <Flex align="center" justify="center">
+                  <Checkbox
+                    color="#364fc6"
+                    checked={selectedIds.includes(item.cartId)}
+                    onChange={() => toggleItem(item.cartId)}
                   />
-                </Link>
-                <Link to={`/item/${item.itemId}`} style={{ textDecoration: "none" }}>
-                  <Text fw={500} c="black" style={{ cursor: "pointer" }}>
-                    {item.itemName}
-                  </Text>
-                </Link>
-              </Flex>
-            </Grid.Col>
+                </Flex>
+              </Grid.Col>
 
-            <Grid.Col span={2}>
-              <Flex direction="column" align="center" gap="xs">
+              <Grid.Col span={5}>
                 <Flex align="center" gap="sm">
+                  <Link
+                    to={`/item/${item.itemId}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt={item.itemName}
+                      style={{
+                        width: 200,
+                        height: 200,
+                        objectFit: "cover",
+                        display: "block",
+                        borderRadius: 6,
+                      }}
+                    />
+                  </Link>
+                  <Link
+                    to={`/item/${item.itemId}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Text fw={500} c="black" style={{ cursor: "pointer" }}>
+                      {item.itemName}
+                    </Text>
+                  </Link>
+                </Flex>
+              </Grid.Col>
+
+              <Grid.Col span={2}>
+                <Flex direction="column" align="center" gap="xs">
+                  <Flex align="center" gap="sm">
+                    <Button
+                      size="xs"
+                      variant="default"
+                      onClick={() => updateQuantity(item.cartId, -1)}
+                    >
+                      -
+                    </Button>
+                    <Input
+                      value={item.cartQuantity}
+                      type="number"
+                      size="xs"
+                      w={35}
+                      styles={{
+                        input: {
+                          textAlign: "center",
+                        },
+                      }}
+                      onChange={(e) => {
+                        const value = Math.max(1, parseInt(e.target.value));
+                        setCartItems((prev) =>
+                          prev.map((el) =>
+                            el.cartId === item.cartId
+                              ? { ...el, cartQuantity: value }
+                              : el
+                          )
+                        );
+                      }}
+                    />
+                    <Button
+                      size="xs"
+                      variant="default"
+                      onClick={() => updateQuantity(item.cartId, 1)}
+                    >
+                      +
+                    </Button>
+                  </Flex>
+
                   <Button
                     size="xs"
-                    variant="default"
-                    onClick={() => updateQuantity(item.cartId, -1)}
-                  >
-                    -
-                  </Button>
-                  <Input
-                    value={item.cartQuantity}
-                    type="number"
-                    size="xs"
-                    w={35}
-                    styles={{
-                      input:{
-                        textAlign: "center",
+                    color="#364fc6"
+                    w={80}
+                    px={15}
+                    mt="xs"
+                    onClick={async () => {
+                      const token = localStorage.getItem("access");
+
+                      try {
+                        const res = await fetch(
+                          `${BASE_URL}/cart/change/${item.cartId}?quantity=${item.cartQuantity}`,
+                          {
+                            method: "PATCH",
+                            headers: {
+                              "Content-Type": "application/json",
+                              access: token || "",
+                            },
+                            credentials: "include",
+                          }
+                        );
+
+                        if (res.ok) {
+                          alert("수량이 업데이트되었습니다.");
+                        } else {
+                          alert("수정 실패");
+                        }
+                      } catch (error) {
+                        console.error("수정 요청 실패:", error);
+                        alert("서버와의 통신 중 오류가 발생했습니다.");
                       }
                     }}
-                    onChange={(e) => {
-                      const value = Math.max(1, parseInt(e.target.value));
-                      setCartItems((prev) =>
-                        prev.map((el) =>
-                          el.cartId === item.cartId
-                            ? { ...el, cartQuantity: value }
-                            : el
-                        )
-                      );
-                    }}
-                  />
-                  <Button
-                    size="xs"
-                    variant="default"
-                    onClick={() => updateQuantity(item.cartId, 1)}
                   >
-                    +
+                    수량 변경
                   </Button>
                 </Flex>
+              </Grid.Col>
 
-                <Button
-                  size="xs"
-                  color="#364fc6"
-                  w={80}
-                  px={15}
-                  mt="xs"
-                  onClick={async () => {
-                    const token = localStorage.getItem("access");
-
-                    try {
-                      const res = await fetch(
-                        `${BASE_URL}/cart/change/${item.cartId}?quantity=${item.cartQuantity}`,
-                        {
-                          method: "PATCH",
-                          headers: {
-                            "Content-Type": "application/json",
-                            access: token || "",
-                          },
-                          credentials: "include",
-                        }
-                      );
-
-                      if (res.ok) {
-                        alert("수량이 업데이트되었습니다.");
-                      } else {
-                        alert("수정 실패");
-                      }
-                    } catch (error) {
-                      console.error("수정 요청 실패:", error);
-                      alert("서버와의 통신 중 오류가 발생했습니다.");
-                    }
-                  }}
-                >
-                  수량 변경
-                </Button>
-              </Flex>
-            </Grid.Col>
-
-
-            <Grid.Col span={2} ta="center">
-              <Stack gap={0}>
-                <Text fw={700}>
-                  {(
-                    item.price *
-                    (1 - item.discountRate) *
-                    item.cartQuantity
-                  ).toLocaleString()}
-                  원
-                </Text>
-                <Text size="xs" td="line-through" c="gray">
-                  {(item.price * item.cartQuantity).toLocaleString()}원
-                </Text>
-              </Stack>
-            </Grid.Col>
-            <Grid.Col span={2}>
-              <Text fw={500}>무료배송</Text>
-            </Grid.Col>
-          </Grid>
+              <Grid.Col span={2} ta="center">
+                <Stack gap={0}>
+                  <Text fw={700}>
+                    {(
+                      item.price *
+                      (1 - item.discountRate) *
+                      item.cartQuantity
+                    ).toLocaleString()}
+                    원
+                  </Text>
+                  <Text size="xs" td="line-through" c="gray">
+                    {(item.price * item.cartQuantity).toLocaleString()}원
+                  </Text>
+                </Stack>
+              </Grid.Col>
+              <Grid.Col span={2}>
+                <Text fw={500}>무료배송</Text>
+              </Grid.Col>
+            </Grid>
           ))}
         </Box>
 
@@ -431,12 +436,7 @@ export default function CartPage() {
             쇼핑 계속하기
           </Button>
 
-          <Button
-            color="dark"
-            size="lg"
-            w="50%"
-            onClick={handleOrder}
-          >
+          <Button color="dark" size="lg" w="50%" onClick={handleOrder}>
             {totalPrice.toLocaleString()}원 주문하기
           </Button>
         </Flex>
