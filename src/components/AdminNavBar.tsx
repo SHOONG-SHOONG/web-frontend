@@ -35,8 +35,8 @@ export default function AdminNavBarPage() {
     const { isLoggedIn, loginUser } = useLogin();
 
     const navItems = [
-        { label: "상품 승인 관리", icon: IconBasketCheck, path: "/admin" },
-        { label: "판매자 승인 관리", icon: IconMoodCheck, path: "/admin/seller" },
+        { label: "상품 승인", icon: IconBasketCheck, path: "/admin" },
+        { label: "판매자 승인", icon: IconMoodCheck, path: "/admin/seller" },
         { label: "신고 관리", icon: IconAlertCircle, path: "/admin/report" },
         { label: "통계", icon: IconChartDots2, path: "/admin/statistics" },
     ];

@@ -15,7 +15,7 @@ import {
 import { Link } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 
-export default function AdminUserPage() {
+export default function SellerUserPage() {
     const [file, setFile] = React.useState<File | null>(null);
 
     return (

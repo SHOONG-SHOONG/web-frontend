@@ -131,7 +131,7 @@ export default function ReportPage() {
                                         py="sm"
                                         style={{ borderBottom: "1px solid #f1f3f5" }}
                                     >
-                                        <Group w={200}>
+                                        <Group w={120}>
                                             <Avatar
                                                 src={item.itemImages?.[0]?.url}
                                                 size="sm"
@@ -140,18 +140,13 @@ export default function ReportPage() {
                                             <Text>{item.itemName}</Text>
                                         </Group>
                                         <Text w={120}>{item.category}</Text>
-                                        <Text w={100}>{item.price.toLocaleString()}원</Text>
-                                        <Text w={100}>{item.discountRate}%</Text>
+                                        <Text w={120}>{item.price.toLocaleString()}원</Text>
+                                        <Text w={80}>{item.discountRate}%</Text>
                                         <Text w={120}>{item.itemQuantity}개</Text>
                                         <Group w={200}>
-                                            <Tooltip label="승인">
+                                            <Tooltip label="이동">
                                                 <ActionIcon variant="light" color="blue" radius="xl">
                                                     <IconEdit size={16} />
-                                                </ActionIcon>
-                                            </Tooltip>
-                                            <Tooltip label="거절">
-                                                <ActionIcon variant="light" color="red" radius="xl">
-                                                    <IconTrash size={16} />
                                                 </ActionIcon>
                                             </Tooltip>
                                         </Group>

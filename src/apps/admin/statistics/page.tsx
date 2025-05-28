@@ -83,8 +83,45 @@ export default function StatisticsPage() {
                                 확인
                             </Button> */}
                         </Flex>
+
+                        <Grid mt="md">
+                            <Grid.Col span={3}>
+                                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                                    <Text size="sm" c="dimmed">
+                                        총 상품 수
+                                    </Text>
+                                    <Title order={2}>{items ? items.length : 0}</Title>
+                                </Card>
+                            </Grid.Col>
+                            <Grid.Col span={3}>
+                                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                                    <Text size="sm" c="dimmed">
+                                        총 재고 수량
+                                    </Text>
+                                    <Title order={2}>{totalQuantity}</Title>
+                                </Card>
+                            </Grid.Col>
+                            <Grid.Col span={3}>
+                                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                                    <Text size="sm" c="dimmed">
+                                        카테고리 수
+                                    </Text>
+                                    <Title order={2}>{categoryCount}</Title>
+                                </Card>
+                            </Grid.Col>
+                            <Grid.Col span={3}>
+                                <Card radius="md" shadow="sm" p="lg" withBorder bg="white">
+                                    <Text size="sm" c="dimmed">
+                                        평균 할인율
+                                    </Text>
+                                    <Title order={2}>{avgDiscount}%</Title>
+                                </Card>
+                            </Grid.Col>
+                        </Grid>
+
                     </Container>
                 </Box>
+
                 <Container py="xl">
                     <Card withBorder p="lg" radius="md">
                         dkdk
