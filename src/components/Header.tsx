@@ -34,7 +34,7 @@ export default function HeaderComponent() {
     const token = localStorage.getItem("access");
 
     if (!token) {
-      navigate("/login", { replace: true });
+      // navigate("/login", { replace: true });
     }
   }, [navigate]);
 
@@ -86,7 +86,14 @@ export default function HeaderComponent() {
 
           {isLoggedIn ? (
             <>
-              <Text size="md" fw={500} mb={5}>
+              <Text
+                size="md"
+                fw={500}
+                mb={5}
+                onClick={() => {
+                  navigate("/mypage");
+                }}
+              >
                 {loginUser}님
               </Text>
               <UnstyledButton component={Link} to="/logout">

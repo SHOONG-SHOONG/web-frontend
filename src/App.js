@@ -29,6 +29,7 @@ import SellerUserPage from "./apps/seller/manageUser/page.tsx";
 import RegisterBrandPage from "./apps/seller/registerBrand/page.tsx";
 import ListLivePage from "./apps/live/listLive/page.tsx";
 import ManageLivePage from "./apps/seller/manageLive/page.tsx";
+import Mypage from "./apps/mypage/page.tsx";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
           <Route path="/register" element={<RegisterUserPage />} />
           <Route path="/register-business" element={<RegisterBusinessPage />} />
           <Route path="/oauth2-jwt-header" element={<OAuth2Redirect />} />
+          <Route path="/mypage" element={<Mypage />} />
 
           {/* item */}
           <Route path="/item" element={<ItemPage />} />

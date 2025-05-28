@@ -52,12 +52,19 @@ interface LiveItem {
   status: string;
 }
 
+const categoryMap: Record<string, string> = {
+  여행: "TRAVEL",
+  항공: "FLIGHT",
+  숙박: "ACCOMMODATION",
+  캠핑: "CAMPING",
+  교통: "TRANSPORT",
+};
+
 export default function MainPage() {
   const navigate = useNavigate();
   const [bestItems, setBestItems] = useState<Item[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>();
   const [loginUser, setLoginUser] = useState<string | null>("");
-
   const [currentLiveItem, setCurrentLiveItem] = useState<LiveItem | null>(null);
   const [endedLiveItems, setEndedLiveItems] = useState<LiveItem[]>([]);
   const mergedLiveItems = [
@@ -139,7 +146,6 @@ export default function MainPage() {
   const checkLogin = async () => {
     const token = localStorage.getItem("access");
     const name = localStorage.getItem("name");
-
     if (token && name) {
       setIsLoggedIn(true);
       setLoginUser(name);
@@ -150,7 +156,7 @@ export default function MainPage() {
   };
 
   useEffect(() => {
-    checkLogin();
+    // checkLogin();
     fetchBestItems();
 
     fetchCurrentLive();
@@ -280,16 +286,9 @@ export default function MainPage() {
                   style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
                 />
 
-                {/* 브랜드명 */}
+                {/* 카테고리 표시 */}
                 <Text mt="md" size="xs" fw={600}>
-                  {/* 예시: 브랜드 ID에 따라 임의 지정 가능 */}
-                  {item.brandId === 1
-                    ? "PISCESS"
-                    : item.brandId === 2
-                    ? "ROUGH SIDE WHITE LABEL"
-                    : item.brandId === 3
-                    ? "NOTIA"
-                    : "KINDERSALMON"}
+                  {categoryMap[item.category] || ""}
                 </Text>
 
                 {/* 상품명 */}

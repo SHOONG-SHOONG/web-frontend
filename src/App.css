@@ -9,7 +9,7 @@
 }
 
 .tossface {
-  font-family: Tossface;
+  font-family: "Tossface";
 }
 
 .tossface {
@@ -39,4 +39,22 @@
   100% {
     transform: scale(1) rotate(0deg);
   }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+}
+
+.emoji-wiggle {
+  display: inline-block;
+  animation: wiggle 0.6s ease-in-out infinite;
 }
