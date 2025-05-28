@@ -131,7 +131,7 @@ export default function ReportPage() {
                                         py="sm"
                                         style={{ borderBottom: "1px solid #f1f3f5" }}
                                     >
-                                        <Group w={120}>
+                                        <Group w={200}>
                                             <Avatar
                                                 src={item.itemImages?.[0]?.url}
                                                 size="sm"

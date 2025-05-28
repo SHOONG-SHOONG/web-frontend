@@ -7,15 +7,14 @@ import {
     Box,
     Text,
     Flex,
-    Avatar,
     Group,
-    Badge,
     ActionIcon,
     Tooltip,
     Loader,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
+import BASE_URL from "../../../config";
 
 interface Seller {
     id: number;
@@ -36,32 +35,31 @@ interface Seller {
 export default function AuthSellerPage() {
     const [sellers, setSellers] = useState<Seller[] | null>(null);
 
-    const fetchPendingSellers = async () => {
-        const token = localStorage.getItem("access");
-        try {
-            const res = await fetch('${BASE_URL}/admin/pending/users', {
-                method: "GET",
-                headers: {
-                    access: token || "",
-                },
-                credentials: "include",
-            });
-            const data = await res.json();
-            setSellers(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error(err);
-            setSellers([]);
-        }
-    };
+    useEffect(() => {
+        const fetchSellers = async () => {
+            const token = localStorage.getItem("access");
+            try {
+                const res = await fetch(`${BASE_URL}/admin/pending/users`, {
+                    headers: { access: token || "" },
+                });
+                const data = await res.json();
+                setSellers(Array.isArray(data) ? data : []);
+            } catch (err) {
+                console.error("판매자 목록 불러오기 실패:", err);
+                setSellers([]);
+            }
+        };
+        fetchSellers();
+    }, []);
 
     const handleApprove = async (userId: number) => {
         const token = localStorage.getItem("access");
         try {
-            await fetch('${BASE_URL}/admin/${userId}/user/approve', {
+            await fetch(`${BASE_URL}/admin/${userId}/user/approve`, {
                 method: "POST",
                 headers: { access: token || "" },
             });
-            fetchPendingSellers();
+            setSellers((prev) => prev?.filter((s) => s.id !== userId) || null);
         } catch (err) {
             console.error("승인 실패:", err);
         }
@@ -70,37 +68,36 @@ export default function AuthSellerPage() {
     const handleReject = async (userId: number) => {
         const token = localStorage.getItem("access");
         try {
-            await fetch('${BASE_URL}/admin/${userId}/user/reject', {
+            await fetch(`${BASE_URL}/admin/${userId}/user/reject`, {
                 method: "POST",
                 headers: { access: token || "" },
             });
-            fetchPendingSellers();
+            setSellers((prev) => prev?.filter((s) => s.id !== userId) || null);
         } catch (err) {
             console.error("거절 실패:", err);
         }
     };
 
-    useEffect(() => {
-        fetchPendingSellers();
-    }, []);
-
     return (
         <AppShell layout="default">
             <AdminNavBarPage />
             <AppShell.Main>
+                <Box py="xl" px="xl">
+                    <Container>
+                        <Flex justify="space-between" align="center">
+                            <Title order={2}>판매자 관리</Title>
+                        </Flex>
+                    </Container>
+                </Box>
                 <Container py="xl">
-                    <Title order={2} mb="lg">
-                        판매자 관리
-                    </Title>
-
-                    <Title order={4} mb="md">
-                        대기 목록
-                    </Title>
+                    <Title order={4} mb="md">대기 목록</Title>
                     <Card withBorder p="lg" radius="md">
                         {!sellers ? (
                             <Flex justify="center" align="center" py="xl">
                                 <Loader size="lg" />
                             </Flex>
+                        ) : sellers.length === 0 ? (
+                            <Text align="center">대기중인 정보가 없습니다.</Text>
                         ) : (
                             <Box>
                                 <Flex
@@ -109,21 +106,11 @@ export default function AuthSellerPage() {
                                     mb="sm"
                                     style={{ borderBottom: "1px solid #eee" }}
                                 >
-                                    <Text fw={500} w={200}>
-                                        이름
-                                    </Text>
-                                    <Text fw={500} w={200}>
-                                        이메일
-                                    </Text>
-                                    <Text fw={500} w={160}>
-                                        전화번호
-                                    </Text>
-                                    <Text fw={500} w={200}>
-                                        브랜드명
-                                    </Text>
-                                    <Text fw={500} w={200}>
-                                        작업
-                                    </Text>
+                                    <Text fw={500} w={200}>이름</Text>
+                                    <Text fw={500} w={200}>이메일</Text>
+                                    <Text fw={500} w={160}>전화번호</Text>
+                                    <Text fw={500} w={200}>사업자번호</Text>
+                                    <Text fw={500} w={200}>작업</Text>
                                 </Flex>
                                 {sellers.map((seller) => (
                                     <Flex
@@ -136,12 +123,12 @@ export default function AuthSellerPage() {
                                         <Text w={200}>{seller.userName}</Text>
                                         <Text w={200}>{seller.userEmail}</Text>
                                         <Text w={160}>{seller.userPhone}</Text>
-                                        <Text w={200}>{seller.brandName}</Text>
+                                        <Text w={200}>{seller.registrationNumber}</Text>
                                         <Group w={200}>
                                             <Tooltip label="승인">
                                                 <ActionIcon
                                                     variant="light"
-                                                    color="green"
+                                                    color="blue"
                                                     radius="xl"
                                                     onClick={() => handleApprove(seller.id)}
                                                 >
