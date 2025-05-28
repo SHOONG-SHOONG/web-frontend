@@ -25,47 +25,46 @@ export default function RegisterBrandPage() {
         <AppShell layout="default">
             <SellerNavBarPage />
             <AppShell.Main style={{ backgroundColor: "#fff" }}>
-                <Container size="xl" px={0}>
-                    <Box py="xl" px="xl">
-                        <Flex justify="space-between" align="center">
-                            <Title order={2}>브랜드 등록</Title>
-                            <Button
-                                radius="lg"
-                                h={40}
-                                leftSection={<IconPlus size={16} />}
-                                color="black"
-                                variant="light"
-                            // onClick={() => navigate("/seller/item/create")}
-                            >
-                                등록하기
-                            </Button>
-                        </Flex>
-                    </Box>
+                <Container py="xl" px="xl">
+                    <Flex justify="space-between" align="center" mb="xl">
+                        <Title order={3} fw={600}>브랜드 등록</Title>
+                        <Button
+                            radius="lg"
+                            h={40}
+                            leftSection={<IconPlus size={16} />}
+                            color="black"
+                            variant="light"
+                        // onClick={() => navigate("/seller/item/create")}
+                        >
+                            등록하기
+                        </Button>
+                    </Flex>
 
-                    <Box>
-                        <Text mb={4} fw={500}>
-                            대표 썸네일 이미지
-                        </Text>
-                        <FileButton onChange={setFile} accept="image/png,image/jpeg">
-                            {(props) => (
-                                <Button variant="outline" {...props}>
-                                    업로드
-                                </Button>
-                            )}
-                        </FileButton>
-                        {file && (
-                            <Text size="sm" mt="xs">
-                                {file.name}
+                    <Card withBorder p="lg" radius="lg">
+                        <Box>
+                            <Text mb={4} fw={500}>
+                                대표 썸네일 이미지
                             </Text>
-                        )}
-                    </Box>
-
-                    <Textarea
-                        label="소개 문구"
-                        placeholder="Field text goes here"
-                        autosize
-                        minRows={3}
-                    />
+                            <FileButton onChange={setFile} accept="image/png,image/jpeg">
+                                {(props) => (
+                                    <Button variant="outline" {...props}>
+                                        업로드
+                                    </Button>
+                                )}
+                            </FileButton>
+                            {file && (
+                                <Text size="sm" mt="xs">
+                                    {file.name}
+                                </Text>
+                            )}
+                        </Box>
+                        <Textarea
+                            label="소개 문구"
+                            placeholder="Field text goes here"
+                            autosize
+                            minRows={3}
+                        />
+                    </Card>
                 </Container>
             </AppShell.Main>
         </AppShell>

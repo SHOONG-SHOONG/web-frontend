@@ -111,6 +111,7 @@ export default function HeaderComponent() {
                 size="lg"
                 fw={600}
                 mb={5}
+                style={{ cursor: "pointer" }}
                 onClick={() => {
                   navigate("/mypage");
                 }}
