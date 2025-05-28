@@ -29,35 +29,35 @@ const categories = [
   },
   {
     label: "여행",
-    value: "TRAVEL",
+    value: "여행",
     icon: "🏖️",
     url: "https://em-content.zobj.net/source/microsoft-teams/363/palm-tree_1f334.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/palm-tree_1f334.png",
   },
   {
     label: "숙박",
-    value: "STAY",
+    value: "숙박",
     icon: "🛏️",
     url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/bed_1f6cf-fe0f.png",
     murl: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/bed_1f6cf-fe0f.png",
   },
   {
     label: "항공",
-    value: "AIR",
+    value: "항공",
     icon: "✈️",
     url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/airplane-departure_1f6eb.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/airplane-departure_1f6eb.png",
   },
   {
     label: "캠핑",
-    value: "CAMP",
+    value: "캠핑",
     icon: "🏕",
     url: "https://em-content.zobj.net/source/microsoft-teams/363/camping_1f3d5-fe0f.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/camping_1f3d5-fe0f.png",
   },
   {
     label: "교통",
-    value: "CAR",
+    value: "교통",
     icon: "🚗",
     url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/automobile_1f697.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/automobile_1f697.png",
@@ -107,7 +107,7 @@ export default function ItemPage() {
       const token = localStorage.getItem("access");
 
       const page = 0;
-      const size = 10;
+      const size = 30;
       const sort = "itemId,desc";
 
       const url = `${BASE_URL}/item/search?keyword=${encodeURIComponent(
