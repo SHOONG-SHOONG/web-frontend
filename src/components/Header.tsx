@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -14,9 +14,10 @@ import {
   IconLogout,
   IconShoppingBag,
 } from "@tabler/icons-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
+import BASE_URL from "../config.js";
 
 const menus = [
   { label: "홈", value: "home", path: "/" },
@@ -26,17 +27,47 @@ const menus = [
 
 export default function HeaderComponent() {
   const location = useLocation();
-  const navigate = useNavigate();
   const activePath = location.pathname;
   const { isLoggedIn, loginUser } = useLogin();
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    const token = localStorage.getItem("access");
+    const fetchCart = async () => {
+      try {
+        if (!isLoggedIn) {
+          setCartCount(0);
+          return;
+        }
 
-    if (!token) {
-      // navigate("/login", { replace: true });
-    }
-  }, [navigate]);
+        const token = localStorage.getItem("access");
+
+        const response = await fetch(`${BASE_URL}/cart/get`, {
+          method: "GET",
+          headers: {
+            access: token || "",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(`서버 응답 오류: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          setCartCount(data.length);
+        } else {
+          setCartCount(0);
+        }
+      } catch (err: any) {
+        console.error("장바구니 조회 실패:", err);
+        setCartCount(0);
+      }
+    };
+
+    fetchCart();
+  }, [isLoggedIn]);
 
   return (
     <Box
@@ -48,9 +79,9 @@ export default function HeaderComponent() {
     >
       <Flex justify="space-between" align="center">
         {/* 로고 */}
-        <Box w={120}>
+        <Box w={260}>
           <Link to="/">
-            <Image src={shoongImage} w={80} />
+            <Image src={shoongImage} w={100} />
           </Link>
         </Box>
 
@@ -64,7 +95,7 @@ export default function HeaderComponent() {
                 key={menu.path}
                 to={menu.path}
                 style={{
-                  fontSize: 15,
+                  fontSize: 17,
                   fontWeight: isActive ? 700 : 500,
                   textDecoration: "none",
                   color: isActive ? "#4d6ef4" : "#888",
@@ -78,31 +109,24 @@ export default function HeaderComponent() {
           })}
         </Group>
 
-        {/* 오른쪽 아이콘 메뉴 */}
-        <Group gap="lg" w={220} align="center" justify="flex-end">
+        {/* 오른쪽 아이콘 메뉴 (크기 증가) */}
+        <Group gap="lg" w={260} align="center" justify="flex-end">
           <UnstyledButton component={Link} to="/item/search">
-            <IconSearch size={20} />
+            <IconSearch size={22} />
           </UnstyledButton>
 
           {isLoggedIn ? (
             <>
-              <Text
-                size="md"
-                fw={500}
-                mb={5}
-                onClick={() => {
-                  navigate("/mypage");
-                }}
-              >
+              <Text size="lg" fw={600} mb={5}>
                 {loginUser}님
               </Text>
               <UnstyledButton component={Link} to="/logout">
-                <IconLogout size={20} />
+                <IconLogout size={22} />
               </UnstyledButton>
             </>
           ) : (
             <UnstyledButton component={Link} to="/login">
-              <IconUser size={20} />
+              <IconUser size={22} />
             </UnstyledButton>
           )}
 
@@ -111,14 +135,20 @@ export default function HeaderComponent() {
             to="/cart"
             style={{ position: "relative" }}
           >
-            <IconShoppingBag size={20} />
-            <Badge
-              size="xs"
-              color="#4d6ef4"
-              style={{ position: "absolute", top: -6, right: -6 }}
-            >
-              0
-            </Badge>
+            <IconShoppingBag size={22} />
+            {cartCount > 0 && (
+              <Badge
+                size="sm"
+                color="#4d6ef4"
+                style={{
+                  position: "absolute",
+                  top: -8,
+                  right: -8,
+                }}
+              >
+                {cartCount}
+              </Badge>
+            )}
           </UnstyledButton>
         </Group>
       </Flex>
