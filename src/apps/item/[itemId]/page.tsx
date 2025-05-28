@@ -57,7 +57,6 @@ export default function ItemDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
-
   const [loginModalOpened, setLoginModalOpened] = useState(false);
 
   const handleItemPurchaseClick = () => {
@@ -76,7 +75,7 @@ export default function ItemDetailPage() {
     if (!token) {
       setLoginModalOpened(true);
     } else {
-      handleAddToCart();
+      handleAddToCart(Number(itemId), quantity);
     }
   };
 
@@ -147,9 +146,33 @@ export default function ItemDetailPage() {
     // }
   };
 
-  const handleAddToCart = () => {
-    alert("장바구니에 담았습니다!");
-    navigate("/cart");
+  const handleAddToCart = async (itemId: number, cartQuantity: number) => {
+    const token = localStorage.getItem("access");
+  
+    try {
+      const response = await fetch(`${BASE_URL}/cart/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          access: token || "",
+        },
+        credentials: "include", 
+        body: JSON.stringify({
+          itemId: Number(item?.itemId),
+          cartQuantity: quantity,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("장바구니 추가 실패");
+      }
+  
+      alert("장바구니에 담았습니다!");
+      navigate("/cart");
+    } catch (error) {
+      console.error("❌ 장바구니 요청 실패:", error);
+      alert("장바구니 추가 중 문제가 발생했습니다.");
+    }
   };
 
   const handleBuy = () => {
