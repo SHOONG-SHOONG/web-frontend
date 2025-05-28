@@ -145,7 +145,7 @@ export default function ItemPage() {
       const size = 10;
       const sort = "itemId,desc";
 
-      const url = `http://192.168.0.6:8080/item/search?category=${encodeURIComponent(
+      const url = `${BASE_URL}/item/search?category=${encodeURIComponent(
         category
       )}&page=${page}&size=${size}&sort=${sort}`;
 
