@@ -294,28 +294,6 @@ export default function MainPage() {
                           : "none",
                     }}
                   />
-
-                  {/* 카테고리 표시 */}
-                  <Text mt="md" size="xs" fw={600}>
-                    {categoryMap[item.category] || ""}
-                  </Text>
-
-                  {/* 상품명 */}
-                  <Text size="sm" mb="xs">
-                    {item.itemName}
-                  </Text>
-
-                  {/* 할인율 + 가격 */}
-                  <Flex align="center" gap={6}>
-                    {item.discountRate > 0 && (
-                      <Text size="sm" fw={700} color="red">
-                        {item.discountRate * 100}%
-                      </Text>
-                    )}
-                    <Text size="sm" fw={700}>
-                      {item.finalPrice.toLocaleString()}원
-                    </Text>
-                  </Flex>
                   {item.status === "SOLD_OUT" && (
                     <Badge
                       color="dark"
@@ -332,19 +310,13 @@ export default function MainPage() {
                   )}
                 </Box>
 
-                {/* 브랜드명 */}
-                <Text mt="md" size="xs" fw={600}>
-                  {item.brandId === 1
-                    ? "PISCESS"
-                    : item.brandId === 2
-                    ? "ROUGH SIDE WHITE LABEL"
-                    : item.brandId === 3
-                    ? "NOTIA"
-                    : "KINDERSALMON"}
+                {/* 카테고리 표시 */}
+                <Text size="xs" c="dimmed" mt={10}>
+                  {categoryMap[item.category] || ""}
                 </Text>
 
                 {/* 상품명 */}
-                <Text size="sm" mb="xs">
+                <Text size="sm" fw={600} mt={4} mb={4}>
                   {item.itemName}
                 </Text>
 
