@@ -26,6 +26,7 @@ import {
   IconMapPin,
   IconBuildingStore,
   IconBrandRedhat,
+  IconCheck,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../config";
@@ -50,32 +51,16 @@ export default function RegisterBusinessPage() {
   const [userPhone, setUserPhone] = useState("");
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [userAddress, setUserAddress] = useState("");
-  const [brandName, setBrandName] = useState("");
-  const [brandDescription, setBrandDescription] = useState("");
-  const [brandImageFile, setBrandImageFile] = useState<File | null>(null);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [agreeMarketing, setAgreeMarketing] = useState(false);
-  const [openedTerms, setOpenedTerms] = useState(false);
-  const [openedPrivacy, setOpenedPrivacy] = useState(false);
 
   const handleNextStep = () => {
     if (
-      !name.trim() ||
-      !userName.trim() ||
-      !userEmail.trim() ||
-      !userPassword.trim() ||
-      !confirmPassword.trim() ||
-      !registrationNumber.trim() ||
-      !userPhone.trim() ||
-      !userAddress.trim()
+      !agreeTerms ||
+      !agreePrivacy
     ) {
-      alert("모든 정보를 입력해주세요.");
-      return;
-    }
-
-    if (userPassword !== confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert("필수 약관에 동의해주세요.");
       return;
     }
 
@@ -95,7 +80,7 @@ export default function RegisterBusinessPage() {
 
       if (response.ok) {
         alert("판매자 회원가입 성공!");
-        navigate("/login", { replace: true });
+        navigate("/main", { replace: true });
       } else {
         alert("판매자 회원가입 실패!");
         const errorData = await response.json();
@@ -130,7 +115,6 @@ export default function RegisterBusinessPage() {
       userAddress,
     };
     await fetchBusinessJoin(credentials);
-    await fetchBrandRegister();
   };
 
   const handleAddressSearch = () => {
@@ -155,37 +139,6 @@ export default function RegisterBusinessPage() {
     }
   };
 
-  const fetchBrandRegister = async () => {
-    if (!brandImageFile) {
-      alert("브랜드 이미지를 등록해주세요.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("imageFile", brandImageFile);
-
-    try {
-      const response = await fetch(
-        `${BASE_URL}/brand/create?name=${encodeURIComponent(brandName)}&description=${encodeURIComponent(brandDescription)}`,
-        {
-          method: "POST",
-          headers: {
-            access: localStorage.getItem("access") || "",
-          },
-          body: formData,
-        }
-      );
-
-      if (!response.ok) throw new Error("브랜드 등록 실패");
-
-      alert("가입 신청이 완료되었습니다. 승인 후 이메일로 안내드립니다.");
-    } catch (err) {
-      console.error("브랜드 등록 에러:", err);
-      alert("브랜드 등록에 실패했습니다.");
-    }
-  };
-
-
 
   return (
     <Container size="xs" my={60}>
@@ -196,14 +149,74 @@ export default function RegisterBusinessPage() {
           </Text>
 
           <Stepper active={active} onStepClick={setActive} breakpoint="sm" size="sm" my="xl">
-            <Stepper.Step icon={<IconUser size={18} />} label="1단계" description="기본정보" />
-            <Stepper.Step icon={<IconBrandRedhat size={18} />} label="2단계" description="브랜드 등록" />
-            <Stepper.Completed>완료</Stepper.Completed>
+            <Stepper.Step icon={<IconCheck size={18} />} label="1단계" description="약관동의" />
+            <Stepper.Step icon={<IconUser size={18} />} label="2단계" description="기본 정보 입력" />
+            <Stepper.Completed><Text ta="center" fw={500}>가입이 완료되었습니다.</Text></Stepper.Completed>
           </Stepper>
 
           <form onSubmit={handleBusinessRegister}>
             <Stack>
               {active === 0 && (
+                <>
+                  <Divider my="xs" label="약관 동의" labelPosition="center" />
+
+                  <Stack spacing={4}>
+                    {/* 서비스 이용약관 */}
+                    <Flex direction="column">
+                      <Flex align="center" mb="xs">
+                        <Checkbox
+                          checked={agreeTerms}
+                          onChange={(e) => setAgreeTerms(e.currentTarget.checked)}
+                          required
+                        />
+                        <Text size="sm" ml="xs">
+                          <b>[필수]</b> 서비스 이용약관에 동의합니다.
+                        </Text>
+                      </Flex>
+                      <Box bg="gray.1" p="sm" style={{ borderRadius: 6, fontSize: "13px" }}>
+                        이 약관은 회사가 제공하는 모든 서비스에 적용됩니다. <br />
+                        사용자는 서비스를 이용함에 있어 관련 법령을 준수해야 하며, 불법적이거나 부적절한 행위에 대한 책임은 사용자 본인에게 있습니다. <br />
+                        자세한 사항은 회사 홈페이지 또는 고객센터를 통해 확인할 수 있습니다.
+                      </Box>
+                    </Flex>
+
+                    {/* 개인정보 수집 및 이용 동의 */}
+                    <Flex direction="column" mt="sm">
+                      <Flex align="center" mb="xs">
+                        <Checkbox
+                          checked={agreePrivacy}
+                          onChange={(e) => setAgreePrivacy(e.currentTarget.checked)}
+                          required
+                        />
+                        <Text size="sm" ml="xs">
+                          <b>[필수]</b> 개인정보 수집 및 이용에 동의합니다.
+                        </Text>
+                      </Flex>
+                      <Box bg="gray.1" p="sm" style={{ borderRadius: 6, fontSize: "13px" }}>
+                        수집 항목: 이름, 이메일, 전화번호, 주소 등 회원가입 및 서비스 제공에 필요한 정보 <br />
+                        수집 목적: 회원 식별, 서비스 제공, 고객 대응 <br />
+                        보유 기간: 회원 탈퇴 후 최대 5일까지 보관 후 삭제합니다.
+                      </Box>
+                    </Flex>
+
+                    {/* 선택 항목 */}
+                    <Flex align="center" mt="sm">
+                      <Checkbox
+                        checked={agreeMarketing}
+                        onChange={(e) => setAgreeMarketing(e.currentTarget.checked)}
+                      />
+                      <Text size="sm" ml="xs">
+                        <b>[선택]</b> 마케팅 정보 수신에 동의합니다.
+                      </Text>
+                    </Flex>
+                  </Stack>
+                  <Button fullWidth mt="xl" color="rgba(0, 0, 0, 1)" onClick={handleNextStep}>
+                    다음
+                  </Button>
+                </>
+              )}
+
+              {active === 1 && (
                 <>
                   <TextInput
                     size="md"
@@ -303,44 +316,6 @@ export default function RegisterBusinessPage() {
                       required
                     />
                   </Group>
-                  <Button fullWidth mt="xl" color="rgba(0, 0, 0, 1)" onClick={handleNextStep}>
-                    다음
-                  </Button>
-                </>
-              )}
-
-              {active === 1 && (
-                <>
-                  <TextInput
-                    size="md"
-                    radius="sm"
-                    label="브랜드명"
-                    placeholder="브랜드명"
-                    value={brandName}
-                    onChange={(e) => setBrandName(e.currentTarget.value)}
-                    required
-                  />
-
-                  <TextInput
-                    size="md"
-                    radius="sm"
-                    label="브랜드 설명"
-                    placeholder="브랜드에 대한 설명"
-                    value={brandDescription}
-                    onChange={(e) => setBrandDescription(e.currentTarget.value)}
-                    required
-                  />
-
-                  <FileInput
-                    size="md"
-                    radius="sm"
-                    label="브랜드 대표 이미지"
-                    placeholder="이미지를 업로드하세요"
-                    value={brandImageFile}
-                    onChange={setBrandImageFile}
-                    accept="image/png,image/jpeg"
-                    required
-                  />
 
                   <Text size="sm" c="dimmed" mt="sm">
                     가입 신청이 완료되면 관리자의 승인 후 가입이 완료됩니다. 승인 결과는 이메일로 안내드립니다.
@@ -355,69 +330,6 @@ export default function RegisterBusinessPage() {
                   >
                     사업자 계정 만들기
                   </Button>
-
-                  <Divider my="xs" label="약관 동의" labelPosition="center" />
-
-                  <Stack spacing={4}>
-                    {/* 서비스 이용약관 */}
-                    <Flex direction="column">
-                      <Flex align="center">
-                        <Checkbox
-                          checked={agreeTerms}
-                          onChange={(e) => setAgreeTerms(e.currentTarget.checked)}
-                          required
-                        />
-                        <Text size="sm" ml="xs">
-                          <b>[필수]</b> 서비스 이용약관에 동의합니다.
-                          <Anchor component="button" ml="sm" c="blue" onClick={() => setOpenedTerms((o) => !o)}>
-                            더보기
-                          </Anchor>
-                        </Text>
-                      </Flex>
-                      <Collapse in={openedTerms}>
-                        <Box bg="gray.1" p="sm" mt="xs" style={{ borderRadius: 6, fontSize: "13px" }}>
-                          이 약관은 회사가 제공하는 모든 서비스에 적용됩니다. <br />
-                          사용자는 서비스를 이용함에 있어 관련 법령을 준수해야 하며, 불법적이거나 부적절한 행위에 대한 책임은 사용자 본인에게 있습니다. <br />
-                          자세한 사항은 회사 홈페이지 또는 고객센터를 통해 확인할 수 있습니다.
-                        </Box>
-                      </Collapse>
-                    </Flex>
-
-                    {/* 개인정보 수집 및 이용 동의 */}
-                    <Flex direction="column">
-                      <Flex align="center">
-                        <Checkbox
-                          checked={agreePrivacy}
-                          onChange={(e) => setAgreePrivacy(e.currentTarget.checked)}
-                          required
-                        />
-                        <Text size="sm" ml="xs">
-                          <b>[필수]</b> 개인정보 수집 및 이용에 동의합니다.
-                          <Anchor component="button" ml="sm" c="blue" onClick={() => setOpenedPrivacy((o) => !o)}>
-                            더보기
-                          </Anchor>
-                        </Text>
-                      </Flex>
-                      <Collapse in={openedPrivacy}>
-                        <Box bg="gray.1" p="sm" mt="xs" style={{ borderRadius: 6, fontSize: "13px" }}>
-                          수집 항목: 이름, 이메일, 전화번호, 주소 등 회원가입 및 서비스 제공에 필요한 정보 <br />
-                          수집 목적: 회원 식별, 서비스 제공, 고객 대응 <br />
-                          보유 기간: 회원 탈퇴 후 최대 5일까지 보관 후 삭제합니다.
-                        </Box>
-                      </Collapse>
-                    </Flex>
-
-                    {/* 선택 항목 */}
-                    <Flex align="center">
-                      <Checkbox
-                        checked={agreeMarketing}
-                        onChange={(e) => setAgreeMarketing(e.currentTarget.checked)}
-                      />
-                      <Text size="sm" ml="xs">
-                        <b>[선택]</b> 마케팅 정보 수신에 동의합니다.
-                      </Text>
-                    </Flex>
-                  </Stack>
                 </>
               )}
             </Stack>
