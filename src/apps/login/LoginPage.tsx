@@ -59,7 +59,7 @@ export default function LoginPage() {
         setIsLoggedIn(true);
         setLoginUser(name);
 
-        alert("Login successful");
+        alert("로그인 성공!");
 
         // 사업자 로그인
         if (tab === "biz") {

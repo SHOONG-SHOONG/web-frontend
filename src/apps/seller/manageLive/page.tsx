@@ -12,6 +12,7 @@ import {
   Badge,
   Image,
 } from "@mantine/core";
+
 import { useNavigate } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import { RingLoader } from "../../../components/RingLoader.tsx";
@@ -124,8 +125,8 @@ export default function ManageLivePage() {
                           live.status === "대기"
                             ? "yellow"
                             : live.status === "ONGOING"
-                            ? "green"
-                            : "gray"
+                              ? "green"
+                              : "gray"
                         }
                         variant="light"
                       >

@@ -58,8 +58,8 @@ export default function SellerItemPage() {
   const avgDiscount =
     Array.isArray(items) && items.length > 0
       ? (
-          items.reduce((sum, i) => sum + i.discountRate, 0) / items.length
-        ).toFixed(1)
+        items.reduce((sum, i) => sum + i.discountRate, 0) / items.length
+      ).toFixed(1)
       : "0.0";
   const categoryCount = Array.isArray(items)
     ? new Set(items.map((i) => i.category)).size
