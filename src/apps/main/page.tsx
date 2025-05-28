@@ -261,14 +261,15 @@ export default function MainPage() {
 
         <Grid gutter="xl">
           {bestItems.map((item) => (
-            <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
-              <Box
-                onClick={() =>
-                  navigate(`/item/${item.itemId}`, { state: item })
-                }
-                style={{ cursor: "pointer" }}
-              >
-                {/* 이미지 */}
+          <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
+            <Box
+              onClick={() =>
+                navigate(`/item/${item.itemId}`, { state: item })
+              }
+              style={{ cursor: "pointer", position: "relative" }}
+            >
+              {/* 이미지 + 흐리게 처리 + SOLD OUT 뱃지 */}
+              <Box style={{ position: "relative" }}>
                 <Image
                   src={
                     item.itemImages?.[0]?.url || "https://placehold.co/400x400"
@@ -277,39 +278,57 @@ export default function MainPage() {
                   radius="md"
                   height={320}
                   fit="cover"
-                  style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                  style={{
+                    aspectRatio: "1 / 1",
+                    objectFit: "cover",
+                    filter: item.status === "SOLD_OUT" ? "grayscale(60%) opacity(60%)" : "none",
+                  }}
                 />
-
-                {/* 브랜드명 */}
-                <Text mt="md" size="xs" fw={600}>
-                  {/* 예시: 브랜드 ID에 따라 임의 지정 가능 */}
-                  {item.brandId === 1
-                    ? "PISCESS"
-                    : item.brandId === 2
-                    ? "ROUGH SIDE WHITE LABEL"
-                    : item.brandId === 3
-                    ? "NOTIA"
-                    : "KINDERSALMON"}
-                </Text>
-
-                {/* 상품명 */}
-                <Text size="sm" mb="xs">
-                  {item.itemName}
-                </Text>
-
-                {/* 할인율 + 가격 */}
-                <Flex align="center" gap={6}>
-                  {item.discountRate > 0 && (
-                    <Text size="sm" fw={700} color="red">
-                      {item.discountRate * 100}%
-                    </Text>
-                  )}
-                  <Text size="sm" fw={700}>
-                    {item.finalPrice.toLocaleString()}원
-                  </Text>
-                </Flex>
+                {item.status === "SOLD_OUT" && (
+                  <Badge
+                    color="dark"
+                    variant="filled"
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      left: 10,
+                      zIndex: 1,
+                    }}
+                  >
+                    SOLD OUT
+                  </Badge>
+                )}
               </Box>
-            </Grid.Col>
+
+              {/* 브랜드명 */}
+              <Text mt="md" size="xs" fw={600}>
+                {item.brandId === 1
+                  ? "PISCESS"
+                  : item.brandId === 2
+                  ? "ROUGH SIDE WHITE LABEL"
+                  : item.brandId === 3
+                  ? "NOTIA"
+                  : "KINDERSALMON"}
+              </Text>
+
+              {/* 상품명 */}
+              <Text size="sm" mb="xs">
+                {item.itemName}
+              </Text>
+
+              {/* 할인율 + 가격 */}
+              <Flex align="center" gap={6}>
+                {item.discountRate > 0 && (
+                  <Text size="sm" fw={700} color="red">
+                    {item.discountRate * 100}%
+                  </Text>
+                )}
+                <Text size="sm" fw={700}>
+                  {item.finalPrice.toLocaleString()}원
+                </Text>
+              </Flex>
+            </Box>
+          </Grid.Col>
           ))}
         </Grid>
 
