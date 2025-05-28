@@ -145,7 +145,7 @@ export default function SellerNavBarPage() {
                       {loginUser}
                     </Text>
                     <Text size="xs" c="dimmed">
-                      관리자 계정
+                      판매자 계정
                     </Text>
                   </Box>
                 </Group>

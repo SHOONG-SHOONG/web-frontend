@@ -371,7 +371,7 @@ export default function MainPage() {
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q4">
-            <Accordion.Control>배송은 얼마나 걸린가요?</Accordion.Control>
+            <Accordion.Control>배송은 얼마나 걸리나요?</Accordion.Control>
             <Accordion.Panel>2~3일 정도 후에 배송됩니다.</Accordion.Panel>
           </Accordion.Item>
         </Accordion>
