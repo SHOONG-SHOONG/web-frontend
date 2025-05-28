@@ -1,193 +1,40 @@
-// import React, { useState } from "react";
-// import {
-//   AppShell,
-//   Container,
-//   Title,
-//   Button,
-//   Box,
-//   Stack,
-//   TextInput,
-//   NumberInput,
-//   MultiSelect,
-//   FileInput,
-//   Textarea,
-//   Flex,
-//   Card,
-// } from "@mantine/core";
-// import { DatePickerInput } from "@mantine/dates";
-// import { IconCalendar, IconPhoto } from "@tabler/icons-react";
-// import { Link } from "react-router-dom";
-// import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
-
-// export default function CreateItemPage() {
-//   const [productName, setProductName] = useState("");
-//   const [originalPrice, setOriginalPrice] = useState(0);
-//   const [salePrice, setSalePrice] = useState(0);
-//   const [category, setCategory] = useState<string[]>([]);
-//   const [stock, setStock] = useState(0);
-//   const [image, setImage] = useState<File | null>(null);
-//   const [description, setDescription] = useState("");
-//   const [endDate, setEndDate] = useState<Date | null>(null);
-
-//   const handleSubmit = () => {
-//     const product = {
-//       productName,
-//       originalPrice,
-//       salePrice,
-//       category,
-//       stock,
-//       image,
-//       description,
-//       endDate,
-//     };
-//     console.log("상품 등록됨:", product);
-//     alert("상품이 등록되었습니다!");
-//   };
-
-//   return (
-//     <AppShell layout="default">
-//       <AdminNavBarPage />
-//       <AppShell.Main style={{ backgroundColor: "#f8f9fa" }}>
-//         <Container size="xl" px={0}>
-//           <Flex justify="space-between" align="center" mb="lg">
-//             <Title order={3} fw={600}>
-//               상품 등록
-//             </Title>
-//             <Button
-//               variant="filled"
-//               size="sm"
-//               radius="md"
-//               onClick={handleSubmit}
-//               styles={{
-//                 root: {
-//                   backgroundColor: "#4c6ef5",
-//                   "&:hover": {
-//                     backgroundColor: "#364fc7",
-//                   },
-//                 },
-//               }}
-//             >
-//               등록
-//             </Button>
-//           </Flex>
-
-//           <Card shadow="sm" padding="lg" radius="md" withBorder>
-//             <Stack gap="md">
-//               <TextInput
-//                 label="상품 이름"
-//                 placeholder="상품 이름을 입력하세요"
-//                 value={productName}
-//                 onChange={(e) => setProductName(e.currentTarget.value)}
-//                 required
-//               />
-
-//               <NumberInput
-//                 label="기존 가격"
-//                 value={originalPrice}
-//                 onChange={(val) =>
-//                   setOriginalPrice(typeof val === "number" ? val : 0)
-//                 }
-//                 min={0}
-//                 required
-//               />
-
-//               <NumberInput
-//                 label="할인가"
-//                 value={salePrice}
-//                 onChange={(val) =>
-//                   setSalePrice(typeof val === "number" ? val : 0)
-//                 }
-//                 min={0}
-//                 required
-//               />
-
-//               <MultiSelect
-//                 label="카테고리"
-//                 placeholder="카테고리를 선택하세요"
-//                 data={["여행", "숙박", "항공", "교통", "캠핑"]}
-//                 value={category}
-//                 onChange={setCategory}
-//                 searchable
-//                 clearable
-//               />
-
-//               <NumberInput
-//                 label="수량"
-//                 value={stock}
-//                 onChange={(val) => setStock(typeof val === "number" ? val : 0)}
-//                 min={0}
-//                 required
-//               />
-
-//               <FileInput
-//                 label="상품 이미지 등록"
-//                 placeholder="이미지를 업로드하세요"
-//                 leftSection={<IconPhoto size={16} />}
-//                 value={image}
-//                 onChange={setImage}
-//                 accept="image/png,image/jpeg"
-//               />
-
-//               <Textarea
-//                 label="상품 설명"
-//                 placeholder="상품에 대한 상세 설명을 입력하세요"
-//                 value={description}
-//                 onChange={(e) => setDescription(e.currentTarget.value)}
-//                 minRows={4}
-//               />
-
-//               <DatePickerInput
-//                 label="할인 종료일자"
-//                 placeholder="날짜를 선택하세요"
-//                 leftSection={<IconCalendar size={16} />}
-//                 value={endDate}
-//                 onChange={setEndDate}
-//                 valueFormat="YYYY-MM-DD"
-//                 type="default"
-//               />
-//             </Stack>
-//           </Card>
-//         </Container>
-//       </AppShell.Main>
-//     </AppShell>
-//   );
-// }
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   AppShell,
   Container,
   Title,
   Button,
-  Box,
   Stack,
   TextInput,
   NumberInput,
-  MultiSelect,
   FileInput,
   Textarea,
   Flex,
   Card,
+  Box,
+  Select,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { IconCalendar, IconPhoto } from "@tabler/icons-react";
-import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
+import { IconCalendar, IconPhoto, IconPlus } from "@tabler/icons-react";
+import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
+import { DateValue } from "@mantine/dates";
 
 export default function CreateItemPage() {
-  const [productName, setProductName] = useState("");
-  const [originalPrice, setOriginalPrice] = useState(0);
-  const [salePrice, setSalePrice] = useState(0);
-  const [category, setCategory] = useState<string[]>([]);
+  const [itemName, setItemName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [discountRate, setDiscountRate] = useState(0);
+  const [category, setCategory] = useState<string | null>(null);
   const [stock, setStock] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [description, setDescription] = useState("");
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<DateValue>(null);
 
   const handleSubmit = async () => {
     if (
-      !productName ||
-      !originalPrice ||
-      !salePrice ||
+      !itemName ||
+      !price ||
+      !discountRate ||
       !stock ||
       !image ||
       !description ||
@@ -198,22 +45,26 @@ export default function CreateItemPage() {
     }
 
     const itemData = {
-      itemName: productName,
-      price: originalPrice,
-      finalPrice: salePrice,
-      discountRate: Math.round(
-        ((originalPrice - salePrice) / originalPrice) * 100
-      ),
+      itemName,
+      price,
+      discountRate: Math.round(((price - discountRate) / price) * 100),
       description,
       itemQuantity: stock,
-      category: category[0] || "",
+      category: category || "",
       createdAt: new Date().toISOString(),
-      discountExpiredAt: endDate instanceof Date ? endDate.toISOString() : "",
+      discountExpiredAt:
+        endDate instanceof Date && !isNaN(endDate.getTime())
+          ? endDate.toISOString()
+          : new Date().toISOString(), // fallback 처리
     };
 
     const formData = new FormData();
     formData.append("item", JSON.stringify(itemData));
     formData.append("imageFiles", image);
+
+    for (const pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
 
     try {
       const token = localStorage.getItem("access");
@@ -231,8 +82,15 @@ export default function CreateItemPage() {
         throw new Error(`등록 실패: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log("등록 성공:", data);
+      // body가 있을 때만 json 파싱
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        console.log("등록 성공:", data);
+      } else {
+        console.log("등록 성공 (응답 본문 없음)");
+      }
+
       alert("상품이 등록되었습니다!");
     } catch (error) {
       console.error("등록 에러:", error);
@@ -242,108 +100,120 @@ export default function CreateItemPage() {
 
   return (
     <AppShell layout="default">
-      <AdminNavBarPage />
-      <AppShell.Main style={{ backgroundColor: "#f8f9fa" }}>
-        <Container size="xl" px={0}>
-          <Flex justify="space-between" align="center" mb="lg">
-            <Title order={3} fw={600}>
-              상품 등록
-            </Title>
-            <Button
-              variant="filled"
-              size="sm"
-              radius="md"
-              onClick={handleSubmit}
-              styles={{
-                root: {
-                  backgroundColor: "#4c6ef5",
-                  "&:hover": {
-                    backgroundColor: "#364fc7",
-                  },
-                },
-              }}
-            >
-              등록
-            </Button>
-          </Flex>
+      <SellerNavBarPage />
+      <AppShell.Main style={{ backgroundColor: "#ffffff" }}>
+        <Box py="xl" px="xl">
+          <Container w={800}>
+            <Flex justify="space-between" align="center">
+              <Title order={2}>상품 등록</Title>
+              <Button
+                radius="lg"
+                h={40}
+                leftSection={<IconPlus size={16} />}
+                color="black"
+                variant="light"
+                onClick={handleSubmit}
+              >
+                등록하기
+              </Button>
+            </Flex>
 
-          <Card shadow="sm" padding="lg" radius="md" withBorder>
-            <Stack gap="md">
-              <TextInput
-                label="상품 이름"
-                placeholder="상품 이름을 입력하세요"
-                value={productName}
-                onChange={(e) => setProductName(e.currentTarget.value)}
-                required
-              />
+            <Card p="lg" mt="lg">
+              <Stack gap="lg">
+                <TextInput
+                  radius="sm"
+                  size="md"
+                  label="상품 이름"
+                  placeholder="상품 이름을 입력하세요"
+                  value={itemName}
+                  onChange={(e) => setItemName(e.currentTarget.value)}
+                  required
+                />
 
-              <NumberInput
-                label="기존 가격"
-                value={originalPrice}
-                onChange={(val) =>
-                  setOriginalPrice(typeof val === "number" ? val : 0)
-                }
-                min={0}
-                required
-              />
+                <NumberInput
+                  radius="sm"
+                  size="md"
+                  label="기존 가격"
+                  value={price}
+                  onChange={(val) =>
+                    setPrice(typeof val === "number" ? val : 0)
+                  }
+                  min={0}
+                  required
+                />
 
-              <NumberInput
-                label="할인가"
-                value={salePrice}
-                onChange={(val) =>
-                  setSalePrice(typeof val === "number" ? val : 0)
-                }
-                min={0}
-                required
-              />
+                <NumberInput
+                  radius="sm"
+                  size="md"
+                  label="할인율"
+                  value={discountRate}
+                  onChange={(val) =>
+                    setDiscountRate(typeof val === "number" ? val : 0)
+                  }
+                  min={0}
+                  required
+                />
 
-              <MultiSelect
-                label="카테고리"
-                placeholder="카테고리를 선택하세요"
-                data={["여행", "숙박", "항공", "교통", "캠핑"]}
-                value={category}
-                onChange={setCategory}
-                searchable
-                clearable
-              />
+                <Select
+                  radius="sm"
+                  size="md"
+                  label="카테고리"
+                  placeholder="카테고리를 선택하세요"
+                  data={["여행", "숙박", "항공", "교통", "캠핑"]}
+                  value={category}
+                  onChange={setCategory}
+                  searchable
+                  clearable
+                />
 
-              <NumberInput
-                label="수량"
-                value={stock}
-                onChange={(val) => setStock(typeof val === "number" ? val : 0)}
-                min={0}
-                required
-              />
+                <NumberInput
+                  radius="sm"
+                  size="md"
+                  label="수량"
+                  value={stock}
+                  onChange={(val) =>
+                    setStock(typeof val === "number" ? val : 0)
+                  }
+                  min={0}
+                  max={10000}
+                  required
+                />
 
-              <FileInput
-                label="상품 이미지 등록"
-                placeholder="이미지를 업로드하세요"
-                leftSection={<IconPhoto size={16} />}
-                value={image}
-                onChange={setImage}
-                accept="image/png,image/jpeg"
-              />
+                <FileInput
+                  radius="sm"
+                  size="md"
+                  label="상품 이미지 등록"
+                  placeholder="이미지를 업로드하세요"
+                  leftSection={<IconPhoto size={16} />}
+                  value={image}
+                  onChange={setImage}
+                  accept="image/png,image/jpeg"
+                />
 
-              <Textarea
-                label="상품 설명"
-                placeholder="상품에 대한 상세 설명을 입력하세요"
-                value={description}
-                onChange={(e) => setDescription(e.currentTarget.value)}
-                minRows={4}
-              />
+                <Textarea
+                  radius="sm"
+                  size="md"
+                  label="상품 설명"
+                  placeholder="상품에 대한 상세 설명을 입력하세요"
+                  value={description}
+                  onChange={(e) => setDescription(e.currentTarget.value)}
+                  minRows={4}
+                />
 
-              <DatePickerInput
-                label="할인 종료일자"
-                placeholder="날짜를 선택하세요"
-                leftSection={<IconCalendar size={16} />}
-                value={endDate}
-                // onChange={setEndDate}
-                valueFormat="YYYY-MM-DD"
-                type="default"
-              />
-            </Stack>
-          </Card>
-        </Container>
+                <DatePickerInput
+                  radius="sm"
+                  size="md"
+                  label="할인 종료일자"
+                  placeholder="날짜를 선택하세요"
+                  leftSection={<IconCalendar size={16} />}
+                  value={endDate}
+                  onChange={(value) => setEndDate(value)}
+                  valueFormat="YYYY-MM-DD"
+                />
+              </Stack>
+            </Card>
+          </Container>
+        </Box>
       </AppShell.Main>
     </AppShell>
   );

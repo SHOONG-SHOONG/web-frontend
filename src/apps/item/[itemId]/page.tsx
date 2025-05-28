@@ -23,6 +23,8 @@ import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
 import BASE_URL from "../../../config.js";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { RingLoader } from "../../../components/RingLoader.tsx";
+import LoginModal from "../../../components/LoginModal.tsx";
 
 // 타입 정의
 interface ItemImage {
@@ -56,6 +58,28 @@ export default function ItemDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
+  const [loginModalOpened, setLoginModalOpened] = useState(false);
+
+  const handleItemPurchaseClick = () => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      setLoginModalOpened(true);
+    } else {
+      handleBuy();
+    }
+  };
+
+  const handleCartItemClick = () => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      setLoginModalOpened(true);
+    } else {
+      handleAddToCart();
+    }
+  };
+
   useEffect(() => {
     const fetchItemDetail = async (
       itemId: number,
@@ -63,7 +87,7 @@ export default function ItemDetailPage() {
       setError: (error: string | null) => void
     ) => {
       try {
-        const response = await fetch(`${BASE_URL}/item/${itemId}`, {
+        const response = await fetch(`${BASE_URL}/item/summary/${itemId}`, {
           method: "GET",
           headers: {
             Accept: "*/*",
@@ -135,7 +159,7 @@ export default function ItemDetailPage() {
   if (loading) {
     return (
       <Container py="xl">
-        <Loader color="blue" size="lg" />
+        <RingLoader />
       </Container>
     );
   }
@@ -258,7 +282,7 @@ export default function ItemDetailPage() {
                 variant="default"
                 radius="sm"
                 style={{ height: "50px", fontWeight: 600 }}
-                onClick={handleAddToCart}
+                onClick={handleCartItemClick}
               >
                 장바구니에 담기
               </Button>
@@ -267,13 +291,18 @@ export default function ItemDetailPage() {
                 color="dark"
                 radius="sm"
                 style={{ height: "50px", fontWeight: 600 }}
-                onClick={handleBuy}
+                onClick={handleItemPurchaseClick}
               >
                 바로 구매하기
               </Button>
             </Flex>
           </Grid.Col>
         </Grid>
+
+        <LoginModal
+          opened={loginModalOpened}
+          onClose={() => setLoginModalOpened(false)}
+        />
 
         {/* 상세 정보 탭 */}
         <Tabs color="rgba(0, 0, 0, 1)" defaultValue="detail">

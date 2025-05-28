@@ -8,12 +8,9 @@ import {
   Grid,
   Image,
   Text,
-  Card,
-  Badge,
   Flex,
   Button,
   Tooltip,
-  TextInput,
 } from "@mantine/core";
 import { IconArrowUp } from "@tabler/icons-react";
 import BASE_URL from "../../config.js";
@@ -29,35 +26,35 @@ const categories = [
   },
   {
     label: "여행",
-    value: "TRAVEL",
+    value: "여행",
     icon: "🏖️",
     url: "https://em-content.zobj.net/source/microsoft-teams/363/palm-tree_1f334.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/palm-tree_1f334.png",
   },
   {
     label: "숙박",
-    value: "STAY",
+    value: "숙박",
     icon: "🛏️",
     url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/bed_1f6cf-fe0f.png",
     murl: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/bed_1f6cf-fe0f.png",
   },
   {
     label: "항공",
-    value: "AIR",
+    value: "항공",
     icon: "✈️",
     url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/airplane-departure_1f6eb.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/airplane-departure_1f6eb.png",
   },
   {
     label: "캠핑",
-    value: "CAMP",
+    value: "캠핑",
     icon: "🏕",
     url: "https://em-content.zobj.net/source/microsoft-teams/363/camping_1f3d5-fe0f.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/camping_1f3d5-fe0f.png",
   },
   {
     label: "교통",
-    value: "CAR",
+    value: "교통",
     icon: "🚗",
     url: "https://em-content.zobj.net/source/microsoft-3D-fluent/406/automobile_1f697.png",
     murl: "https://em-content.zobj.net/source/microsoft-teams/363/automobile_1f697.png",
@@ -93,6 +90,14 @@ interface PageInfo {
   totalPages: number;
 }
 
+const categoryMap: Record<string, string> = {
+  여행: "TRAVEL",
+  항공: "FLIGHT",
+  숙박: "ACCOMMODATION",
+  캠핑: "CAMPING",
+  교통: "TRANSPORT",
+};
+
 export default function ItemPage() {
   const [items, setItems] = useState<Item[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -107,7 +112,7 @@ export default function ItemPage() {
       const token = localStorage.getItem("access");
 
       const page = 0;
-      const size = 10;
+      const size = 30;
       const sort = "itemId,desc";
 
       const url = `${BASE_URL}/item/search?keyword=${encodeURIComponent(
@@ -148,7 +153,7 @@ export default function ItemPage() {
       const size = 10;
       const sort = "itemId,desc";
 
-      const url = `http://192.168.0.6:8080/item/search?category=${encodeURIComponent(
+      const url = `${BASE_URL}/item/search?category=${encodeURIComponent(
         category
       )}&page=${page}&size=${size}&sort=${sort}`;
 
@@ -256,16 +261,9 @@ export default function ItemPage() {
                   style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
                 />
 
-                {/* 브랜드명 */}
-                <Text mt="md" size="xs" fw={600}>
-                  {/* 예시: 브랜드 ID에 따라 임의 지정 가능 */}
-                  {item.brandId === 1
-                    ? "PISCESS"
-                    : item.brandId === 2
-                    ? "ROUGH SIDE WHITE LABEL"
-                    : item.brandId === 3
-                    ? "NOTIA"
-                    : "KINDERSALMON"}
+                {/* 카테고리 표시 */}
+                <Text mt="md" size="xs" fw={600} c={"gray"}>
+                  {categoryMap[item.category] || ""}
                 </Text>
 
                 {/* 상품명 */}

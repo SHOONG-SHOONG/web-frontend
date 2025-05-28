@@ -1,4 +1,3 @@
-// src/pages/NotFoundPage.tsx
 import { Button, Container, Text, Title, Stack, Center } from "@mantine/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -58,7 +57,11 @@ export default function NotFoundPage() {
               <br />
               여행지처럼 사라진 페이지예요.
             </Text>
-            <Button onClick={() => navigate("/")} variant="outline" color="black">
+            <Button
+              onClick={() => navigate("/")}
+              variant="outline"
+              color="black"
+            >
               메인으로 돌아가기
             </Button>
           </Stack>

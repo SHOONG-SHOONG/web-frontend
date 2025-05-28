@@ -25,15 +25,27 @@ import {
 import LiveViewer from "./LiveViewer.tsx";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
-import BASE_CHAT_URL from '../../../chat_config.js';
-
+import BASE_CHAT_URL from "../../../chat_config.js";
+import LoginModal from "../../../components/LoginModal.tsx";
 
 export default function LivePage() {
   const [chatMessages, setChatMessages] = useState<string[]>([]);
   const [messageInput, setMessageInput] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const chatContainerRef = useRef<HTMLDivElement | null>(null); // ✅ 채팅창 ref
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const [viewerCount, setViewerCount] = useState<number>(0);
+
+  const [loginModalOpened, setLoginModalOpened] = useState(false);
+
+  const handleChatInputClick = () => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      setLoginModalOpened(true);
+    } else {
+      sendMessage(); // 채팅 입력 가능
+    }
+  };
 
   console.log(BASE_CHAT_URL);
   // WebSocket 연결
@@ -75,26 +87,27 @@ export default function LivePage() {
   // 채팅 추가될 때마다 채팅창 스크롤 아래로 이동
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [chatMessages]);
 
   useEffect(() => {
-  const fetchViewerCount = () => {
-    fetch(`http://${BASE_CHAT_URL}/chat/viewer-count`)
-      .then((res) => res.json())
-      .then((count) => setViewerCount(count))
-      .catch((err) => {
-        console.error("시청자 수 가져오기 실패:", err);
-      });
-  };
+    const fetchViewerCount = () => {
+      fetch(`http://${BASE_CHAT_URL}/chat/viewer-count`)
+        .then((res) => res.json())
+        .then((count) => setViewerCount(count))
+        .catch((err) => {
+          console.error("시청자 수 가져오기 실패:", err);
+        });
+    };
 
-  fetchViewerCount(); // 최초 한 번 호출
+    fetchViewerCount(); // 최초 한 번 호출
 
-  const interval = setInterval(fetchViewerCount, 5000); // 3초마다 갱신
+    const interval = setInterval(fetchViewerCount, 5000); // 3초마다 갱신
 
-  return () => clearInterval(interval); // 컴포넌트 unmount 시 정리
-}, []);
+    return () => clearInterval(interval); // 컴포넌트 unmount 시 정리
+  }, []);
 
   // 메시지 전송
   const sendMessage = () => {
@@ -204,9 +217,15 @@ export default function LivePage() {
                       }
                     }}
                   />
-                  <Button onClick={sendMessage}>전송</Button>
+
+                  <Button onClick={handleChatInputClick}>전송</Button>
                 </Group>
               </Paper>
+
+              <LoginModal
+                opened={loginModalOpened}
+                onClose={() => setLoginModalOpened(false)}
+              />
 
               {/* 상품 정보 */}
               <Flex gap="md" align="flex-start">

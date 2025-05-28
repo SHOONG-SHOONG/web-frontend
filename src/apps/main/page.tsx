@@ -52,12 +52,19 @@ interface LiveItem {
   status: string;
 }
 
+const categoryMap: Record<string, string> = {
+  여행: "TRAVEL",
+  항공: "FLIGHT",
+  숙박: "ACCOMMODATION",
+  캠핑: "CAMPING",
+  교통: "TRANSPORT",
+};
+
 export default function MainPage() {
   const navigate = useNavigate();
   const [bestItems, setBestItems] = useState<Item[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>();
   const [loginUser, setLoginUser] = useState<string | null>("");
-
   const [currentLiveItem, setCurrentLiveItem] = useState<LiveItem | null>(null);
   const [endedLiveItems, setEndedLiveItems] = useState<LiveItem[]>([]);
   const mergedLiveItems = [
@@ -139,7 +146,6 @@ export default function MainPage() {
   const checkLogin = async () => {
     const token = localStorage.getItem("access");
     const name = localStorage.getItem("name");
-
     if (token && name) {
       setIsLoggedIn(true);
       setLoginUser(name);
@@ -150,7 +156,7 @@ export default function MainPage() {
   };
 
   useEffect(() => {
-    checkLogin();
+    // checkLogin();
     fetchBestItems();
 
     fetchCurrentLive();
@@ -266,34 +272,51 @@ export default function MainPage() {
                 onClick={() =>
                   navigate(`/item/${item.itemId}`, { state: item })
                 }
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", position: "relative" }}
               >
-                {/* 이미지 */}
-                <Image
-                  src={
-                    item.itemImages?.[0]?.url || "https://placehold.co/400x400"
-                  }
-                  alt={item.itemName}
-                  radius="md"
-                  height={320}
-                  fit="cover"
-                  style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-                />
+                {/* 이미지 + 흐리게 처리 + SOLD OUT 뱃지 */}
+                <Box style={{ position: "relative" }}>
+                  <Image
+                    src={
+                      item.itemImages?.[0]?.url ||
+                      "https://placehold.co/400x400"
+                    }
+                    alt={item.itemName}
+                    radius="md"
+                    height={320}
+                    fit="cover"
+                    style={{
+                      aspectRatio: "1 / 1",
+                      objectFit: "cover",
+                      filter:
+                        item.status === "SOLD_OUT"
+                          ? "grayscale(60%) opacity(60%)"
+                          : "none",
+                    }}
+                  />
+                  {item.status === "SOLD_OUT" && (
+                    <Badge
+                      color="dark"
+                      variant="filled"
+                      style={{
+                        position: "absolute",
+                        top: 10,
+                        left: 10,
+                        zIndex: 1,
+                      }}
+                    >
+                      SOLD OUT
+                    </Badge>
+                  )}
+                </Box>
 
-                {/* 브랜드명 */}
-                <Text mt="md" size="xs" fw={600}>
-                  {/* 예시: 브랜드 ID에 따라 임의 지정 가능 */}
-                  {item.brandId === 1
-                    ? "PISCESS"
-                    : item.brandId === 2
-                    ? "ROUGH SIDE WHITE LABEL"
-                    : item.brandId === 3
-                    ? "NOTIA"
-                    : "KINDERSALMON"}
+                {/* 카테고리 표시 */}
+                <Text size="xs" c="dimmed" mt={10}>
+                  {categoryMap[item.category] || ""}
                 </Text>
 
                 {/* 상품명 */}
-                <Text size="sm" mb="xs">
+                <Text size="sm" fw={600} mt={4} mb={4}>
                   {item.itemName}
                 </Text>
 
@@ -348,7 +371,7 @@ export default function MainPage() {
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q4">
-            <Accordion.Control>배송은 얼마나 걸린가요?</Accordion.Control>
+            <Accordion.Control>배송은 얼마나 걸리나요?</Accordion.Control>
             <Accordion.Panel>2~3일 정도 후에 배송됩니다.</Accordion.Panel>
           </Accordion.Item>
         </Accordion>
