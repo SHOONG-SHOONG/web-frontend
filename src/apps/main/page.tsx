@@ -272,23 +272,75 @@ export default function MainPage() {
                 onClick={() =>
                   navigate(`/item/${item.itemId}`, { state: item })
                 }
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", position: "relative" }}
               >
-                {/* 이미지 */}
-                <Image
-                  src={
-                    item.itemImages?.[0]?.url || "https://placehold.co/400x400"
-                  }
-                  alt={item.itemName}
-                  radius="md"
-                  height={320}
-                  fit="cover"
-                  style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
-                />
+                {/* 이미지 + 흐리게 처리 + SOLD OUT 뱃지 */}
+                <Box style={{ position: "relative" }}>
+                  <Image
+                    src={
+                      item.itemImages?.[0]?.url ||
+                      "https://placehold.co/400x400"
+                    }
+                    alt={item.itemName}
+                    radius="md"
+                    height={320}
+                    fit="cover"
+                    style={{
+                      aspectRatio: "1 / 1",
+                      objectFit: "cover",
+                      filter:
+                        item.status === "SOLD_OUT"
+                          ? "grayscale(60%) opacity(60%)"
+                          : "none",
+                    }}
+                  />
 
-                {/* 카테고리 표시 */}
+                  {/* 카테고리 표시 */}
+                  <Text mt="md" size="xs" fw={600}>
+                    {categoryMap[item.category] || ""}
+                  </Text>
+
+                  {/* 상품명 */}
+                  <Text size="sm" mb="xs">
+                    {item.itemName}
+                  </Text>
+
+                  {/* 할인율 + 가격 */}
+                  <Flex align="center" gap={6}>
+                    {item.discountRate > 0 && (
+                      <Text size="sm" fw={700} color="red">
+                        {item.discountRate * 100}%
+                      </Text>
+                    )}
+                    <Text size="sm" fw={700}>
+                      {item.finalPrice.toLocaleString()}원
+                    </Text>
+                  </Flex>
+                  {item.status === "SOLD_OUT" && (
+                    <Badge
+                      color="dark"
+                      variant="filled"
+                      style={{
+                        position: "absolute",
+                        top: 10,
+                        left: 10,
+                        zIndex: 1,
+                      }}
+                    >
+                      SOLD OUT
+                    </Badge>
+                  )}
+                </Box>
+
+                {/* 브랜드명 */}
                 <Text mt="md" size="xs" fw={600}>
-                  {categoryMap[item.category] || ""}
+                  {item.brandId === 1
+                    ? "PISCESS"
+                    : item.brandId === 2
+                    ? "ROUGH SIDE WHITE LABEL"
+                    : item.brandId === 3
+                    ? "NOTIA"
+                    : "KINDERSALMON"}
                 </Text>
 
                 {/* 상품명 */}
