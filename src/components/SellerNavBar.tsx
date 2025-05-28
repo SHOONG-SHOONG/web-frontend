@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AppShell,
   NavLink,
@@ -19,26 +19,33 @@ import {
   IconUserCircle,
   IconLogout,
   IconBell,
-  IconUser,
   IconSettings,
   IconPackage,
-  IconSearch,
   IconHelpCircle,
   IconDeviceImac,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
-import { color } from "framer-motion";
+import { useLogin } from "../contexts/AuthContext.tsx";
 
-export default function AdminNavBarPage() {
+export default function SellerNavBarPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isLoggedIn, loginUser } = useLogin();
 
   const navItems = [
-    { label: "상품 관리", icon: IconPackage, path: "/admin" },
-    { label: "라이브 관리", icon: IconDeviceImac, path: "/admin/live" },
-    { label: "계정 설정", icon: IconSettings, path: "/admin/user" },
+    { label: "상품 관리", icon: IconPackage, path: "/seller" },
+    { label: "라이브 관리", icon: IconDeviceImac, path: "/seller/live" },
+    { label: "계정 설정", icon: IconSettings, path: "/seller/user" },
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <AppShell.Navbar w={250} p="md" withBorder>
@@ -135,7 +142,7 @@ export default function AdminNavBarPage() {
                   <IconUserCircle size="1.5rem" />
                   <Box>
                     <Text size="sm" fw={500}>
-                      Olivia Williams
+                      {loginUser}
                     </Text>
                     <Text size="xs" c="dimmed">
                       관리자 계정
@@ -145,7 +152,12 @@ export default function AdminNavBarPage() {
               </UnstyledButton>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item leftSection={<IconLogout size="1rem" />}>
+              <Menu.Item
+                leftSection={<IconLogout size="1rem" />}
+                onClick={() => {
+                  navigate("/logout");
+                }}
+              >
                 로그아웃
               </Menu.Item>
             </Menu.Dropdown>

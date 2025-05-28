@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
+=======
+import React, { useEffect } from "react";
+>>>>>>> 924d1210963387e5f19f6dfed34726800e08dd93
 import {
   Box,
   Flex,
@@ -14,10 +18,14 @@ import {
   IconLogout,
   IconShoppingBag,
 } from "@tabler/icons-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
+<<<<<<< HEAD
 import BASE_URL from "../config.js";
+=======
+import { useCart } from "../contexts/CartContext.tsx";
+>>>>>>> 924d1210963387e5f19f6dfed34726800e08dd93
 
 const menus = [
   { label: "홈", value: "home", path: "/" },
@@ -27,8 +35,10 @@ const menus = [
 
 export default function HeaderComponent() {
   const location = useLocation();
+  const navigate = useNavigate();
   const activePath = location.pathname;
   const { isLoggedIn, loginUser } = useLogin();
+<<<<<<< HEAD
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
@@ -68,6 +78,17 @@ export default function HeaderComponent() {
 
     fetchCart();
   }, [isLoggedIn]);
+=======
+  const { cartCount } = useCart();
+
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
+>>>>>>> 924d1210963387e5f19f6dfed34726800e08dd93
 
   return (
     <Box
@@ -135,6 +156,7 @@ export default function HeaderComponent() {
             to="/cart"
             style={{ position: "relative" }}
           >
+<<<<<<< HEAD
             <IconShoppingBag size={22} />
             {cartCount > 0 && (
               <Badge
@@ -149,6 +171,16 @@ export default function HeaderComponent() {
                 {cartCount}
               </Badge>
             )}
+=======
+            <IconShoppingBag size={20} />
+            <Badge
+              size="xs"
+              color="#4d6ef4"
+              style={{ position: "absolute", top: -6, right: -6 }}
+            >
+              {cartCount}
+            </Badge>
+>>>>>>> 924d1210963387e5f19f6dfed34726800e08dd93
           </UnstyledButton>
         </Group>
       </Flex>

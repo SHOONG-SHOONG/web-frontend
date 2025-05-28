@@ -8,12 +8,9 @@ import {
   Grid,
   Image,
   Text,
-  Card,
-  Badge,
   Flex,
   Button,
   Tooltip,
-  TextInput,
 } from "@mantine/core";
 import { IconArrowUp } from "@tabler/icons-react";
 import BASE_URL from "../../config.js";
