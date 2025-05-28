@@ -15,20 +15,32 @@ import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 import BASE_URL from "../../config.js";
 
+// interface User {
+//   user_id: number;
+//   brand_id?: number;
+//   user_email: string;
+//   user_password: string;
+//   user_name: string;
+//   user_phone: string;
+//   bdate: string;
+//   user_address: string;
+//   role: "CLIENT" | "ADMIN" | "SELLER";
+//   registration_number?: string;
+//   user_status: "ACTIVE" | "INACTIVE" | "PENDING";
+//   access_token?: string;
+//   kakao_id?: string;
+// }
+
 interface User {
-  user_id: number;
-  brand_id?: number;
-  user_email: string;
-  user_password: string;
-  user_name: string;
-  user_phone: string;
-  bdate: string;
-  user_address: string;
-  role: "CLIENT" | "ADMIN" | "SELLER";
-  registration_number?: string;
-  user_status: "ACTIVE" | "INACTIVE" | "PENDING";
-  access_token?: string;
-  kakao_id?: string;
+  brandName: string | null;
+  userEmail: string;
+  userPassword: string | null;
+  userName: string;
+  userPhone: string;
+  bdate: string | null;
+  role: string | null;
+  registrationNumber: string;
+  userStatus: string;
 }
 
 interface OrderItem {
@@ -63,7 +75,7 @@ export default function MyPage() {
     try {
       const token = localStorage.getItem("access");
 
-      const response = await fetch(`${BASE_URL}/mypage`, {
+      const response = await fetch(`${BASE_URL}/myPage`, {
         method: "GET",
         headers: {
           Accept: "*/*",
@@ -159,18 +171,30 @@ export default function MyPage() {
                       size="lg"
                       style={{ backgroundColor: "#6c757d" }}
                     >
-                      F
+                      o3o
                     </Avatar>
                     <Box>
-                      <Text fw={700} size="lg" style={{ fontSize: "16px" }}>
-                        {/* {userInfo.user_name} */}
-                      </Text>
-                      <Text
-                        size="sm"
-                        style={{ fontSize: "12px", opacity: 0.8 }}
-                      >
-                        가입일 : 2023.02.12
-                      </Text>
+                      {userInfo && (
+                        <Text fw={700} size="lg" style={{ fontSize: "16px" }}>
+                          {userInfo.userName}
+                        </Text>
+                      )}
+                      {userInfo && (
+                        <Text
+                          size="sm"
+                          style={{ fontSize: "12px", opacity: 0.8 }}
+                        >
+                          {userInfo.userPhone}
+                        </Text>
+                      )}
+                      {userInfo && (
+                        <Text
+                          size="sm"
+                          style={{ fontSize: "12px", opacity: 0.8 }}
+                        >
+                          {userInfo.userEmail}
+                        </Text>
+                      )}
                     </Box>
                   </Group>
                   <Box style={{ textAlign: "right" }}>
