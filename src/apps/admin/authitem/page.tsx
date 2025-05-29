@@ -34,7 +34,7 @@ interface Item {
   status: string;
   brandId: number;
   brandName: string;
-  itemImages: { url: string }[];
+  imageUrls: string[];
 }
 
 export default function AuthItemPage() {
@@ -110,7 +110,7 @@ export default function AuthItemPage() {
                 <Loader size="lg" />
               </Flex>
             ) : items.length === 0 ? (
-              <Text align="center">대기중인 상품이 없습니다.</Text>
+              <Text ta="center">대기중인 상품이 없습니다.</Text>
             ) : (
               <Box>
                 <Flex
@@ -144,8 +144,8 @@ export default function AuthItemPage() {
                 {items.map((item) => (
                   <Flex
                     key={item.itemId}
+                    justify="center"
                     align="center"
-                    justify="space-between"
                     py="sm"
                     style={{ borderBottom: "1px solid #f1f3f5" }}
                   >
@@ -155,8 +155,8 @@ export default function AuthItemPage() {
                         src={
                           item.imageUrls?.[0] || "https://placehold.co/60x60"
                         }
-                        size="sm"
-                        radius="xl"
+                        size="md"
+                        radius="sm"
                       />
                     </Group>
 
