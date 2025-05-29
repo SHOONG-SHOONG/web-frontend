@@ -11,13 +11,13 @@ import {
   Group,
   ActionIcon,
   Tooltip,
-  Loader,
   Table,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
 import BASE_URL from "../../../config";
+import { RingLoader } from "../../../components/RingLoader.tsx";
 
 interface Item {
   itemId: number;
@@ -105,13 +105,19 @@ export default function AuthItemPage() {
           <Card withBorder p="lg" radius="md">
             {!items ? (
               <Flex justify="center" align="center" py="xl">
-                <Loader size="lg" />
+                <RingLoader />
               </Flex>
             ) : items.length === 0 ? (
               <Text ta="center">대기중인 상품이 없습니다.</Text>
             ) : (
-              <Table highlightOnHover withColumnBorders striped>
-                <thead>
+              <Table
+                highlightOnHover
+                withColumnBorders
+                stickyHeader
+                stickyHeaderOffset={60}
+                striped
+              >
+                <thead style={{ textAlign: "center" }}>
                   <tr>
                     <th>상품이미지</th>
                     <th>상품명</th>
@@ -122,11 +128,11 @@ export default function AuthItemPage() {
                     <th>작업</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{ textAlign: "center" }}>
                   {items.map((item) => (
                     <tr key={item.itemId}>
-                      <td>
-                        <Group>
+                      <td style={{ textAlign: "center" }}>
+                        <Flex justify="center" align="center">
                           <Avatar
                             src={
                               item.imageUrls?.[0] ||
@@ -135,7 +141,7 @@ export default function AuthItemPage() {
                             size="md"
                             radius="sm"
                           />
-                        </Group>
+                        </Flex>
                       </td>
                       <td>{item.itemName}</td>
                       <td>{item.category}</td>
@@ -143,7 +149,7 @@ export default function AuthItemPage() {
                       <td>{(item.discountRate * 100).toFixed(0)}%</td>
                       <td>{item.itemQuantity}개</td>
                       <td>
-                        <Group gap="xs">
+                        <Group gap="xs" justify="center">
                           <Tooltip label="승인">
                             <ActionIcon
                               variant="light"
