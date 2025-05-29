@@ -68,7 +68,7 @@ export default function OrderPage() {
       const token = localStorage.getItem("access");
 
       try {
-        const response = await fetch(`${BASE_URL}/orders/list`, {
+        const response = await fetch(`${BASE_URL}/orders/list/pending`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
