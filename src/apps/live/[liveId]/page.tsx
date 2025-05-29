@@ -27,6 +27,30 @@ import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
 import BASE_CHAT_URL from "../../../chat_config.js";
 import LoginModal from "../../../components/LoginModal.tsx";
+import BASE_URL from "../../../config.js";
+import { useParams } from "react-router-dom";
+
+type LiveItem = {
+  itemId: number;
+  itemName: string;
+  imageUrl: string;
+  price: number;
+  discountRate: number;
+};
+
+type LiveInfo = {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  streamKey: string;
+  liveStartTime: string | null;
+  liveEndTime: string | null;
+  liveDate: string | null;
+  liveStatus: string;
+  replayURL: string | null;
+  liveItems: LiveItem[];
+};
 
 export default function LivePage() {
   const [chatMessages, setChatMessages] = useState<string[]>([]);
@@ -34,8 +58,10 @@ export default function LivePage() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const [viewerCount, setViewerCount] = useState<number>(0);
-
   const [loginModalOpened, setLoginModalOpened] = useState(false);
+
+  const { liveId } = useParams<{ liveId: string }>();
+  const [liveInfo, setLiveInfo] = useState<LiveInfo | null>(null);
 
   const handleChatInputClick = () => {
     const token = localStorage.getItem("access");
@@ -47,7 +73,8 @@ export default function LivePage() {
     }
   };
 
-  console.log(BASE_CHAT_URL);
+  // console.log(BASE_CHAT_URL);
+
   // WebSocket 연결
   useEffect(() => {
     const ws = new WebSocket(`ws://${BASE_CHAT_URL}/chat/ws/chat`);
@@ -132,15 +159,46 @@ export default function LivePage() {
       });
   };
 
+  // 현재 진행 중인 라이브 정보 가져오기
+  const fetchLiveInfo = async () => {
+    if (!liveId) return;
+
+    try {
+      const token = localStorage.getItem("access");
+
+      const response = await fetch(`${BASE_URL}/live/${liveId}`, {
+        method: "GET",
+        headers: {
+          accept: "*/*",
+          access: token || "",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      const data: LiveInfo = await response.json();
+      console.log(data);
+      setLiveInfo(data);
+    } catch (err) {
+      console.error("라이브 정보 불러오기 실패:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLiveInfo();
+  }, [liveId]);
+
   return (
     <>
       <HeaderComponent />
 
       <Container size="lg" pt={40}>
         <Group align="center" mb="md">
-          <Avatar src="/your-logo-path.png" size="md" />
+          <Avatar src={liveInfo?.imageUrl} size={35} radius="xl" />
           <Title order={3} style={{ flexGrow: 1 }}>
-            갤럭시 S25 사전판매 마지막날!
+            {liveInfo?.title}
           </Title>
           <Badge color="blue" size="lg" radius="sm">
             LIVE
@@ -188,7 +246,7 @@ export default function LivePage() {
                 <Divider my="sm" />
 
                 <Box
-                  ref={chatContainerRef} // ✅ ref 등록
+                  ref={chatContainerRef}
                   style={{
                     flex: 1,
                     overflowY: "auto",
@@ -228,29 +286,35 @@ export default function LivePage() {
               />
 
               {/* 상품 정보 */}
-              <Flex gap="md" align="flex-start">
-                <Image
-                  src={`https://placehold.co/60x60?text=product`}
-                  style={{ width: 60, height: 60 }}
-                  radius="md"
-                />
-                <Box>
-                  <Text mt="xs" fw={600} size="sm">
-                    상품명
-                  </Text>
-                  <Flex mt="xs" align="baseline" gap="xs">
-                    <Text size="xs" c="red" fw={600}>
-                      10%
+              {liveInfo?.liveItems?.length > 0 && (
+                <Flex gap="md" align="flex-start">
+                  <Image
+                    src={liveInfo.liveItems[0].imageUrl}
+                    style={{ width: 60, height: 60 }}
+                    radius="md"
+                  />
+                  <Box>
+                    <Text mt="xs" fw={600} size="sm">
+                      {liveInfo.liveItems[0].itemName}
                     </Text>
-                    <Text size="xs" td="line-through" c="dimmed">
-                      85,000원
-                    </Text>
-                    <Text size="sm" fw={700}>
-                      76,500원
-                    </Text>
-                  </Flex>
-                </Box>
-              </Flex>
+                    <Flex mt="xs" align="baseline" gap="xs">
+                      <Text size="xs" c="red" fw={600}>
+                        {liveInfo.liveItems[0].discountRate * 100}%
+                      </Text>
+                      <Text size="xs" td="line-through" c="dimmed">
+                        {liveInfo.liveItems[0].price.toLocaleString()}원
+                      </Text>
+                      <Text size="sm" fw={700}>
+                        {Math.floor(
+                          liveInfo.liveItems[0].price *
+                            (1 - liveInfo.liveItems[0].discountRate)
+                        ).toLocaleString()}
+                        원
+                      </Text>
+                    </Flex>
+                  </Box>
+                </Flex>
+              )}
             </Flex>
           </Grid.Col>
         </Grid>
