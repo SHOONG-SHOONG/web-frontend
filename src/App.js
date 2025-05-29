@@ -28,6 +28,7 @@ import NotFoundPage from "./apps/error/NotFoundPage.tsx";
 import ManageLivePage from "./apps/seller/manageLive/page.tsx";
 import StatisticsPage from "./apps/admin/statistics/page.tsx";
 import SellerMypge from "./apps/seller/sellerMypage/page.tsx";
+import SellerNotificationPage from "./apps/seller/notification/page.tsx";
 
 // 테스트용 페이지지
 import Test from "./apps/login/CartViewer.tsx";
@@ -78,6 +79,7 @@ function App() {
             <Route path="/seller/user" element={<SellerUserPage />} />
             <Route path="/seller/brand" element={<RegisterBrandPage />} />
             <Route path="/seller/mypage" element={<SellerMypge />} />
+            <Route path="/seller/notification" element={<SellerNotificationPage />} />"
 
             {/* admin */}
             <Route path="/admin" element={<AuthItemPage />} />
