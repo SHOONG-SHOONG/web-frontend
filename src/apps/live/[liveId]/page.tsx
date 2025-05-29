@@ -286,35 +286,33 @@ export default function LivePage() {
               />
 
               {/* 상품 정보 */}
-              {liveInfo?.liveItems?.length > 0 && (
-                <Flex gap="md" align="flex-start">
-                  <Image
-                    src={liveInfo.liveItems[0].imageUrl}
-                    style={{ width: 60, height: 60 }}
-                    radius="md"
-                  />
-                  <Box>
-                    <Text mt="xs" fw={600} size="sm">
-                      {liveInfo.liveItems[0].itemName}
+              <Flex gap="md" align="flex-start">
+                <Image
+                  src={liveInfo?.liveItems[0].imageUrl}
+                  style={{ width: 60, height: 60 }}
+                  radius="md"
+                />
+                <Box>
+                  <Text mt="xs" fw={600} size="sm">
+                    {liveInfo?.liveItems[0].itemName}
+                  </Text>
+                  <Flex mt="xs" align="baseline" gap="xs">
+                    <Text size="xs" c="red" fw={600}>
+                      {liveInfo?.liveItems[0].discountRate! * 100}%
                     </Text>
-                    <Flex mt="xs" align="baseline" gap="xs">
-                      <Text size="xs" c="red" fw={600}>
-                        {liveInfo.liveItems[0].discountRate * 100}%
-                      </Text>
-                      <Text size="xs" td="line-through" c="dimmed">
-                        {liveInfo.liveItems[0].price.toLocaleString()}원
-                      </Text>
-                      <Text size="sm" fw={700}>
-                        {Math.floor(
-                          liveInfo.liveItems[0].price *
-                            (1 - liveInfo.liveItems[0].discountRate)
-                        ).toLocaleString()}
-                        원
-                      </Text>
-                    </Flex>
-                  </Box>
-                </Flex>
-              )}
+                    <Text size="xs" td="line-through" c="dimmed">
+                      {liveInfo?.liveItems[0].price.toLocaleString()}원
+                    </Text>
+                    <Text size="sm" fw={700}>
+                      {Math.floor(
+                        liveInfo!.liveItems[0].price *
+                          (1 - liveInfo!.liveItems[0].discountRate)
+                      ).toLocaleString()}
+                      원
+                    </Text>
+                  </Flex>
+                </Box>
+              </Flex>
             </Flex>
           </Grid.Col>
         </Grid>
