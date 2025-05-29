@@ -80,6 +80,10 @@ export default function ItemDetailPage() {
   };
 
   useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
+  useEffect(() => {
     const fetchItemDetail = async (
       itemId: number,
       setItem: (item: Item) => void,
