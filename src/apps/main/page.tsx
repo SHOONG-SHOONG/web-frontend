@@ -11,6 +11,8 @@ import {
   Flex,
   Anchor,
   Button,
+  Skeleton,
+  Stack,
 } from "@mantine/core";
 import { IconChevronDown, IconArrowNarrowUp } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -61,11 +63,31 @@ const categoryMap: Record<string, string> = {
   교통: "TRANSPORT",
 };
 
+const LiveSkeletonCard = () => (
+  <Box style={{ width: "100%", maxWidth: 300 }}>
+    <Skeleton height={400} radius="md" />
+    <Stack spacing="xs" mt="sm">
+      <Skeleton height={16} width="60%" />
+      <Skeleton height={14} width="80%" />
+      <Skeleton height={14} width="50%" />
+    </Stack>
+  </Box>
+);
+
+const ProductSkeletonCard = () => (
+  <Box style={{ width: "100%", maxWidth: 300 }}>
+    <Skeleton height={320} radius="md" />
+    <Stack spacing="xs" mt="sm">
+      <Skeleton height={12} width="30%" />
+      <Skeleton height={16} width="90%" />
+      <Skeleton height={14} width="60%" />
+    </Stack>
+  </Box>
+);
+
 export default function MainPage() {
   const navigate = useNavigate();
   const [bestItems, setBestItems] = useState<Item[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>();
-  const [loginUser, setLoginUser] = useState<string | null>("");
   const [currentLiveItem, setCurrentLiveItem] = useState<LiveItem | null>(null);
   const [endedLiveItems, setEndedLiveItems] = useState<LiveItem[]>([]);
   const mergedLiveItems = [
@@ -77,25 +99,14 @@ export default function MainPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const statusMap: Record<string, { label: string; color: string }> = {
-    ONGOING: { label: "LIVE", color: "red" },
-    SCHEDULED: { label: "예정됨", color: "blue" },
-    COMPLETED: { label: "종료됨", color: "gray" },
-    CANCELED: { label: "취소됨", color: "dark" },
-  };
-
   const fetchCurrentLive = async () => {
     try {
       const token = localStorage.getItem("access");
       const response = await fetch(`${BASE_URL}/live/main`, {
         method: "GET",
-        headers: {
-          Accept: "*/*",
-          access: token || "",
-        },
+        headers: { Accept: "*/*", access: token || "" },
         credentials: "include",
       });
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data: LiveItem = await response.json();
       setCurrentLiveItem(data);
@@ -109,13 +120,9 @@ export default function MainPage() {
       const token = localStorage.getItem("access");
       const response = await fetch(`${BASE_URL}/live/list`, {
         method: "GET",
-        headers: {
-          Accept: "*/*",
-          access: token || "",
-        },
+        headers: { Accept: "*/*", access: token || "" },
         credentials: "include",
       });
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data: LiveItem[] = await response.json();
       setEndedLiveItems(data);
@@ -127,27 +134,16 @@ export default function MainPage() {
   const fetchBestItems = async () => {
     try {
       const params = new URLSearchParams({
-        sortBy: "wishlist", // condition.sortBy
+        sortBy: "wishlist",
         page: "0",
         size: "6",
         sort: "wishlistCount,DESC",
       });
-
-      const response = await fetch(
-        `${BASE_URL}/item/search?${params.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "*/*",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`HTTP ${response.status} - ${errText}`);
-      }
-
+      const response = await fetch(`${BASE_URL}/item/search?${params.toString()}`, {
+        method: "GET",
+        headers: { Accept: "*/*" },
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       setBestItems(data.content || []);
     } catch (err) {
@@ -155,232 +151,100 @@ export default function MainPage() {
     }
   };
 
-  const checkLogin = async () => {
-    const token = localStorage.getItem("access");
-    const name = localStorage.getItem("name");
-    if (token && name) {
-      setIsLoggedIn(true);
-      setLoginUser(name);
-    } else {
-      setIsLoggedIn(false);
-      setLoginUser(null);
-    }
-  };
-
   useEffect(() => {
-    // checkLogin();
     fetchBestItems();
-
     fetchCurrentLive();
     fetchEndedLives();
   }, []);
 
   return (
     <>
-      {/* Header */}
       <HeaderComponent />
-
-      {/* Banner */}
-      <Box
-        w="100%"
-        h={45}
-        style={{
-          background: "#409fff",
-          color: "white",
-          padding: "10px 0",
-          textAlign: "center",
-        }}
-      >
+      <Box w="100%" h={45} style={{ background: "#409fff", color: "white", padding: "10px 0", textAlign: "center" }}>
         지금 가입하면 50% 할인 쿠폰 증정
       </Box>
 
-      {/* LIVE 방송 */}
       <Container size="lg" py="md">
-        <TitleComponent
-          label="SHOONG LIVE"
-          subLabel="지금 방송 중이거나 종료된 방송을 한 눈에!"
-        />
-
+        <TitleComponent label="SHOONG LIVE" subLabel="지금 방송 중이거나 종료된 방송을 한 눈에!" />
         <Grid gutter="lg" mb={70}>
-          {mergedLiveItems.map((live) => (
-            <Grid.Col span={3} key={live.id}>
-              <Box
-                onClick={() => navigate(`/live/${live.id}`)}
-                style={{ cursor: "pointer", position: "relative" }}
-              >
-                <Image
-                  src={live.imageUrl || "https://placehold.co/400x500"}
-                  alt={live.title}
-                  radius="md"
-                  h={400}
-                  fit="cover"
-                  style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
-                />
-                <Badge
-                  color={live.status === "ONGOING" ? "red" : "gray"}
-                  variant="filled"
-                  size="sm"
-                  style={{
-                    position: "absolute",
-                    top: 10,
-                    left: 10,
-                    zIndex: 1,
-                  }}
-                >
-                  {live.status === "ONGOING" ? "LIVE" : "종료됨"}
-                </Badge>
-                <Text mt="xs" size="sm" fw={600} lineClamp={2}>
-                  {live.title}
-                </Text>
-                <Flex mt="xs" align="center" gap="xs">
-                  <Image
-                    src={live.itemImageUrl || "https://placehold.co/60x60"}
-                    alt="상품 썸네일"
-                    w={50}
-                    h={50}
-                    fit="cover"
-                    radius="sm"
-                  />
-                  <Box>
-                    <Text size="xs">{live.itemName}</Text>
-                    <Flex align="baseline" gap={6}>
-                      {live.discountRate > 0 && (
-                        <Text size="sm" fw={700} color="red">
-                          {Math.round(live.discountRate * 100)}%
-                        </Text>
-                      )}
-                      {live.price !== null && (
-                        <Text size="sm" fw={700}>
-                          {(
-                            live.price *
-                            (1 - live.discountRate)
-                          ).toLocaleString()}
-                          원
-                        </Text>
-                      )}
-                    </Flex>
-                  </Box>
-                </Flex>
-              </Box>
-            </Grid.Col>
-          ))}
+          {mergedLiveItems.length === 0
+            ? Array.from({ length: 4 }).map((_, idx) => (
+              <Grid.Col span={3} key={idx}><LiveSkeletonCard /></Grid.Col>
+            ))
+            : mergedLiveItems.map((live) => (
+              <Grid.Col span={3} key={live.id}>
+                {/* 기존 live 카드 렌더링 코드 */}
+                <Box onClick={() => navigate(`/live/${live.id}`)} style={{ cursor: "pointer", position: "relative" }}>
+                  <Image src={live.imageUrl || "https://placehold.co/400x500"} alt={live.title} radius="md" h={400} fit="cover" style={{ aspectRatio: "3 / 4", objectFit: "cover" }} />
+                  <Badge color={live.status === "ONGOING" ? "red" : "gray"} variant="filled" size="sm" style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>
+                    {live.status === "ONGOING" ? "LIVE" : "종료됨"}
+                  </Badge>
+                  <Text mt="xs" size="sm" fw={600} lineClamp={2}>{live.title}</Text>
+                  <Flex mt="xs" align="center" gap="xs">
+                    <Image src={live.itemImageUrl || "https://placehold.co/60x60"} alt="상품 썸네일" w={50} h={50} fit="cover" radius="sm" />
+                    <Box>
+                      <Text size="xs">{live.itemName}</Text>
+                      <Flex align="baseline" gap={6}>
+                        {live.discountRate > 0 && <Text size="sm" fw={700} color="red">{Math.round(live.discountRate * 100)}%</Text>}
+                        {live.price !== null && (
+                          <>
+                            {live.discountRate > 0 && <Text size="xs" td="line-through" c="dimmed">{live.price.toLocaleString()}원</Text>}
+                            <Text size="sm" fw={700}>{(live.price * (1 - live.discountRate)).toLocaleString()}원</Text>
+                          </>
+                        )}
+                      </Flex>
+                    </Box>
+                  </Flex>
+                </Box>
+              </Grid.Col>
+            ))}
         </Grid>
 
-        {/* 실시간 Best 상품 */}
         <Flex justify="space-between" align="center" mt="xl" mb="sm">
-          <TitleComponent
-            label="BEST SELLER"
-            subLabel="가장 많이 팔리는 아이템을 한 눈에!"
-          />
-          <Anchor href="#" size="xs" c="dimmed">
-            &gt; 더보기
-          </Anchor>
+          <TitleComponent label="BEST SELLER" subLabel="가장 많이 팔리는 아이템을 한 눈에!" />
+          <Anchor href="#" size="xs" c="dimmed">&gt; 더보기</Anchor>
         </Flex>
 
         <Grid gutter="xl">
-          {bestItems.map((item) => (
-            <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
-              <Box
-                onClick={() =>
-                  navigate(`/item/${item.itemId}`, { state: item })
-                }
-                style={{ cursor: "pointer", position: "relative" }}
-              >
-                {/* 이미지 + 흐리게 처리 + SOLD OUT 뱃지 */}
-                <Box style={{ position: "relative" }}>
-                  <Image
-                    src={
-                      item.itemImages?.[0]?.url ||
-                      "https://placehold.co/400x400"
-                    }
-                    alt={item.itemName}
-                    radius="md"
-                    height={320}
-                    fit="cover"
-                    style={{
-                      aspectRatio: "1 / 1",
-                      objectFit: "cover",
-                      filter:
-                        item.status === "SOLD_OUT"
-                          ? "grayscale(60%) opacity(60%)"
-                          : "none",
-                    }}
-                  />
-                  {item.status === "SOLD_OUT" && (
-                    <Badge
-                      color="dark"
-                      variant="filled"
-                      style={{
-                        position: "absolute",
-                        top: 10,
-                        left: 10,
-                        zIndex: 1,
-                      }}
-                    >
-                      SOLD OUT
-                    </Badge>
-                  )}
+          {bestItems.length === 0
+            ? Array.from({ length: 6 }).map((_, idx) => (
+              <Grid.Col span={{ base: 6, md: 3 }} key={idx}><ProductSkeletonCard /></Grid.Col>
+            ))
+            : bestItems.map((item) => (
+              <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
+                {/* 기존 상품 카드 렌더링 코드 */}
+                <Box onClick={() => navigate(`/item/${item.itemId}`, { state: item })} style={{ cursor: "pointer", position: "relative" }}>
+                  <Box style={{ position: "relative" }}>
+                    <Image src={item.itemImages?.[0]?.url || "https://placehold.co/400x400"} alt={item.itemName} radius="md" height={320} fit="cover" style={{ aspectRatio: "1 / 1", objectFit: "cover", filter: item.status === "SOLD_OUT" ? "grayscale(60%) opacity(60%)" : "none" }} />
+                    {item.status === "SOLD_OUT" && <Badge color="dark" variant="filled" style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>SOLD OUT</Badge>}
+                  </Box>
+                  <Text size="xs" c="dimmed" mt={10}>{categoryMap[item.category] || ""}</Text>
+                  <Text size="sm" fw={600} mt={4} mb={4}>{item.itemName}</Text>
+                  <Flex align="center" gap={6}>
+                    {item.discountRate > 0 && <Text size="sm" fw={700} color="red">{item.discountRate * 100}%</Text>}
+                    <Text size="xs" td="line-through" c="dimmed">{item.price.toLocaleString()}원</Text>
+                    <Text size="sm" fw={700}>{item.finalPrice.toLocaleString()}원</Text>
+                  </Flex>
                 </Box>
-
-                {/* 카테고리 표시 */}
-                <Text size="xs" c="dimmed" mt={10}>
-                  {categoryMap[item.category] || ""}
-                </Text>
-
-                {/* 상품명 */}
-                <Text size="sm" fw={600} mt={4} mb={4}>
-                  {item.itemName}
-                </Text>
-
-                {/* 할인율 + 가격 */}
-                <Flex align="center" gap={6}>
-                  {item.discountRate > 0 && (
-                    <Text size="sm" fw={700} color="red">
-                      {item.discountRate * 100}%
-                    </Text>
-                  )}
-                  <Text size="sm" fw={700}>
-                    {item.finalPrice.toLocaleString()}원
-                  </Text>
-                </Flex>
-              </Box>
-            </Grid.Col>
-          ))}
+              </Grid.Col>
+            ))}
         </Grid>
 
-        {/* 특가 배너 */}
         <CountdownBanner />
 
-        {/* 자주 묻는 질문 */}
-        <Title order={4} mt={80} mb="md">
-          자주 묻는 질문
-        </Title>
-        <Accordion
-          chevronPosition="right"
-          defaultValue={null}
-          chevron={<IconChevronDown size={18} />}
-          mb={70}
-        >
+        <Title order={4} mt={80} mb="md">자주 묻는 질문</Title>
+        <Accordion chevronPosition="right" defaultValue={null} chevron={<IconChevronDown size={18} />} mb={70}>
           <Accordion.Item value="q1">
-            <Accordion.Control>
-              라이브 방송은 어떻게 참여하나요?
-            </Accordion.Control>
-            <Accordion.Panel>
-              라이브 탭을 클릭하여 실시간 방송 중인 라이브 방송에 참여할 수
-              있습니다.
-            </Accordion.Panel>
+            <Accordion.Control>라이브 방송은 어떻게 참여하나요?</Accordion.Control>
+            <Accordion.Panel>라이브 탭을 클릭하여 실시간 방송 중인 라이브 방송에 참여할 수 있습니다.</Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q2">
             <Accordion.Control>상품 구매는 어떻게 하나요?</Accordion.Control>
-            <Accordion.Panel>
-              상품 탭에 접속하여 구매를 진행할 수 있습니다.
-            </Accordion.Panel>
+            <Accordion.Panel>상품 탭에 접속하여 구매를 진행할 수 있습니다.</Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q3">
             <Accordion.Control>반품 정책은 어떻게 되나요?</Accordion.Control>
-            <Accordion.Panel>
-              상품의 상태에 따라 다른 조치로 처리됩니다.
-            </Accordion.Panel>
+            <Accordion.Panel>상품의 상태에 따라 다른 조치로 처리됩니다.</Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="q4">
             <Accordion.Control>배송은 얼마나 걸리나요?</Accordion.Control>
@@ -389,28 +253,10 @@ export default function MainPage() {
         </Accordion>
       </Container>
 
-      <Button
-        onClick={scrollToTop}
-        variant="filled"
-        color="#409fff"
-        style={{
-          position: "fixed",
-          bottom: 30,
-          right: 30,
-          zIndex: 999,
-          width: 50,
-          height: 50,
-          borderRadius: "50%",
-          padding: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <Button onClick={scrollToTop} variant="filled" color="#409fff" style={{ position: "fixed", bottom: 30, right: 30, zIndex: 999, width: 50, height: 50, borderRadius: "50%", padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <IconArrowNarrowUp size={30} />
       </Button>
 
-      {/* Footer */}
       <FooterComponent />
     </>
   );

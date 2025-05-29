@@ -296,6 +296,9 @@ export default function ItemPage() {
                       {item.discountRate * 100}%
                     </Text>
                   )}
+                  <Text size="xs" td="line-through" c="dimmed">
+                    {item.price.toLocaleString()}원
+                  </Text>
                   <Text size="sm" fw={700}>
                     {item.finalPrice.toLocaleString()}원
                   </Text>
