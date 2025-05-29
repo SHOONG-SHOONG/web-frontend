@@ -112,7 +112,7 @@ export default function CartPage() {
 
   const patchQuantity = async (item: CartItem) => {
     const token = localStorage.getItem("access");
-  
+
     try {
       const res = await fetch(
         `${BASE_URL}/cart/change/${item.cartId}?quantity=${item.cartQuantity}`,
@@ -125,7 +125,7 @@ export default function CartPage() {
           credentials: "include",
         }
       );
-  
+
       if (res.ok) {
         alert("수량이 업데이트되었습니다.");
       } else {
@@ -136,7 +136,7 @@ export default function CartPage() {
       alert("서버와의 통신 중 오류가 발생했습니다.");
     }
   };
-  
+
   // 선택된 항목 기준 계산
   const selectedItems = cartItems.filter((item) =>
     selectedIds.includes(item.cartId)
@@ -149,7 +149,7 @@ export default function CartPage() {
 
   const deleteCartItem = async (cartId: number) => {
     const token = localStorage.getItem("access");
-  
+
     try {
       const res = await fetch(`${BASE_URL}/cart/delete/${cartId}`, {
         method: "DELETE",
@@ -158,11 +158,11 @@ export default function CartPage() {
         },
         credentials: "include",
       });
-  
+
       if (!res.ok) {
         throw new Error("삭제 실패");
       }
-  
+
       // 삭제 성공 시 UI에서도 제거
       setCartItems((prev) => prev.filter((item) => item.cartId !== cartId));
       setSelectedIds((prev) => prev.filter((id) => id !== cartId));
@@ -171,7 +171,7 @@ export default function CartPage() {
       alert("상품 삭제에 실패했습니다.");
     }
   };
-  
+
   const handleOrder = async () => {
     const token = localStorage.getItem("access");
 
@@ -213,7 +213,7 @@ export default function CartPage() {
       <HeaderComponent />
 
       {/* Content */}
-      <Container size="lg" py="xl">
+      <Container size="xl" py="xl">
         <Title order={3} mb="xl" ta="center">
           장바구니
         </Title>
@@ -229,28 +229,50 @@ export default function CartPage() {
               color: "#666",
             }}
           >
-            <Grid.Col span={3} ta="center">
-              <Flex align="center" gap="sm" ml={10}>
+            <Grid.Col span={1}>
+              <Flex align="center" justify="center">
                 <Checkbox
-                  c="#409fff"
+                  color="#409fff"
                   checked={isAllSelected}
                   onChange={toggleAll}
-                  ml={12}
                 />
-                <Text>상품정보</Text>
               </Flex>
             </Grid.Col>
-            <Grid.Col span={2} ta="center">
-              상품명
+
+            <Grid.Col span={2}>
+              <Flex align="center" justify="center">
+                상품 이미지
+              </Flex>
             </Grid.Col>
-            <Grid.Col span={2} ta="center">
-              수량
+
+            <Grid.Col span={3}>
+              <Flex align="center" justify="center">
+                상품명
+              </Flex>
             </Grid.Col>
-            <Grid.Col span={2} ta="center">
-              상품금액
+
+            <Grid.Col span={2}>
+              <Flex align="center" justify="center">
+                수량
+              </Flex>
             </Grid.Col>
-            <Grid.Col span={2} ta="center">
-              배송
+
+            <Grid.Col span={2}>
+              <Flex align="center" justify="center">
+                상품금액
+              </Flex>
+            </Grid.Col>
+
+            <Grid.Col span={1}>
+              <Flex align="center" justify="center">
+                배송
+              </Flex>
+            </Grid.Col>
+
+            <Grid.Col span={1}>
+              <Flex align="center" justify="center">
+                삭제
+              </Flex>
             </Grid.Col>
           </Grid>
 
@@ -263,19 +285,25 @@ export default function CartPage() {
               py="md"
               style={{ borderBottom: "1px solid #eee" }}
             >
-              {/* 체크박스 + 이미지 */}
-              <Grid.Col span={3}>
-                <Flex align="center" gap="md">
+              {/* 체크박스 */}
+              <Grid.Col span={1}>
+                <Flex align="center" justify="center">
                   <Checkbox
                     color="#409fff"
                     checked={selectedIds.includes(item.cartId)}
                     onChange={() => toggleItem(item.cartId)}
                   />
+                </Flex>
+              </Grid.Col>
+
+              {/* 상품 이미지 */}
+              <Grid.Col span={2}>
+                <Flex justify="center">
                   <Image
                     src={item.imageUrl}
                     alt={item.itemName}
-                    w={150}
-                    h={150}
+                    w={170}
+                    h={170}
                     radius="md"
                     fit="cover"
                   />
@@ -283,70 +311,108 @@ export default function CartPage() {
               </Grid.Col>
 
               {/* 상품명 */}
-              <Grid.Col span={2}>
-                <Text fw={500}>{item.itemName}</Text>
+              <Grid.Col span={3}>
+                <Flex justify="center">
+                  <Text fw={500}>{item.itemName}</Text>
+                </Flex>
               </Grid.Col>
 
               {/* 수량 */}
               <Grid.Col span={2}>
-                <Flex align="center" gap="xs">
-                  <Button size="xs" variant="outline" onClick={() => updateQuantity(item.cartId, -1)}>
-                    -
-                  </Button>
-                  <Input
-                    value={item.cartQuantity}
-                    type="number"
+                <Flex
+                  direction="column"
+                  align="center"
+                  justify="center"
+                  gap="xs"
+                >
+                  <Flex align="center" gap="xs">
+                    <Button
+                      size="xs"
+                      variant="default"
+                      radius="xs"
+                      onClick={() => updateQuantity(item.cartId, -1)}
+                    >
+                      -
+                    </Button>
+                    <Input
+                      value={item.cartQuantity}
+                      radius="xs"
+                      type="number"
+                      size="xs"
+                      w={35}
+                      onChange={(e) => {
+                        const value = Math.max(1, parseInt(e.target.value));
+                        setCartItems((prev) =>
+                          prev.map((el) =>
+                            el.cartId === item.cartId
+                              ? { ...el, cartQuantity: value }
+                              : el
+                          )
+                        );
+                      }}
+                    />
+                    <Button
+                      size="xs"
+                      variant="default"
+                      radius="xs"
+                      onClick={() => updateQuantity(item.cartId, 1)}
+                    >
+                      +
+                    </Button>
+                  </Flex>
+                  <Button
                     size="xs"
-                    w={35}
-                    onChange={(e) => {
-                      const value = Math.max(1, parseInt(e.target.value));
-                      setCartItems((prev) =>
-                        prev.map((el) =>
-                          el.cartId === item.cartId ? { ...el, cartQuantity: value } : el
-                        )
-                      );
-                    }}
-                  />
-                  <Button size="xs" variant="outline" onClick={() => updateQuantity(item.cartId, 1)}>
-                    +
+                    color="#409fff"
+                    w={128}
+                    onClick={() => patchQuantity(item)}
+                  >
+                    수량 변경
                   </Button>
                 </Flex>
-                <Button size="xs" color="#409fff" mt="xs" w={128} onClick={() => patchQuantity(item)}>
-                  수량 변경
-                </Button>
               </Grid.Col>
 
               {/* 가격 */}
-              <Grid.Col span={2} ta="center">
-                <Text fw={700}>{(item.price *
-                      (1 - item.discountRate) * item.cartQuantity).toLocaleString()}원</Text>
-                <Text td="line-through" size="xs" c="dimmed">
-                  {(item.price * item.cartQuantity).toLocaleString()}원
-                </Text>
+              <Grid.Col span={2}>
+                <Flex direction="column" align="center" justify="center">
+                  <Text fw={700}>
+                    {(
+                      item.price *
+                      (1 - item.discountRate) *
+                      item.cartQuantity
+                    ).toLocaleString()}
+                    원
+                  </Text>
+                  <Text td="line-through" size="xs" c="dimmed">
+                    {(item.price * item.cartQuantity).toLocaleString()}원
+                  </Text>
+                </Flex>
               </Grid.Col>
 
               {/* 배송 */}
-              <Grid.Col span={2} ta="center">
-                <Text fw={600}>무료배송</Text>
+              <Grid.Col span={1}>
+                <Flex justify="center" align="center">
+                  <Text fw={600}>무료배송</Text>
+                </Flex>
               </Grid.Col>
 
               {/* 삭제 */}
-              <Grid.Col span={1} ta="center">
-                <ActionIcon
-                  variant="subtle"
-                  color="red"
-                  size="lg"
-                  onClick={() => deleteCartItem(item.cartId)}
-                >
-                  <Text fw={700} fz="lg" c="red">
-                    ✕
-                  </Text>
-                </ActionIcon>
+              <Grid.Col span={1}>
+                <Flex justify="center" align="center">
+                  <ActionIcon
+                    variant="subtle"
+                    color="red"
+                    size="lg"
+                    onClick={() => deleteCartItem(item.cartId)}
+                  >
+                    <Text fw={700} fz="lg" c="red">
+                      ✕
+                    </Text>
+                  </ActionIcon>
+                </Flex>
               </Grid.Col>
             </Grid>
           ))}
         </Box>
-
 
         {/* 가격 요약 */}
         <Box mt="xl" px="sm" py="lg" style={{ borderTop: "1px solid #ccc" }}>
