@@ -177,10 +177,10 @@ export default function CartPage() {
             <Grid.Col span={1}>
               <Flex justify="center" mr={10}>
                 <Checkbox
+                  c="#409fff"
                   checked={isAllSelected}
                   onChange={toggleAll}
                   ml={12}
-                  color="#364fc6"
                 />
               </Flex>
             </Grid.Col>
@@ -217,7 +217,7 @@ export default function CartPage() {
               <Grid.Col span={1}>
                 <Flex align="center" justify="center">
                   <Checkbox
-                    color="#364fc6"
+                    color="#409fff"
                     checked={selectedIds.includes(item.cartId)}
                     onChange={() => toggleItem(item.cartId)}
                   />
@@ -295,7 +295,7 @@ export default function CartPage() {
 
                   <Button
                     size="xs"
-                    color="#364fc6"
+                    color="#409fff"
                     w={80}
                     px={15}
                     mt="xs"

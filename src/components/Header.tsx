@@ -93,7 +93,7 @@ export default function HeaderComponent() {
                   fontSize: 17,
                   fontWeight: isActive ? 700 : 500,
                   textDecoration: "none",
-                  color: isActive ? "#4D6EF4" : "#888",
+                  color: isActive ? "#409fff" : "#888",
                   textTransform: "uppercase",
                   paddingBottom: 4,
                 }}
@@ -179,7 +179,7 @@ export default function HeaderComponent() {
               {cartCount > 0 && (
                 <Badge
                   size="sm"
-                  color="#4D6EF4"
+                  color="#409fff"
                   style={{
                     position: "absolute",
                     top: -8,

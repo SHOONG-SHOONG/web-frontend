@@ -12,7 +12,7 @@ import {
   Button,
   Tooltip,
 } from "@mantine/core";
-import { IconArrowUp } from "@tabler/icons-react";
+import { IconArrowNarrowUp, IconArrowUp } from "@tabler/icons-react";
 import BASE_URL from "../../config.js";
 
 // filter
@@ -96,6 +96,10 @@ const categoryMap: Record<string, string> = {
   숙박: "ACCOMMODATION",
   캠핑: "CAMPING",
   교통: "TRANSPORT",
+};
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 export default function ItemPage() {
@@ -286,21 +290,28 @@ export default function ItemPage() {
             </Grid.Col>
           ))}
         </Grid>
-
-        {/* 위로가기 버튼 */}
-        <Box style={{ position: "fixed", bottom: 30, right: 30 }}>
-          <Tooltip label="위로 가기" position="left" withArrow>
-            <Button
-              size="md"
-              radius="xl"
-              color="blue"
-              onClick={handleScrollTop}
-            >
-              <IconArrowUp size={16} />
-            </Button>
-          </Tooltip>
-        </Box>
       </Container>
+
+      <Button
+        onClick={scrollToTop}
+        variant="filled"
+        color="#409fff"
+        style={{
+          position: "fixed",
+          bottom: 30,
+          right: 30,
+          zIndex: 999,
+          width: 50,
+          height: 50,
+          borderRadius: "50%",
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconArrowNarrowUp size={30} />
+      </Button>
 
       <FooterComponent />
     </>

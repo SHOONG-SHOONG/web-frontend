@@ -185,7 +185,7 @@ export default function MainPage() {
         w="100%"
         h={45}
         style={{
-          background: "#4d6ef4",
+          background: "#409fff",
           color: "white",
           padding: "10px 0",
           textAlign: "center",
@@ -392,7 +392,7 @@ export default function MainPage() {
       <Button
         onClick={scrollToTop}
         variant="filled"
-        color="indigo"
+        color="#409fff"
         style={{
           position: "fixed",
           bottom: 30,
