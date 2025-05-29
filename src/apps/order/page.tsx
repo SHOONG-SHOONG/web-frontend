@@ -121,8 +121,15 @@ export default function OrderPage() {
   };
 
   const handleSubmit = () => {
+    console.log("제출:", userAddress, orderDetails[0]?.orderAddress);
+
     if (!agreed) {
       alert("약관에 동의해주세요.");
+      return;
+    }
+
+    if (!paymentMethod) {
+      alert("결제 수단을 선택해주세요.");
       return;
     }
 
@@ -139,19 +146,21 @@ export default function OrderPage() {
         pg: "danal_tpay", // 사용할 PG사
         pay_method: "card",
         merchant_uid: `ORD-${Date.now()}`, // 주문 고유 번호
-        name: "포트원 테스트 결제",
+        name: "결제",
         amount: orderDetails.reduce((acc, o) => acc + o.totalPrice, 0),
-        buyer_email: "shoong@shoong.com",
-        buyer_name: "구매자 이름",
-        buyer_tel: "010-1234-5678",
-        buyer_addr: userAddress,
-        buyer_postcode: "12345",
+        buyer_addr: userAddress && userAddress !== orderDetails[0]?.orderAddress
+          ? userAddress
+          : orderDetails[0]?.orderAddress,
       },
       async function (rsp) {
         if (rsp.success) {
           try {
             const token = localStorage.getItem("access");
             const orderId = orderDetails[0]?.orderId;
+            
+            if (!userAddress) {
+              setUserAddress(orderDetails[0]?.orderAddress);
+            }
 
             const res = await fetch(`${BASE_URL}/orders/success`, {
               method: "POST",
@@ -162,6 +171,7 @@ export default function OrderPage() {
               credentials: "include",
               body: JSON.stringify({
                 orderId: orderId,
+                orderAddress: userAddress,
               }),
             });
 
@@ -253,7 +263,7 @@ export default function OrderPage() {
                   <Box>
                     <Text fw={600}>
                       {(
-                        orderItemDetail.price * orderItemDetail.quantity
+                        orderItemDetail.price
                       ).toLocaleString()}
                       원
                     </Text>
@@ -322,7 +332,7 @@ export default function OrderPage() {
           </Box>
 
           {/* 주문자 정보 */}
-          <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
+          {/* <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
             <Text fw={700} size="sm" mb="md">
               주문자 정보
             </Text>
@@ -337,13 +347,45 @@ export default function OrderPage() {
               readOnly
               required
             />
+          </Box> */}
+          <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
+            <Text fw={700} size="sm" mb="md">주문자 정보</Text>
+
+            <Flex align="center" gap="sm" wrap="wrap">
+              <Text fw={500}>기본 배송지:</Text>
+              <Text c="gray.7">{orderDetails[0]?.orderAddress}</Text>
+
+              <Button
+                variant="outline"
+                size="xs"
+                color="gray"
+                onClick={handleAddressSearch}
+              >
+                다른 주소로 변경
+              </Button>
+            </Flex>
+
+            {userAddress && userAddress !== orderDetails[0]?.orderAddress && (
+              <Box mt="sm">
+                <Text fw={500} mb={4}>변경된 주소</Text>
+                <TextInput
+                  size="md"
+                  radius="sm"
+                  value={userAddress}
+                  onClick={handleAddressSearch}
+                  readOnly
+                  leftSection={<IconMapPin size={16} />}
+                />
+              </Box>
+            )}
           </Box>
 
           {/* 결제 수단 */}
           <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
-            <Text fw={700} size="sm" mb="md">
-              결제 수단
-            </Text>
+            <Flex align="center" mb="md" gap="xs">
+              <Text fw={700} size="sm">결제 수단</Text>
+              <Text size="lg" c="red">*</Text>
+            </Flex>
             <Radio.Group
               value={paymentMethod}
               onChange={setPaymentMethod}
