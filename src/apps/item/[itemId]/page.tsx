@@ -275,7 +275,7 @@ export default function ItemDetailPage() {
             <Flex align="center" gap={8} mb="md">
               {item.discountRate > 0 && (
                 <Text size="xl" fw={700} color="red">
-                  {Math.round(item.discountRate * 100)}%
+                  {Math.round(item.discountRate)}%
                 </Text>
               )}
               <Text size="xl" fw={700}>

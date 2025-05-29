@@ -4,22 +4,20 @@ import {
   Container,
   Card,
   Title,
-  Grid,
   Box,
   Text,
   Flex,
   Avatar,
   Group,
-  Badge,
-  Button,
   ActionIcon,
   Tooltip,
   Loader,
+  Table,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
-import BASE_URL from "../../../config"; // BASE_URL 불러오는 부분 확인 필요
+import BASE_URL from "../../../config";
 
 interface Item {
   itemId: number;
@@ -112,87 +110,66 @@ export default function AuthItemPage() {
             ) : items.length === 0 ? (
               <Text ta="center">대기중인 상품이 없습니다.</Text>
             ) : (
-              <Box>
-                <Flex
-                  justify="space-between"
-                  pb="sm"
-                  mb="sm"
-                  style={{ borderBottom: "1px solid #eee" }}
-                >
-                  <Text fw={500} w={140}>
-                    상품이미지
-                  </Text>
-                  <Text fw={500} w={140}>
-                    상품명
-                  </Text>
-                  <Text fw={500} w={100}>
-                    카테고리
-                  </Text>
-                  <Text fw={500} w={100}>
-                    가격
-                  </Text>
-                  <Text fw={500} w={100}>
-                    할인률
-                  </Text>
-                  <Text fw={500} w={100}>
-                    재고
-                  </Text>
-                  <Text fw={500} w={100}>
-                    작업
-                  </Text>
-                </Flex>
-                {items.map((item) => (
-                  <Flex
-                    key={item.itemId}
-                    justify="center"
-                    align="center"
-                    py="sm"
-                    style={{ borderBottom: "1px solid #f1f3f5" }}
-                  >
-                    {/* 상품 이미지 */}
-                    <Group w={140}>
-                      <Avatar
-                        src={
-                          item.imageUrls?.[0] || "https://placehold.co/60x60"
-                        }
-                        size="md"
-                        radius="sm"
-                      />
-                    </Group>
-
-                    {/* 상품 정보 */}
-                    <Text w={140}>{item.itemName}</Text>
-                    <Text w={140}>{item.category}</Text>
-                    <Text w={100}>{item.price.toLocaleString()}원</Text>
-                    <Text w={100}>{item.discountRate}%</Text>
-                    <Text w={100}>{item.itemQuantity}개</Text>
-
-                    {/* 작업 버튼 */}
-                    <Group w={100}>
-                      <Tooltip label="승인">
-                        <ActionIcon
-                          variant="light"
-                          color="blue"
-                          radius="xl"
-                          onClick={() => handleApprove(item.itemId)}
-                        >
-                          <IconCheck size={16} />
-                        </ActionIcon>
-                      </Tooltip>
-                      <Tooltip label="거절">
-                        <ActionIcon
-                          variant="light"
-                          color="red"
-                          radius="xl"
-                          onClick={() => handleReject(item.itemId)}
-                        >
-                          <IconX size={16} />
-                        </ActionIcon>
-                      </Tooltip>
-                    </Group>
-                  </Flex>
-                ))}
-              </Box>
+              <Table highlightOnHover withColumnBorders striped>
+                <thead>
+                  <tr>
+                    <th>상품이미지</th>
+                    <th>상품명</th>
+                    <th>카테고리</th>
+                    <th>가격</th>
+                    <th>할인률</th>
+                    <th>재고</th>
+                    <th>작업</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item) => (
+                    <tr key={item.itemId}>
+                      <td>
+                        <Group>
+                          <Avatar
+                            src={
+                              item.imageUrls?.[0] ||
+                              "https://placehold.co/60x60"
+                            }
+                            size="md"
+                            radius="sm"
+                          />
+                        </Group>
+                      </td>
+                      <td>{item.itemName}</td>
+                      <td>{item.category}</td>
+                      <td>{item.price.toLocaleString()}원</td>
+                      <td>{(item.discountRate * 100).toFixed(0)}%</td>
+                      <td>{item.itemQuantity}개</td>
+                      <td>
+                        <Group gap="xs">
+                          <Tooltip label="승인">
+                            <ActionIcon
+                              variant="light"
+                              color="blue"
+                              radius="xl"
+                              onClick={() => handleApprove(item.itemId)}
+                            >
+                              <IconCheck size={16} />
+                            </ActionIcon>
+                          </Tooltip>
+                          <Tooltip label="거절">
+                            <ActionIcon
+                              variant="light"
+                              color="red"
+                              radius="xl"
+                              onClick={() => handleReject(item.itemId)}
+                            >
+                              <IconX size={16} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             )}
           </Card>
         </Container>
