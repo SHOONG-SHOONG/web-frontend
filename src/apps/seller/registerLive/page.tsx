@@ -18,6 +18,7 @@ import {
 } from "@mantine/core";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
+import { useNavigate } from "react-router-dom";
 
 //  필터 라이브러리 임포트
 import Filter from "badwords-ko";
@@ -49,6 +50,7 @@ interface Item {
 }
 
 export default function LiveRegisterPage() {
+  const navigate = useNavigate();
   const [items, setItems] = useState<Item[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
   const [file, setFile] = useState<File | null>(null);
@@ -153,6 +155,8 @@ export default function LiveRegisterPage() {
       setSelectedItemIds([]);
       setTitleError(""); // 에러 메시지도 초기화
       setDescriptionError(""); // 에러 메시지도 초기화
+
+      navigate("/seller/live");
     } catch (error) {
       console.error("등록 에러:", error);
       alert(

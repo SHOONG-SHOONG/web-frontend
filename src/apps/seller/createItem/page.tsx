@@ -17,11 +17,13 @@ import {
 import { IconPhoto, IconPlus } from "@tabler/icons-react";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
+import { useNavigate } from "react-router-dom";
 
 import Filter from "badwords-ko";
 const filter = new Filter();
 
 export default function CreateItemPage() {
+  const navigate = useNavigate();
   const [itemName, setItemName] = useState<string>("");
   const [price, setPrice] = useState<number | undefined>(undefined);
   const [discountRate, setDiscountRate] = useState<number | undefined>(
@@ -156,6 +158,8 @@ export default function CreateItemPage() {
       setEndDate(null);
       setItemNameError(""); // 에러 메시지도 초기화
       setDescriptionError(""); // 에러 메시지도 초기화
+
+      navigate("/seller");
     } catch (error) {
       console.error("상품 등록 에러:", error);
       alert(
