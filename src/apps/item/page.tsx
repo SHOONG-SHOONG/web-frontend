@@ -2,20 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FooterComponent from "../../components/Footer.tsx";
 import HeaderComponent from "../../components/Header.tsx";
-import {
-  Box,
-  Container,
-  Grid,
-  Image,
-  Text,
-  Flex,
-  Button,
-  Tooltip,
-} from "@mantine/core";
-import { IconArrowUp } from "@tabler/icons-react";
+import { Box, Container, Grid, Image, Text, Flex, Button } from "@mantine/core";
+import { IconArrowNarrowUp, IconArrowUp } from "@tabler/icons-react";
 import BASE_URL from "../../config.js";
 
-// ✨ 필터 라이브러리 임포트
+//  필터 라이브러리 임포트
 import Filter from "badwords-ko";
 const filter = new Filter(); // 필터 인스턴스 생성 (기본 욕설 리스트 사용)
 
@@ -105,6 +96,10 @@ const categoryMap: Record<string, string> = {
   교통: "TRANSPORT",
 };
 
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
 export default function ItemPage() {
   const [items, setItems] = useState<Item[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -141,7 +136,7 @@ export default function ItemPage() {
       }
 
       const data = await response.json();
-      // ✨ 받아온 상품 데이터의 itemName과 description을 필터링
+      //  받아온 상품 데이터의 itemName과 description을 필터링
       const filteredItems = data.content.map((item: Item) => ({
         ...item,
         itemName: filter.clean(item.itemName),
@@ -186,7 +181,7 @@ export default function ItemPage() {
       }
 
       const data = await response.json();
-      // ✨ 받아온 상품 데이터의 itemName과 description을 필터링
+      //  받아온 상품 데이터의 itemName과 description을 필터링
       const filteredItems = data.content.map((item: Item) => ({
         ...item,
         itemName: filter.clean(item.itemName),
@@ -232,7 +227,7 @@ export default function ItemPage() {
               key={cat.value}
               onClick={() => {
                 setSelected(cat.value);
-                fetchItemListByCategory(cat.value); // 카테고리 클릭 시 해당 카테고리 상품 로드
+                fetchItemListByCategory(cat.value);
               }}
               style={{ textAlign: "center", cursor: "pointer", minWidth: 72 }}
             >
@@ -252,7 +247,7 @@ export default function ItemPage() {
               </Box>
               <Text
                 mt={6}
-                size="xs"
+                size="sm"
                 fw={selected === cat.value ? 700 : 400}
                 truncate
               >
@@ -278,7 +273,7 @@ export default function ItemPage() {
                     item.itemImages?.[0]?.url || "https://placehold.co/400x400"
                   }
                   alt={item.itemName}
-                  radius="md"
+                  radius="sm"
                   height={320}
                   fit="cover"
                   style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
@@ -291,7 +286,7 @@ export default function ItemPage() {
 
                 {/* 상품명 */}
                 <Text size="sm" mb="xs">
-                  {item.itemName} {/* ✨ 필터링된 상품명 표시 */}
+                  {item.itemName} {/*  필터링된 상품명 표시 */}
                 </Text>
 
                 {/* 할인율 + 가격 */}
@@ -309,21 +304,28 @@ export default function ItemPage() {
             </Grid.Col>
           ))}
         </Grid>
-
-        {/* 위로가기 버튼 */}
-        <Box style={{ position: "fixed", bottom: 30, right: 30 }}>
-          <Tooltip label="위로 가기" position="left" withArrow>
-            <Button
-              size="md"
-              radius="xl"
-              color="blue"
-              onClick={handleScrollTop}
-            >
-              <IconArrowUp size={16} />
-            </Button>
-          </Tooltip>
-        </Box>
       </Container>
+
+      <Button
+        onClick={scrollToTop}
+        variant="filled"
+        color="#409fff"
+        style={{
+          position: "fixed",
+          bottom: 30,
+          right: 30,
+          zIndex: 999,
+          width: 50,
+          height: 50,
+          borderRadius: "50%",
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconArrowNarrowUp size={30} />
+      </Button>
 
       <FooterComponent />
     </>

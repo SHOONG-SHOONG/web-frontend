@@ -10,12 +10,14 @@ import {
   Card,
   Box,
   Divider,
+  Button,
 } from "@mantine/core";
 import HeaderComponent from "../../../components/Header.tsx";
 import FooterComponent from "../../../components/Footer.tsx";
 import { useNavigate } from "react-router-dom";
 import TitleComponent from "../../main/components/titleComponent.tsx";
 import STREAM_URL from "../../../config.js";
+import { IconArrowNarrowUp } from "@tabler/icons-react";
 
 interface ItemImage {
   id: number;
@@ -49,6 +51,10 @@ interface LiveItem {
   itemImageUrl: string;
   status: string;
 }
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
 
 export default function ListLivePage() {
   const navigate = useNavigate();
@@ -266,7 +272,26 @@ export default function ListLivePage() {
         </Container>
       </Container>
 
-      {/* Footer */}
+      <Button
+        onClick={scrollToTop}
+        variant="filled"
+        color="#409fff"
+        style={{
+          position: "fixed",
+          bottom: 30,
+          right: 30,
+          zIndex: 999,
+          width: 50,
+          height: 50,
+          borderRadius: "50%",
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconArrowNarrowUp size={30} />
+      </Button>
       <FooterComponent />
     </>
   );

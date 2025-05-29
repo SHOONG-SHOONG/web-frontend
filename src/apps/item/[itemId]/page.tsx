@@ -26,7 +26,7 @@ import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { RingLoader } from "../../../components/RingLoader.tsx";
 import LoginModal from "../../../components/LoginModal.tsx";
 
-// ✨ 필터 라이브러리 임포트
+//  필터 라이브러리 임포트
 import Filter from "badwords-ko";
 const filter = new Filter(); // 필터 인스턴스 생성 (기본 욕설 리스트 사용)
 
@@ -111,7 +111,7 @@ export default function ItemDetailPage() {
         }
 
         const data: Item = await response.json();
-        // ✨ 상품명과 설명을 필터링
+        //  상품명과 설명을 필터링
         const filteredItem: Item = {
           ...data,
           itemName: filter.clean(data.itemName),
@@ -255,7 +255,7 @@ export default function ItemDetailPage() {
             {/* 상품명 + 찜 버튼 */}
             <Flex justify="space-between" align="center" mb="xs">
               <Text size="xl" fw={500}>
-                {item.itemName} {/* ✨ 필터링된 상품명 표시 */}
+                {item.itemName} {/*  필터링된 상품명 표시 */}
               </Text>
               <Box onClick={toggleWishlist} style={{ cursor: "pointer" }}>
                 {isWishlisted ? (
@@ -275,7 +275,7 @@ export default function ItemDetailPage() {
             <Flex align="center" gap={8} mb="md">
               {item.discountRate > 0 && (
                 <Text size="xl" fw={700} color="red">
-                  {Math.round(item.discountRate * 100)}%
+                  {Math.round(item.discountRate)}%
                 </Text>
               )}
               <Text size="xl" fw={700}>
@@ -382,7 +382,7 @@ export default function ItemDetailPage() {
             {/* 상품 설명 */}
             <Box px="md" style={{ maxWidth: 800, margin: "0 auto" }}>
               <Text size="md" lh={1.8}>
-                {item.description} {/* ✨ 필터링된 상품 설명 표시 */}
+                {item.description} {/*  필터링된 상품 설명 표시 */}
               </Text>
             </Box>
           </Tabs.Panel>

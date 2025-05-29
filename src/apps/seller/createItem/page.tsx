@@ -83,15 +83,16 @@ export default function CreateItemPage() {
     // 3. 욕설 필터링 에러 최종 검사
     // 실시간 경고가 활성화되어 있어 여기에 걸리면 제출을 막습니다.
     if (itemNameError || descriptionError) {
-      alert("상품 이름 또는 설명에 부적절한 단어가 포함되어 있습니다. 수정해주세요.");
+      alert(
+        "상품 이름 또는 설명에 부적절한 단어가 포함되어 있습니다. 수정해주세요."
+      );
       return;
     }
 
-    // ✨ 중요: 제출 시 필터링된 내용을 사용합니다.
+    //  중요: 제출 시 필터링된 내용을 사용합니다.
     // 실시간 경고 후에도 혹시 모를 상황에 대비해 최종 필터링을 다시 적용합니다.
     const filteredItemName = filter.clean(itemName);
     const filteredDescription = filter.clean(description);
-
 
     // 4. 백엔드로 전송할 아이템 데이터 객체 생성
     const itemData = {
@@ -196,7 +197,9 @@ export default function CreateItemPage() {
                   onChange={(e) => {
                     const inputValue = e.currentTarget.value;
                     if (filter.isProfane(inputValue)) {
-                      setItemNameError("상품 이름에 부적절한 단어가 포함되어 있습니다.");
+                      setItemNameError(
+                        "상품 이름에 부적절한 단어가 포함되어 있습니다."
+                      );
                     } else {
                       setItemNameError("");
                     }
@@ -284,7 +287,9 @@ export default function CreateItemPage() {
                   onChange={(e) => {
                     const inputValue = e.currentTarget.value;
                     if (filter.isProfane(inputValue)) {
-                      setDescriptionError("상품 설명에 부적절한 단어가 포함되어 있습니다.");
+                      setDescriptionError(
+                        "상품 설명에 부적절한 단어가 포함되어 있습니다."
+                      );
                     } else {
                       setDescriptionError("");
                     }
