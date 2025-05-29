@@ -89,8 +89,13 @@ export default function LiveRegisterPage() {
     selectedItemIds.forEach((id) => formData.append("itemIds", id.toString()));
 
     try {
-      const response = await fetch("/live/create", {
+      const token = localStorage.getItem("access");
+      const response = await fetch(`${BASE_URL}/live/create`, {
         method: "POST",
+        headers: {
+          access: token || "",
+        },
+        credentials: "include",
         body: formData,
       });
 
@@ -214,34 +219,70 @@ export default function LiveRegisterPage() {
                     <Text color="dimmed">상품이 없습니다.</Text>
                   ) : (
                     <Accordion multiple defaultValue={[]}>
-                      {items.map((item) => (
-                        <Accordion.Item
-                          key={item.itemId}
-                          value={item.itemId.toString()}
-                        >
-                          <Accordion.Control>
-                            <Checkbox
-                              label={item.itemName}
-                              checked={selectedItemIds.includes(item.itemId)}
-                              onChange={(e) => {
-                                const newId = item.itemId;
-                                setSelectedItemIds((prev) =>
-                                  e.currentTarget.checked
-                                    ? [...prev, newId]
-                                    : prev.filter((id) => id !== newId)
-                                );
-                              }}
-                            />
-                          </Accordion.Control>
-                          <Accordion.Panel>
-                            <Image
-                              src={item.itemImages?.[0]?.url}
-                              width={100}
-                              alt={item.itemName}
-                            />
-                          </Accordion.Panel>
-                        </Accordion.Item>
-                      ))}
+                      {items.map((item) => {
+                        const isSelected = selectedItemIds.includes(
+                          item.itemId
+                        );
+                        const discountPercent =
+                          item.discountRate > 0 && item.discountRate < 1
+                            ? item.discountRate * 100
+                            : 0; // 잘못된 할인율 방지
+                        const imageUrl =
+                          item.itemImages?.[0]?.url ||
+                          "https://placehold.co/100x100";
+
+                        return (
+                          <Accordion.Item
+                            key={item.itemId}
+                            value={item.itemId.toString()}
+                          >
+                            <Accordion.Control>
+                              <Flex align="center" justify="space-between">
+                                <Checkbox
+                                  label={item.itemName}
+                                  checked={isSelected}
+                                  onChange={(e) => {
+                                    const newId = item.itemId;
+                                    setSelectedItemIds((prev) =>
+                                      e.currentTarget.checked
+                                        ? [...prev, newId]
+                                        : prev.filter((id) => id !== newId)
+                                    );
+                                  }}
+                                />
+                                <Text size="xs" c="dimmed">
+                                  {item.status === "ON_SALE"
+                                    ? "판매중"
+                                    : "승인대기"}
+                                </Text>
+                              </Flex>
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                              <Flex gap="md" align="center">
+                                <Image
+                                  src={imageUrl}
+                                  width={100}
+                                  radius="md"
+                                  alt={item.itemName}
+                                />
+                                <Box>
+                                  <Text size="sm">{item.description}</Text>
+                                  <Flex align="center" gap="sm" mt="xs">
+                                    {discountPercent > 0 && (
+                                      <Text size="sm" fw={700} c="red">
+                                        {discountPercent}%
+                                      </Text>
+                                    )}
+                                    <Text size="sm" fw={700}>
+                                      {item.finalPrice.toLocaleString()}원
+                                    </Text>
+                                  </Flex>
+                                </Box>
+                              </Flex>
+                            </Accordion.Panel>
+                          </Accordion.Item>
+                        );
+                      })}
                     </Accordion>
                   )}
                 </Box>

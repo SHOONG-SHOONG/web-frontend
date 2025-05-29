@@ -14,16 +14,20 @@ import {
   IconLogout,
   IconShoppingBag,
 } from "@tabler/icons-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import BASE_URL from "../config.js";
+import { useNavigate } from "react-router-dom";
+
 const menus = [
   { label: "홈", value: "home", path: "/" },
   { label: "카테고리", value: "category", path: "/item" },
   { label: "라이브", value: "live", path: "/live" },
 ];
+
 export default function HeaderComponent() {
+  const navigate = useNavigate();
   const location = useLocation();
   const activePath = location.pathname;
   const { isLoggedIn, loginUser } = useLogin();
@@ -103,7 +107,15 @@ export default function HeaderComponent() {
           </UnstyledButton>
           {isLoggedIn ? (
             <>
-              <Text size="lg" fw={600} mb={5}>
+              <Text
+                size="lg"
+                fw={600}
+                mb={5}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  navigate("/mypage");
+                }}
+              >
                 {loginUser}님
               </Text>
               <UnstyledButton component={Link} to="/logout">
