@@ -21,6 +21,7 @@ import {
     orderId: number;
     itemId: number;
     itemName: string;
+    imageUrl: string;
     quantity: number;
     price: number;
   };
@@ -36,39 +37,40 @@ import {
   export default function OrderCompletePage() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [order, setOrder] = useState<OrderDto | null>(null);
+    const [order, setOrder] = useState<OrderDto>();
   
     const orderId = location.state?.orderId;
   
-    // useEffect(() => {
-    //   if (!orderId) {
-    //     alert("잘못된 접근입니다.");
-    //     navigate("/");
-    //     return;
-    //   }
+    useEffect(() => {
+      if (!orderId) {
+        alert("잘못된 접근입니다.");
+        navigate("/");
+        return;
+      }
   
-    //   const fetchOrder = async () => {
-    //     const token = localStorage.getItem("access");
-    //     const res = await fetch(`${BASE_URL}/order/${orderId}`, {
-    //       method: "GET",
-    //       headers: {
-    //         access: token || "",
-    //       },
-    //       credentials: "include",
-    //     });
+      const fetchOrder = async () => {
+        const token = localStorage.getItem("access");
+        const res = await fetch(`${BASE_URL}/orders/${orderId}`, {
+          method: "GET",
+          headers: {
+            access: token || "",
+          },
+          credentials: "include",
+        });
   
-    //     if (!res.ok) {
-    //       alert("주문 정보를 불러오지 못했습니다.");
-    //       navigate("/");
-    //       return;
-    //     }
+        if (!res.ok) {
+          alert("주문 정보를 불러오지 못했습니다.");
+          navigate("/");
+          return;
+        }
   
-    //     const data = await res.json();
-    //     setOrder(data);
-    //   };
+        const data = await res.json();
+        setOrder(data);
+        console.log(order?.orderAddress);
+      };
   
-    //   fetchOrder();
-    // }, [orderId, navigate]);
+      fetchOrder();
+    }, [orderId, navigate]);
   
     if (!order) return null;
   
@@ -98,21 +100,21 @@ import {
             <Stack gap="sm">
               <Flex justify="space-between">
                 <Text fw={600}>주문번호</Text>
-                {/* <Text>{order.orderId}</Text> */}
+                <Text>{order.orderId}</Text>
               </Flex>
               <Flex justify="space-between">
                 <Text fw={600}>주문일자</Text>
-                {/* <Text>{new Date(order.orderDate).toLocaleString()}</Text> */}
+                <Text>{new Date(order.orderDate).toLocaleString()}</Text>
               </Flex>
               <Flex justify="space-between">
                 <Text fw={600}>배송지</Text>
-                {/* <Text>{order.orderAddress}</Text> */}
+                <Text>{order.orderAddress}</Text>
               </Flex>
               <Divider my="sm" />
               <Flex justify="space-between">
                 <Text fw={600}>총 결제 금액</Text>
                 <Text fw={700} size="lg">
-                  {/* {order.totalPrice.toLocaleString()}원 */}
+                  {order.totalPrice.toLocaleString()}원
                 </Text>
               </Flex>
             </Stack>
