@@ -3144,6 +3144,11 @@ babel-preset-react-app@^10.0.1:
     babel-plugin-macros "^3.1.0"
     babel-plugin-transform-react-remove-prop-types "^0.4.24"
 
+badwords-ko@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/badwords-ko/-/badwords-ko-1.0.4.tgz"
+  integrity sha512-l2gJiVkIXd1nyyRI6aXEujq+aCiMfCyREUdK68mUnH6iZy8+mvXvkvOLO6Nv6MXiRKgvdUQEmSeuVno38MX+wA==
+
 balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz"

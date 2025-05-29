@@ -7,6 +7,7 @@ import {
   Text,
   UnstyledButton,
   Badge,
+  Tooltip,
 } from "@mantine/core";
 import {
   IconSearch,
@@ -14,7 +15,7 @@ import {
   IconLogout,
   IconShoppingBag,
 } from "@tabler/icons-react";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import BASE_URL from "../config.js";
@@ -32,6 +33,7 @@ export default function HeaderComponent() {
   const activePath = location.pathname;
   const { isLoggedIn, loginUser } = useLogin();
   const [cartCount, setCartCount] = useState(0);
+
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -63,6 +65,7 @@ export default function HeaderComponent() {
     };
     fetchCart();
   }, [isLoggedIn]);
+
   return (
     <Box
       px="xl"
@@ -102,51 +105,92 @@ export default function HeaderComponent() {
         </Group>
         {/* 오른쪽 아이콘 메뉴 (크기 증가) */}
         <Group gap="lg" w={260} align="center" justify="flex-end">
-          <UnstyledButton component={Link} to="/item/search">
-            <IconSearch size={22} />
-          </UnstyledButton>
+          <Tooltip
+            label="SEARCH"
+            position="bottom"
+            withArrow
+            arrowPosition="center"
+            transitionProps={{ transition: "pop" }}
+          >
+            <UnstyledButton component={Link} to="/item/search">
+              <IconSearch size={22} />
+            </UnstyledButton>
+          </Tooltip>
           {isLoggedIn ? (
             <>
-              <Text
-                size="lg"
-                fw={600}
-                mb={5}
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  navigate("/mypage");
-                }}
+              <Tooltip
+                label="MYPAGE"
+                position="bottom"
+                withArrow
+                arrowPosition="center"
+                transitionProps={{ transition: "pop" }}
               >
-                {loginUser}님
-              </Text>
-              <UnstyledButton component={Link} to="/logout">
-                <IconLogout size={22} />
-              </UnstyledButton>
+                <Text
+                  size="lg"
+                  fw={600}
+                  mb={5}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    navigate("/mypage");
+                  }}
+                >
+                  {loginUser}님
+                </Text>
+              </Tooltip>
+              <Tooltip
+                label="LOGOUT"
+                position="bottom"
+                withArrow
+                arrowPosition="center"
+                transitionProps={{ transition: "pop" }}
+              >
+                <UnstyledButton component={Link} to="/logout">
+                  <IconLogout size={22} />
+                </UnstyledButton>
+              </Tooltip>
             </>
           ) : (
-            <UnstyledButton component={Link} to="/login">
-              <IconUser size={22} />
-            </UnstyledButton>
+            <Tooltip
+              label="LOGIN"
+              position="bottom"
+              withArrow
+              arrowPosition="center"
+              transitionProps={{ transition: "pop" }}
+            >
+              <UnstyledButton component={Link} to="/login">
+                <IconUser size={22} />
+              </UnstyledButton>
+            </Tooltip>
           )}
-          <UnstyledButton
-            component={Link}
-            to="/cart"
-            style={{ position: "relative" }}
+
+          <Tooltip
+            label="CART"
+            position="bottom"
+            withArrow
+            arrowPosition="center"
+            transitionProps={{ transition: "pop" }}
           >
-            <IconShoppingBag size={22} />
-            {cartCount > 0 && (
-              <Badge
-                size="sm"
-                color="#4D6EF4"
-                style={{
-                  position: "absolute",
-                  top: -8,
-                  right: -8,
-                }}
-              >
-                {cartCount}
-              </Badge>
-            )}
-          </UnstyledButton>
+            <UnstyledButton
+              component={Link}
+              to="/cart"
+              style={{ position: "relative" }}
+            >
+              <IconShoppingBag size={22} />
+              {cartCount > 0 && (
+                <Badge
+                  size="sm"
+                  color="#4D6EF4"
+                  style={{
+                    position: "absolute",
+                    top: -8,
+                    right: -8,
+                  }}
+                >
+                  {cartCount}
+                </Badge>
+              )}
+            </UnstyledButton>
+          </Tooltip>
         </Group>
       </Flex>
     </Box>

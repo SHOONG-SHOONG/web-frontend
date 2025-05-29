@@ -15,7 +15,21 @@ import {
   TextInput,
 } from "@mantine/core";
 
-const ProductBox = ({ itemId, title, price, discountRate, imageUrl }) => {
+type ProductBoxProps = {
+  itemId: number;
+  title: string;
+  price: number;
+  discountRate?: number;
+  imageUrl?: string;
+};
+
+const ProductBox = ({
+  itemId,
+  title,
+  price,
+  discountRate = 0,
+  imageUrl,
+}: ProductBoxProps) => {
   const navigate = useNavigate();
 
   return (
@@ -41,7 +55,7 @@ const ProductBox = ({ itemId, title, price, discountRate, imageUrl }) => {
         {title}
       </Text>
       <Text size="sm" fw={700}>
-        ₩{price?.toLocaleString() || 0}
+        ₩{price.toLocaleString()}
         {discountRate > 0 && (
           <Text span size="xs" c="red" ml={8}>
             {discountRate}% ↓
@@ -52,12 +66,20 @@ const ProductBox = ({ itemId, title, price, discountRate, imageUrl }) => {
   );
 };
 
+type Product = {
+  itemId: number;
+  itemName: string;
+  finalPrice: number;
+  discountRate?: number;
+  itemImages?: { url: string }[];
+};
+
 const SearchPage = () => {
   const [keyword, setKeyword] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(200000);
   const [sortBy, setSortBy] = useState("");
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
   const page = 0;
@@ -126,7 +148,7 @@ const SearchPage = () => {
           <Text fw={600} size="30px" mb={40} mt={10}>
             CATEGORY
           </Text>
-          <Stack spacing={20}>
+          <Stack gap={20}>
             <Box mb={10}>
               <Text fw={600} size="sm" mb={4}>
                 키워드
@@ -165,7 +187,7 @@ const SearchPage = () => {
               <Text fw={600} size="sm" mb={7}>
                 정렬
               </Text>
-              <Group spacing="xs" justify="center">
+              <Group gap="xs" justify="center">
                 <Button
                   onClick={() => setSortBy("priceAsc")}
                   variant={sortBy === "priceAsc" ? "filled" : "outline"}
@@ -206,9 +228,11 @@ const SearchPage = () => {
                 products.map((item) => (
                   <ProductBox
                     key={item.itemId}
+                    itemId={item.itemId}
                     title={item.itemName}
                     price={item.finalPrice}
                     imageUrl={item.itemImages?.[0]?.url}
+                    discountRate={item.discountRate ?? 0}
                   />
                 ))
               ) : (

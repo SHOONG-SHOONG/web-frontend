@@ -10,8 +10,9 @@ import {
   Box,
   Flex,
   Anchor,
+  Button,
 } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons-react";
+import { IconChevronDown, IconArrowNarrowUp } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
@@ -71,6 +72,17 @@ export default function MainPage() {
     ...(currentLiveItem ? [currentLiveItem] : []),
     ...endedLiveItems,
   ];
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const statusMap: Record<string, { label: string; color: string }> = {
+    ONGOING: { label: "LIVE", color: "red" },
+    SCHEDULED: { label: "예정됨", color: "blue" },
+    COMPLETED: { label: "종료됨", color: "gray" },
+    CANCELED: { label: "취소됨", color: "dark" },
+  };
 
   const fetchCurrentLive = async () => {
     try {
@@ -376,6 +388,27 @@ export default function MainPage() {
           </Accordion.Item>
         </Accordion>
       </Container>
+
+      <Button
+        onClick={scrollToTop}
+        variant="filled"
+        color="indigo"
+        style={{
+          position: "fixed",
+          bottom: 30,
+          right: 30,
+          zIndex: 999,
+          width: 50,
+          height: 50,
+          borderRadius: "50%",
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconArrowNarrowUp size={30} />
+      </Button>
 
       {/* Footer */}
       <FooterComponent />

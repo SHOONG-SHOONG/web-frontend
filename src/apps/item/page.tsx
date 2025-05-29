@@ -15,6 +15,13 @@ import {
 import { IconArrowUp } from "@tabler/icons-react";
 import BASE_URL from "../../config.js";
 
+// ✨ 필터 라이브러리 임포트
+import Filter from "badwords-ko";
+const filter = new Filter(); // 필터 인스턴스 생성 (기본 욕설 리스트 사용)
+
+// 필요한 경우 커스텀 단어 추가:
+// filter.addWords("새로운욕설", "나쁜말");
+
 // filter
 const categories = [
   {
@@ -107,6 +114,7 @@ export default function ItemPage() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
 
+  // 상품 목록을 키워드로 가져오는 함수
   const fetchItemListByKeyword = async (keyword: string) => {
     try {
       const token = localStorage.getItem("access");
@@ -133,7 +141,13 @@ export default function ItemPage() {
       }
 
       const data = await response.json();
-      setItems(data.content);
+      // ✨ 받아온 상품 데이터의 itemName과 description을 필터링
+      const filteredItems = data.content.map((item: Item) => ({
+        ...item,
+        itemName: filter.clean(item.itemName),
+        description: filter.clean(item.description),
+      }));
+      setItems(filteredItems);
       setPageInfo(data.page);
       setError(null);
     } catch (err: any) {
@@ -145,6 +159,7 @@ export default function ItemPage() {
     }
   };
 
+  // 상품 목록을 카테고리로 가져오는 함수
   const fetchItemListByCategory = async (category: string) => {
     try {
       const token = localStorage.getItem("access");
@@ -171,7 +186,13 @@ export default function ItemPage() {
       }
 
       const data = await response.json();
-      setItems(data.content);
+      // ✨ 받아온 상품 데이터의 itemName과 description을 필터링
+      const filteredItems = data.content.map((item: Item) => ({
+        ...item,
+        itemName: filter.clean(item.itemName),
+        description: filter.clean(item.description),
+      }));
+      setItems(filteredItems);
       setPageInfo(data.page);
       setError(null);
     } catch (err: any) {
@@ -183,10 +204,12 @@ export default function ItemPage() {
     }
   };
 
+  // 컴포넌트가 처음 렌더링될 때 전체 상품 목록을 가져옴
   useEffect(() => {
-    fetchItemListByKeyword("");
+    fetchItemListByKeyword(""); // 초기 로드 시 전체 상품 (빈 키워드)
   }, []);
 
+  // 페이지 최상단으로 스크롤하는 함수
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -196,7 +219,7 @@ export default function ItemPage() {
       <HeaderComponent />
 
       <Container size="lg" py="xl">
-        {/* Filter */}
+        {/* Filter categories */}
         <Flex
           mb={32}
           gap={24}
@@ -209,7 +232,7 @@ export default function ItemPage() {
               key={cat.value}
               onClick={() => {
                 setSelected(cat.value);
-                fetchItemListByCategory(cat.value);
+                fetchItemListByCategory(cat.value); // 카테고리 클릭 시 해당 카테고리 상품 로드
               }}
               style={{ textAlign: "center", cursor: "pointer", minWidth: 72 }}
             >
@@ -239,7 +262,7 @@ export default function ItemPage() {
           ))}
         </Flex>
 
-        {/* 상품 목록 */}
+        {/* 상품 목록 Grid */}
         <Grid gutter="xl" mt={40}>
           {items.map((item) => (
             <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
@@ -249,7 +272,7 @@ export default function ItemPage() {
                 }
                 style={{ cursor: "pointer" }}
               >
-                {/* 이미지 */}
+                {/* 상품 이미지 */}
                 <Image
                   src={
                     item.itemImages?.[0]?.url || "https://placehold.co/400x400"
@@ -268,7 +291,7 @@ export default function ItemPage() {
 
                 {/* 상품명 */}
                 <Text size="sm" mb="xs">
-                  {item.itemName}
+                  {item.itemName} {/* ✨ 필터링된 상품명 표시 */}
                 </Text>
 
                 {/* 할인율 + 가격 */}

@@ -26,6 +26,13 @@ import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { RingLoader } from "../../../components/RingLoader.tsx";
 import LoginModal from "../../../components/LoginModal.tsx";
 
+// ✨ 필터 라이브러리 임포트
+import Filter from "badwords-ko";
+const filter = new Filter(); // 필터 인스턴스 생성 (기본 욕설 리스트 사용)
+
+// 필요한 경우 커스텀 단어 추가:
+// filter.addWords("새로운욕설", "나쁜말");
+
 // 타입 정의
 interface ItemImage {
   id: number;
@@ -56,7 +63,7 @@ export default function ItemDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false); // 찜 상태
   const [loginModalOpened, setLoginModalOpened] = useState(false);
 
   const handleItemPurchaseClick = () => {
@@ -79,6 +86,12 @@ export default function ItemDetailPage() {
     }
   };
 
+  // 컴포넌트 마운트 시 스크롤을 맨 위로 이동
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // 상품 상세 정보 가져오기 및 필터링
   useEffect(() => {
     const fetchItemDetail = async (
       itemId: number,
@@ -98,7 +111,13 @@ export default function ItemDetailPage() {
         }
 
         const data: Item = await response.json();
-        setItem(data);
+        // ✨ 상품명과 설명을 필터링
+        const filteredItem: Item = {
+          ...data,
+          itemName: filter.clean(data.itemName),
+          description: filter.clean(data.description),
+        };
+        setItem(filteredItem);
         setError(null);
       } catch (err: any) {
         console.error("에러 발생:", err);
@@ -111,14 +130,17 @@ export default function ItemDetailPage() {
     if (itemId) {
       fetchItemDetail(Number(itemId), setItem, setError);
     }
-  }, [itemId]);
+  }, [itemId]); // itemId가 변경될 때마다 실행
 
-  const toggleWishlist = async (credentials: any) => {
+  // 찜하기/찜 해제 토글 함수
+  const toggleWishlist = async () => {
+    // 실제 API 호출 로직은 주석 처리되어 있으므로, 여기서는 UI 상태만 토글합니다.
+    // 실제 백엔드 연동 시에는 주석 처리된 코드를 활성화하고 로그인 여부 등 추가 로직을 처리해야 합니다.
     setIsWishlisted((prev) => !prev);
-    // const token = localStorage.getItem("access");
 
+    // const token = localStorage.getItem("access");
     // if (!token) {
-    //   alert("로그인이 필요합니다.");
+    //   setLoginModalOpened(true); // 로그인 모달 표시
     //   return;
     // }
 
@@ -138,17 +160,20 @@ export default function ItemDetailPage() {
     //     setIsWishlisted((prev) => !prev);
     //   } else if (response.status === 401) {
     //     alert("로그인이 만료되었거나 잘못되었습니다. 다시 로그인해주세요.");
+    //     setLoginModalOpened(true); // 로그인 모달 표시
     //   } else {
     //     alert("찜 처리 중 오류가 발생했습니다.");
     //   }
     // } catch (error) {
     //   console.error("찜 요청 실패:", error);
+    //   alert("찜 요청 중 문제가 발생했습니다.");
     // }
   };
 
+  // 장바구니에 상품 추가
   const handleAddToCart = async (itemId: number, cartQuantity: number) => {
     const token = localStorage.getItem("access");
-  
+
     try {
       const response = await fetch(`${BASE_URL}/cart/add`, {
         method: "POST",
@@ -156,29 +181,32 @@ export default function ItemDetailPage() {
           "Content-Type": "application/json",
           access: token || "",
         },
-        credentials: "include", 
+        credentials: "include",
         body: JSON.stringify({
           itemId: Number(item?.itemId),
           cartQuantity: quantity,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("장바구니 추가 실패");
       }
-  
+
       alert("장바구니에 담았습니다!");
-      navigate("/cart");
+      navigate("/cart"); // 장바구니 페이지로 이동
     } catch (error) {
       console.error("❌ 장바구니 요청 실패:", error);
       alert("장바구니 추가 중 문제가 발생했습니다.");
     }
   };
 
+  // 바로 구매 처리 (현재는 alert만)
   const handleBuy = () => {
     alert("구매 페이지로 이동합니다.");
+    // 실제 구매 로직은 여기에 추가
   };
 
+  // 로딩 중일 때 로더 표시
   if (loading) {
     return (
       <Container py="xl">
@@ -187,6 +215,7 @@ export default function ItemDetailPage() {
     );
   }
 
+  // 상품 데이터가 없을 때 에러 메시지 표시
   if (!item) {
     return (
       <Container py="xl">
@@ -200,7 +229,7 @@ export default function ItemDetailPage() {
       <HeaderComponent />
 
       <Container size="lg" py="xl">
-        {/* 상품 이미지 + 정보 */}
+        {/* 상품 이미지 + 정보 섹션 */}
         <Grid gutter="md" mt={30} mb={60}>
           <Grid.Col span={{ base: 12, md: 6 }}>
             <Image
@@ -223,10 +252,10 @@ export default function ItemDetailPage() {
               CRASH BAGGAGE
             </Text>
 
-            {/* 상품명 */}
+            {/* 상품명 + 찜 버튼 */}
             <Flex justify="space-between" align="center" mb="xs">
               <Text size="xl" fw={500}>
-                {item.itemName}
+                {item.itemName} {/* ✨ 필터링된 상품명 표시 */}
               </Text>
               <Box onClick={toggleWishlist} style={{ cursor: "pointer" }}>
                 {isWishlisted ? (
@@ -246,7 +275,7 @@ export default function ItemDetailPage() {
             <Flex align="center" gap={8} mb="md">
               {item.discountRate > 0 && (
                 <Text size="xl" fw={700} color="red">
-                  {item.discountRate}%
+                  {Math.round(item.discountRate * 100)}%
                 </Text>
               )}
               <Text size="xl" fw={700}>
@@ -322,12 +351,13 @@ export default function ItemDetailPage() {
           </Grid.Col>
         </Grid>
 
+        {/* 로그인 모달 */}
         <LoginModal
           opened={loginModalOpened}
           onClose={() => setLoginModalOpened(false)}
         />
 
-        {/* 상세 정보 탭 */}
+        {/* 상세 정보 탭 섹션 */}
         <Tabs color="rgba(0, 0, 0, 1)" defaultValue="detail">
           <Tabs.List grow>
             <Tabs.Tab value="detail">상품상세</Tabs.Tab>
@@ -352,7 +382,7 @@ export default function ItemDetailPage() {
             {/* 상품 설명 */}
             <Box px="md" style={{ maxWidth: 800, margin: "0 auto" }}>
               <Text size="md" lh={1.8}>
-                {item.description}
+                {item.description} {/* ✨ 필터링된 상품 설명 표시 */}
               </Text>
             </Box>
           </Tabs.Panel>

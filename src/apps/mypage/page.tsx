@@ -99,7 +99,7 @@ export default function MyPage() {
     try {
       const token = localStorage.getItem("access");
 
-      const response = await fetch(`${BASE_URL}/orders/list`, {
+      const response = await fetch(`${BASE_URL}/orders/list/paid`, {
         method: "GET",
         headers: {
           Accept: "*/*",
