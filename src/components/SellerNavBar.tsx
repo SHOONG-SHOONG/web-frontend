@@ -173,7 +173,7 @@ export default function SellerNavBarPage() {
                 leftSection={<IconUserX size="1rem" />}
                 onClick={() => navigate("/seller")}
               >
-                탈퇴하기
+                계정삭제
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>

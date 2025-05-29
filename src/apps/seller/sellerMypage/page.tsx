@@ -115,6 +115,28 @@ export default function SellerMypge() {
                             <Box style={{ width: "1000px", maxWidth: "100%" }}>
                                 {/* 프로필 카드 */}
                                 <Card mb="xl" radius="lg" withBorder p="xl" shadow="sm">
+                                    {/* 안내 오버레이 */}
+                                    {!userInfo?.brandId && (
+                                        <Box
+                                            pos="absolute"
+                                            top={0}
+                                            left={0}
+                                            right={0}
+                                            bottom={0}
+                                            bg="rgba(0, 0, 0, 0.6)"
+                                            style={{
+                                                zIndex: 10,
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                backdropFilter: "blur(2px)",
+                                            }}
+                                        >
+                                            <Text size="lg" fw={700} c="white">
+                                                브랜드를 먼저 등록해주세요
+                                            </Text>
+                                        </Box>
+                                    )}
                                     <Flex justify="space-between" align="flex-start">
                                         <Group align="center" gap="lg">
                                             <Box
@@ -241,7 +263,12 @@ export default function SellerMypge() {
                                     <Card withBorder radius="md" p="xl" ta="center">
                                         <Text size="lg" fw={600} mb="sm">아직 브랜드를 등록하지 않으셨습니다.</Text>
                                         <Text size="sm" c="dimmed" mb="lg">브랜드를 등록하고 상품을 판매해보세요!</Text>
-                                        <Button onClick={() => navigate("/seller/brand")} color="dark" size="md" radius="lg">
+                                        <Button onClick={() => navigate("/seller/brand")}
+                                            color="dark"
+                                            size="md"
+                                            radius="lg"
+                                            w={300}
+                                            mx="auto">
                                             브랜드 등록하러 가기
                                         </Button>
                                     </Card>

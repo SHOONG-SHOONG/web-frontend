@@ -165,14 +165,21 @@ export default function MyPage() {
               <Box bg="black" c="white" p="lg">
                 <Group justify="space-between">
                   <Group>
-                    <Avatar
-                      radius="xl"
-                      color="gray"
-                      size="lg"
-                      style={{ backgroundColor: "#6c757d" }}
+                    <Box
+                      w={60}
+                      h={60}
+                      style={{
+                        backgroundColor: "#aaa",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 20,
+                        fontWeight: 700,
+                      }}
                     >
-                      o3o
-                    </Avatar>
+                      {userInfo?.userName?.charAt(0) ?? "?"}
+                    </Box>
                     <Box>
                       {userInfo && (
                         <Text fw={700} size="lg" style={{ fontSize: "16px" }}>
