@@ -9,6 +9,8 @@ import {
   Button,
   Checkbox,
   Input,
+  Image,
+  ActionIcon,
 } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
 import HeaderComponent from "../../components/Header.tsx";
@@ -108,6 +110,33 @@ export default function CartPage() {
     );
   };
 
+  const patchQuantity = async (item: CartItem) => {
+    const token = localStorage.getItem("access");
+
+    try {
+      const res = await fetch(
+        `${BASE_URL}/cart/change/${item.cartId}?quantity=${item.cartQuantity}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            access: token || "",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (res.ok) {
+        alert("수량이 업데이트되었습니다.");
+      } else {
+        alert("수정 실패");
+      }
+    } catch (error) {
+      console.error("수정 요청 실패:", error);
+      alert("서버와의 통신 중 오류가 발생했습니다.");
+    }
+  };
+
   // 선택된 항목 기준 계산
   const selectedItems = cartItems.filter((item) =>
     selectedIds.includes(item.cartId)
@@ -117,6 +146,31 @@ export default function CartPage() {
       sum + item.price * (1 - item.discountRate) * item.cartQuantity,
     0
   );
+
+  const deleteCartItem = async (cartId: number) => {
+    const token = localStorage.getItem("access");
+
+    try {
+      const res = await fetch(`${BASE_URL}/cart/delete/${cartId}`, {
+        method: "DELETE",
+        headers: {
+          access: token || "",
+        },
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error("삭제 실패");
+      }
+
+      // 삭제 성공 시 UI에서도 제거
+      setCartItems((prev) => prev.filter((item) => item.cartId !== cartId));
+      setSelectedIds((prev) => prev.filter((id) => id !== cartId));
+    } catch (err) {
+      console.error("장바구니 삭제 실패:", err);
+      alert("상품 삭제에 실패했습니다.");
+    }
+  };
 
   const handleOrder = async () => {
     const token = localStorage.getItem("access");
@@ -159,12 +213,13 @@ export default function CartPage() {
       <HeaderComponent />
 
       {/* Content */}
-      <Container size="lg" py="xl">
+      <Container size="xl" py="xl">
         <Title order={3} mb="xl" ta="center">
           장바구니
         </Title>
 
         <Box style={{ borderTop: "2px solid black", fontSize: 14 }}>
+          {/* 헤더 */}
           <Grid
             align="center"
             py="xs"
@@ -175,33 +230,48 @@ export default function CartPage() {
             }}
           >
             <Grid.Col span={1}>
-              <Flex justify="center" mr={10}>
+              <Flex align="center" justify="center">
                 <Checkbox
-                  c="#409fff"
+                  color="#409fff"
                   checked={isAllSelected}
                   onChange={toggleAll}
-                  ml={12}
                 />
               </Flex>
             </Grid.Col>
-            <Grid.Col span={5}>
+
+            <Grid.Col span={2}>
               <Flex align="center" justify="center">
-                상품정보
+                상품 이미지
               </Flex>
             </Grid.Col>
-            <Grid.Col span={2} ta="center">
+
+            <Grid.Col span={3}>
+              <Flex align="center" justify="center">
+                상품명
+              </Flex>
+            </Grid.Col>
+
+            <Grid.Col span={2}>
               <Flex align="center" justify="center">
                 수량
               </Flex>
             </Grid.Col>
-            <Grid.Col span={2.5} ta="center">
+
+            <Grid.Col span={2}>
               <Flex align="center" justify="center">
                 상품금액
               </Flex>
             </Grid.Col>
-            <Grid.Col span={1} ta="center">
+
+            <Grid.Col span={1}>
               <Flex align="center" justify="center">
                 배송
+              </Flex>
+            </Grid.Col>
+
+            <Grid.Col span={1}>
+              <Flex align="center" justify="center">
+                삭제
               </Flex>
             </Grid.Col>
           </Grid>
@@ -210,10 +280,12 @@ export default function CartPage() {
           {cartItems.map((item) => (
             <Grid
               key={item.cartId}
+              columns={12}
               align="center"
-              py="sm"
-              style={{ borderBottom: "1px solid #ddd", fontSize: 14 }}
+              py="md"
+              style={{ borderBottom: "1px solid #eee" }}
             >
+              {/* 체크박스 */}
               <Grid.Col span={1}>
                 <Flex align="center" justify="center">
                   <Checkbox
@@ -224,55 +296,50 @@ export default function CartPage() {
                 </Flex>
               </Grid.Col>
 
-              <Grid.Col span={5}>
-                <Flex align="center" gap="sm">
-                  <Link
-                    to={`/item/${item.itemId}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <img
-                      src={item.imageUrl}
-                      alt={item.itemName}
-                      style={{
-                        width: 200,
-                        height: 200,
-                        objectFit: "cover",
-                        display: "block",
-                        borderRadius: 6,
-                      }}
-                    />
-                  </Link>
-                  <Link
-                    to={`/item/${item.itemId}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Text fw={500} c="black" style={{ cursor: "pointer" }}>
-                      {item.itemName}
-                    </Text>
-                  </Link>
+              {/* 상품 이미지 */}
+              <Grid.Col span={2}>
+                <Flex justify="center">
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.itemName}
+                    w={170}
+                    h={170}
+                    radius="md"
+                    fit="cover"
+                  />
                 </Flex>
               </Grid.Col>
 
+              {/* 상품명 */}
+              <Grid.Col span={3}>
+                <Flex justify="center">
+                  <Text fw={500}>{item.itemName}</Text>
+                </Flex>
+              </Grid.Col>
+
+              {/* 수량 */}
               <Grid.Col span={2}>
-                <Flex direction="column" align="center" gap="xs">
-                  <Flex align="center" gap="sm">
+                <Flex
+                  direction="column"
+                  align="center"
+                  justify="center"
+                  gap="xs"
+                >
+                  <Flex align="center" gap="xs">
                     <Button
                       size="xs"
                       variant="default"
+                      radius="xs"
                       onClick={() => updateQuantity(item.cartId, -1)}
                     >
                       -
                     </Button>
                     <Input
                       value={item.cartQuantity}
+                      radius="xs"
                       type="number"
                       size="xs"
                       w={35}
-                      styles={{
-                        input: {
-                          textAlign: "center",
-                        },
-                      }}
                       onChange={(e) => {
                         const value = Math.max(1, parseInt(e.target.value));
                         setCartItems((prev) =>
@@ -287,52 +354,26 @@ export default function CartPage() {
                     <Button
                       size="xs"
                       variant="default"
+                      radius="xs"
                       onClick={() => updateQuantity(item.cartId, 1)}
                     >
                       +
                     </Button>
                   </Flex>
-
                   <Button
                     size="xs"
                     color="#409fff"
-                    w={80}
-                    px={15}
-                    mt="xs"
-                    onClick={async () => {
-                      const token = localStorage.getItem("access");
-
-                      try {
-                        const res = await fetch(
-                          `${BASE_URL}/cart/change/${item.cartId}?quantity=${item.cartQuantity}`,
-                          {
-                            method: "PATCH",
-                            headers: {
-                              "Content-Type": "application/json",
-                              access: token || "",
-                            },
-                            credentials: "include",
-                          }
-                        );
-
-                        if (res.ok) {
-                          alert("수량이 업데이트되었습니다.");
-                        } else {
-                          alert("수정 실패");
-                        }
-                      } catch (error) {
-                        console.error("수정 요청 실패:", error);
-                        alert("서버와의 통신 중 오류가 발생했습니다.");
-                      }
-                    }}
+                    w={128}
+                    onClick={() => patchQuantity(item)}
                   >
                     수량 변경
                   </Button>
                 </Flex>
               </Grid.Col>
 
-              <Grid.Col span={2} ta="center">
-                <Stack gap={0}>
+              {/* 가격 */}
+              <Grid.Col span={2}>
+                <Flex direction="column" align="center" justify="center">
                   <Text fw={700}>
                     {(
                       item.price *
@@ -341,13 +382,33 @@ export default function CartPage() {
                     ).toLocaleString()}
                     원
                   </Text>
-                  <Text size="xs" td="line-through" c="gray">
+                  <Text td="line-through" size="xs" c="dimmed">
                     {(item.price * item.cartQuantity).toLocaleString()}원
                   </Text>
-                </Stack>
+                </Flex>
               </Grid.Col>
-              <Grid.Col span={2}>
-                <Text fw={500}>무료배송</Text>
+
+              {/* 배송 */}
+              <Grid.Col span={1}>
+                <Flex justify="center" align="center">
+                  <Text fw={600}>무료배송</Text>
+                </Flex>
+              </Grid.Col>
+
+              {/* 삭제 */}
+              <Grid.Col span={1}>
+                <Flex justify="center" align="center">
+                  <ActionIcon
+                    variant="subtle"
+                    color="red"
+                    size="lg"
+                    onClick={() => deleteCartItem(item.cartId)}
+                  >
+                    <Text fw={700} fz="lg" c="red">
+                      ✕
+                    </Text>
+                  </ActionIcon>
+                </Flex>
               </Grid.Col>
             </Grid>
           ))}

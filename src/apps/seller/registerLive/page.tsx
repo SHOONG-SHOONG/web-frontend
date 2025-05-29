@@ -118,7 +118,7 @@ export default function LiveRegisterPage() {
     formData.append("description", filteredDescription); // ✨ 필터링된 설명 사용
     formData.append("LiveDate", liveDate); // 이 필드가 백엔드에서 어떤 형태를 기대하는지 확인 필요 (현재는 YYYY-MM-DDTHH:mm 형식 그대로)
     formData.append("streamKey", streamKey);
-    formData.append("imageUrl", file);
+    formData.append("imageFile", file);
     selectedItemIds.forEach((id) => formData.append("itemIds", id.toString()));
 
     try {
@@ -298,7 +298,7 @@ export default function LiveRegisterPage() {
                           item.discountRate > 0 && item.discountRate < 1
                             ? item.discountRate * 100
                             : 0;
-                        const imageUrl =
+                        const imageFile =
                           item.itemImages?.[0]?.url ||
                           "https://placehold.co/100x100";
 
@@ -331,7 +331,7 @@ export default function LiveRegisterPage() {
                             <Accordion.Panel>
                               <Flex gap="md" align="center">
                                 <Image
-                                  src={imageUrl}
+                                  src={imageFile}
                                   width={100}
                                   radius="md"
                                   alt={item.itemName}

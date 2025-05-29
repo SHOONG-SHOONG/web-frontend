@@ -14,7 +14,11 @@ import {
   Skeleton,
   Stack,
 } from "@mantine/core";
-import { IconChevronDown, IconArrowNarrowUp } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconArrowNarrowUp,
+  IconChevronUp,
+} from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
@@ -88,12 +92,17 @@ const ProductSkeletonCard = () => (
 export default function MainPage() {
   const navigate = useNavigate();
   const [bestItems, setBestItems] = useState<Item[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>();
+  const [loginUser, setLoginUser] = useState<string | null>("");
   const [currentLiveItem, setCurrentLiveItem] = useState<LiveItem | null>(null);
   const [endedLiveItems, setEndedLiveItems] = useState<LiveItem[]>([]);
   const mergedLiveItems = [
     ...(currentLiveItem ? [currentLiveItem] : []),
     ...endedLiveItems,
   ];
+  const [allBestItems, setAllBestItems] = useState<Item[]>([]);
+  const [visibleItems, setVisibleItems] = useState<Item[]>([]);
+  const [showAllItems, setShowAllItems] = useState(false);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -136,18 +145,50 @@ export default function MainPage() {
       const params = new URLSearchParams({
         sortBy: "wishlist",
         page: "0",
-        size: "6",
+        size: "20",
         sort: "wishlistCount,DESC",
       });
-      const response = await fetch(`${BASE_URL}/item/search?${params.toString()}`, {
-        method: "GET",
-        headers: { Accept: "*/*" },
-      });
+
+      const response = await fetch(
+        `${BASE_URL}/item/search?${params.toString()}`,
+        {
+          method: "GET",
+          headers: { Accept: "*/*" },
+        }
+      );
+
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
       const data = await response.json();
-      setBestItems(data.content || []);
+      const items = data.content || [];
+
+      setAllBestItems(items);
+      setVisibleItems(items.slice(0, 4)); // 초기 4개
     } catch (err) {
       console.error("Error fetching best items:", err);
+    }
+  };
+
+  const toggleShowAll = () => {
+    if (showAllItems) {
+      // 접기
+      setVisibleItems(allBestItems.slice(0, 4));
+    } else {
+      // 더보기
+      setVisibleItems(allBestItems);
+    }
+    setShowAllItems(!showAllItems);
+  };
+
+  const checkLogin = async () => {
+    const token = localStorage.getItem("access");
+    const name = localStorage.getItem("name");
+    if (token && name) {
+      setIsLoggedIn(true);
+      setLoginUser(name);
+    } else {
+      setIsLoggedIn(false);
+      setLoginUser(null);
     }
   };
 
@@ -201,29 +242,97 @@ export default function MainPage() {
         </Grid>
 
         <Flex justify="space-between" align="center" mt="xl" mb="sm">
-          <TitleComponent label="BEST SELLER" subLabel="가장 많이 팔리는 아이템을 한 눈에!" />
-          <Anchor href="#" size="xs" c="dimmed">&gt; 더보기</Anchor>
+          <TitleComponent
+            label="BEST SELLER"
+            subLabel="가장 많이 팔리는 아이템을 한 눈에!"
+          />
+          <Button
+            variant="transparent"
+            size="sm"
+            color="gray"
+            onClick={toggleShowAll}
+            leftSection={
+              showAllItems ? (
+                <IconChevronUp size={18} />
+              ) : (
+                <IconChevronDown size={18} />
+              )
+            }
+          >
+            {showAllItems ? "접기" : "더보기"}
+          </Button>
         </Flex>
 
         <Grid gutter="xl">
-          {bestItems.length === 0
-            ? Array.from({ length: 6 }).map((_, idx) => (
-              <Grid.Col span={{ base: 6, md: 3 }} key={idx}><ProductSkeletonCard /></Grid.Col>
+          {visibleItems.length === 0
+            ? Array.from({ length: 4 }).map((_, idx) => (
+              <Grid.Col span={{ base: 6, md: 3 }} key={idx}>
+                <ProductSkeletonCard />
+              </Grid.Col>
             ))
-            : bestItems.map((item) => (
+            : visibleItems.map((item) => (
               <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
-                {/* 기존 상품 카드 렌더링 코드 */}
-                <Box onClick={() => navigate(`/item/${item.itemId}`, { state: item })} style={{ cursor: "pointer", position: "relative" }}>
+                <Box
+                  onClick={() =>
+                    navigate(`/item/${item.itemId}`, { state: item })
+                  }
+                  style={{ cursor: "pointer", position: "relative" }}
+                >
+                  {/* 이미지 + 흐리게 처리 + SOLD OUT 뱃지 */}
                   <Box style={{ position: "relative" }}>
-                    <Image src={item.itemImages?.[0]?.url || "https://placehold.co/400x400"} alt={item.itemName} radius="md" height={320} fit="cover" style={{ aspectRatio: "1 / 1", objectFit: "cover", filter: item.status === "SOLD_OUT" ? "grayscale(60%) opacity(60%)" : "none" }} />
-                    {item.status === "SOLD_OUT" && <Badge color="dark" variant="filled" style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}>SOLD OUT</Badge>}
+                    <Image
+                      src={
+                        item.itemImages?.[0]?.url ||
+                        "https://placehold.co/400x400"
+                      }
+                      alt={item.itemName}
+                      radius="md"
+                      height={320}
+                      fit="cover"
+                      style={{
+                        aspectRatio: "1 / 1",
+                        objectFit: "cover",
+                        filter:
+                          item.status === "SOLD_OUT"
+                            ? "grayscale(60%) opacity(60%)"
+                            : "none",
+                      }}
+                    />
+                    {item.status === "SOLD_OUT" && (
+                      <Badge
+                        color="dark"
+                        variant="filled"
+                        style={{
+                          position: "absolute",
+                          top: 10,
+                          left: 10,
+                          zIndex: 1,
+                        }}
+                      >
+                        SOLD OUT
+                      </Badge>
+                    )}
                   </Box>
-                  <Text size="xs" c="dimmed" mt={10}>{categoryMap[item.category] || ""}</Text>
-                  <Text size="sm" fw={600} mt={4} mb={4}>{item.itemName}</Text>
+                  {/* 카테고리 표시 */}
+                  <Text size="xs" c="dimmed" mt={10}>
+                    {categoryMap[item.category] || ""}
+                  </Text>
+
+                  {/* 상품명 */}
+                  <Text size="sm" fw={600} mt={4} mb={4}>
+                    {item.itemName}
+                  </Text>
+
+                  {/* 할인율 + 가격 */}
                   <Flex align="center" gap={6}>
-                    {item.discountRate > 0 && <Text size="sm" fw={700} color="red">{item.discountRate * 100}%</Text>}
-                    <Text size="xs" td="line-through" c="dimmed">{item.price.toLocaleString()}원</Text>
-                    <Text size="sm" fw={700}>{item.finalPrice.toLocaleString()}원</Text>
+                    {item.discountRate > 0 && (
+                      <Text size="sm" fw={700} color="red">
+                        {item.discountRate * 100}%
+                      </Text>
+                    )}
+                    <Text size="sm" fw={700}>
+                      {item.finalPrice.toLocaleString()}원
+                    </Text>
                   </Flex>
                 </Box>
               </Grid.Col>
