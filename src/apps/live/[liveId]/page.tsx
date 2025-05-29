@@ -47,7 +47,7 @@ type LiveInfo = {
   liveStartTime: string | null;
   liveEndTime: string | null;
   liveDate: string | null;
-  liveStatus: string;
+  liveStatus: string; // "ONGOING" | "ENDED" 등
   replayURL: string | null;
   liveItems: LiveItem[];
 };
@@ -73,35 +73,30 @@ export default function LivePage() {
     }
   };
 
-  // console.log(BASE_CHAT_URL);
-
   // WebSocket 연결
   useEffect(() => {
     const ws = new WebSocket(`ws://${BASE_CHAT_URL}/chat/ws/chat`);
 
     ws.onopen = () => {
       console.log("WebSocket 연결됨");
-      // setChatMessages((prev) => [...prev, "[시스템] 채팅방에 연결되었습니다."]);
     };
 
     ws.onmessage = (event) => {
       try {
-        const json = JSON.parse(event.data); // JSON 문자열 → 객체
+        const json = JSON.parse(event.data);
         const formatted = `${json.name} : ${json.content}`;
         setChatMessages((prev) => [...prev, formatted]);
       } catch (e) {
-        // JSON 파싱 실패 시 그냥 출력 (예: 시스템 메시지)
         setChatMessages((prev) => [...prev, event.data]);
       }
     };
 
     ws.onclose = () => {
-      // setChatMessages((prev) => [...prev, "[시스템] 채팅방 연결이 종료되었습니다."]);
+      // 연결 종료 시 처리
     };
 
     ws.onerror = (error) => {
       console.error("WebSocket 오류:", error);
-      // setChatMessages((prev) => [...prev, "[시스템] 오류가 발생했습니다."]);
     };
 
     setSocket(ws);
@@ -111,7 +106,7 @@ export default function LivePage() {
     };
   }, []);
 
-  // 채팅 추가될 때마다 채팅창 스크롤 아래로 이동
+  // 채팅 스크롤 자동 아래로
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -119,6 +114,7 @@ export default function LivePage() {
     }
   }, [chatMessages]);
 
+  // 시청자 수 가져오기 및 5초마다 갱신
   useEffect(() => {
     const fetchViewerCount = () => {
       fetch(`http://${BASE_CHAT_URL}/chat/viewer-count`)
@@ -129,20 +125,18 @@ export default function LivePage() {
         });
     };
 
-    fetchViewerCount(); // 최초 한 번 호출
-
-    const interval = setInterval(fetchViewerCount, 5000); // 3초마다 갱신
-
-    return () => clearInterval(interval); // 컴포넌트 unmount 시 정리
+    fetchViewerCount();
+    const interval = setInterval(fetchViewerCount, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  // 메시지 전송
+  // 메시지 전송 함수
   const sendMessage = () => {
     const name = localStorage.getItem("name");
     if (!messageInput.trim() || !name) return;
 
     const payload = {
-      name: name,
+      name,
       content: messageInput,
     };
 
@@ -151,7 +145,6 @@ export default function LivePage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     })
-      .then((res) => res.text())
       .then(() => setMessageInput(""))
       .catch((err) => {
         console.error("메시지 전송 오류:", err);
@@ -159,7 +152,7 @@ export default function LivePage() {
       });
   };
 
-  // 현재 진행 중인 라이브 정보 가져오기
+  // 라이브 정보 fetch
   const fetchLiveInfo = async () => {
     if (!liveId) return;
 
@@ -209,9 +202,23 @@ export default function LivePage() {
         </Group>
 
         <Grid gutter="xl">
-          {/* 왼쪽: 영상 + 공유 */}
+          {/* 왼쪽: 라이브 영상 또는 리플레이 */}
           <Grid.Col span={{ base: 12, md: 8 }}>
-            <LiveViewer streamKey="shoong" />
+            {liveInfo?.liveStatus === "ONGOING" ? (
+              <LiveViewer streamKey={liveInfo.streamKey} />
+            ) : liveInfo?.liveStatus === "COMPLETED" && liveInfo?.replayURL ? (
+              <iframe
+                src={liveInfo.replayURL}
+                width="100%"
+                height="360"
+                frameBorder="0"
+                allowFullScreen
+                title="Replay Video"
+              />
+            ) : (
+              <Text>라이브 정보를 불러오는 중입니다...</Text>
+            )}
+
             <Group mt="md">
               <ActionIcon size="lg" variant="default">
                 <IconBrandFacebook />
@@ -228,7 +235,7 @@ export default function LivePage() {
             </Group>
           </Grid.Col>
 
-          {/* 오른쪽: 채팅창 + 상품 */}
+          {/* 오른쪽: 채팅 + 상품 */}
           <Grid.Col span={{ base: 12, md: 4 }}>
             <Flex direction="column" gap="lg">
               <Paper
@@ -286,33 +293,35 @@ export default function LivePage() {
               />
 
               {/* 상품 정보 */}
-              <Flex gap="md" align="flex-start">
-                <Image
-                  src={liveInfo?.liveItems[0].imageUrl}
-                  style={{ width: 60, height: 60 }}
-                  radius="md"
-                />
-                <Box>
-                  <Text mt="xs" fw={600} size="sm">
-                    {liveInfo?.liveItems[0].itemName}
-                  </Text>
-                  <Flex mt="xs" align="baseline" gap="xs">
-                    <Text size="xs" c="red" fw={600}>
-                      {liveInfo?.liveItems[0].discountRate! * 100}%
+              {liveInfo?.liveItems[0] && (
+                <Flex gap="md" align="flex-start">
+                  <Image
+                    src={liveInfo.liveItems[0].imageUrl}
+                    style={{ width: 60, height: 60 }}
+                    radius="md"
+                  />
+                  <Box>
+                    <Text mt="xs" fw={600} size="sm">
+                      {liveInfo.liveItems[0].itemName}
                     </Text>
-                    <Text size="xs" td="line-through" c="dimmed">
-                      {liveInfo?.liveItems[0].price!.toLocaleString()}원
-                    </Text>
-                    <Text size="sm" fw={700}>
-                      {(
-                        liveInfo!.liveItems[0].price *
-                        (1 - liveInfo!.liveItems[0].discountRate!)
-                      ).toLocaleString()}
-                      원
-                    </Text>
-                  </Flex>
-                </Box>
-              </Flex>
+                    <Flex mt="xs" align="baseline" gap="xs">
+                      <Text size="xs" c="red" fw={600}>
+                        {(liveInfo.liveItems[0].discountRate * 100).toFixed(0)}%
+                      </Text>
+                      <Text size="xs" td="line-through" c="dimmed">
+                        {liveInfo.liveItems[0].price.toLocaleString()}원
+                      </Text>
+                      <Text size="sm" fw={700}>
+                        {(
+                          liveInfo.liveItems[0].price *
+                          (1 - liveInfo.liveItems[0].discountRate)
+                        ).toLocaleString()}
+                        원
+                      </Text>
+                    </Flex>
+                  </Box>
+                </Flex>
+              )}
             </Flex>
           </Grid.Col>
         </Grid>
