@@ -12,6 +12,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
+    "badwords-ko": "^1.0.4",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.12.1",
     "hls.js": "^1.6.2",

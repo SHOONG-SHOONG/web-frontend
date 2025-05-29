@@ -15,6 +15,7 @@ import {
   Select,
 } from "@mantine/core";
 import { IconPhoto, IconPlus } from "@tabler/icons-react";
+import { IconPhoto, IconPlus } from "@tabler/icons-react";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
 
@@ -45,6 +46,8 @@ export default function CreateItemPage() {
   };
 
   const handleSubmit = async () => {
+    // 1. 필수 정보 유효성 검사
+    // price, discountRate, stock은 NumberInput의 onChange에서 number로 변환되므로 null/undefined 검사
     // 1. 필수 정보 유효성 검사
     // price, discountRate, stock은 NumberInput의 onChange에서 number로 변환되므로 null/undefined 검사
     if (
@@ -83,7 +86,13 @@ export default function CreateItemPage() {
       itemName,
       price: price as number, // 타입 가드 후 사용
       discountRate: adjustedDiscountRate, // ⭐ 변환된 할인율 사용 ⭐
+      price: price as number, // 타입 가드 후 사용
+      discountRate: adjustedDiscountRate, // ⭐ 변환된 할인율 사용 ⭐
       description,
+      itemQuantity: stock as number, // 타입 가드 후 사용
+      category: category, // ⭐ 카테고리는 이제 null 아님 (위에서 검증) ⭐
+      createdAt: new Date().toISOString(), // ISO 8601 UTC
+      discountExpiredAt: toLocalDateTimeString(endDate), // ⬅️ LocalDateTime string
       itemQuantity: stock as number, // 타입 가드 후 사용
       category: category, // ⭐ 카테고리는 이제 null 아님 (위에서 검증) ⭐
       createdAt: new Date().toISOString(), // ISO 8601 UTC
@@ -125,7 +134,9 @@ export default function CreateItemPage() {
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
         console.log("상품 등록 성공:", data);
+        console.log("상품 등록 성공:", data);
       } else {
+        console.log("상품 등록 성공 (응답 본문 없음)");
         console.log("상품 등록 성공 (응답 본문 없음)");
       }
 
@@ -191,12 +202,14 @@ export default function CreateItemPage() {
                   size="md"
                   label="기존 가격"
                   placeholder="상품의 원 가격을 입력하세요"
+                  placeholder="상품의 원 가격을 입력하세요"
                   value={price}
                   onChange={(val) =>
                     setPrice(typeof val === "number" ? val : undefined)
                   }
                   min={0} // ⭐ DTO의 @PositiveOrZero에 맞춰 0으로 변경 (기존 가격이 0일 수는 없으니 1로 하는게 더 현실적일 수 있음) ⭐
                   required
+                  prefix="₩"
                   prefix="₩"
                 />
 
@@ -205,13 +218,17 @@ export default function CreateItemPage() {
                   size="md"
                   label="할인율 (%)" // 레이블 명확화
                   placeholder="할인율을 입력하세요 (0~100)"
+                  label="할인율 (%)" // 레이블 명확화
+                  placeholder="할인율을 입력하세요 (0~100)"
                   value={discountRate}
                   onChange={(val) =>
                     setDiscountRate(typeof val === "number" ? val : undefined)
                   }
                   min={0}
                   max={100}
+                  max={100}
                   required
+                  suffix="%"
                   suffix="%"
                 />
 
@@ -221,9 +238,12 @@ export default function CreateItemPage() {
                   label="카테고리"
                   placeholder="카테고리를 선택하세요"
                   data={["여행", "숙박", "항공", "교통", "캠핑", "기타"]} // '기타' 추가
+                  data={["여행", "숙박", "항공", "교통", "캠핑", "기타"]} // '기타' 추가
                   value={category}
                   onChange={setCategory}
                   searchable
+                  clearable // 필요에 따라 유지, 필수 항목이면 실제로는 선택해야 함
+                  required // ⭐ 카테고리 필수 항목이므로 required 추가 ⭐
                   clearable // 필요에 따라 유지, 필수 항목이면 실제로는 선택해야 함
                   required // ⭐ 카테고리 필수 항목이므로 required 추가 ⭐
                 />
@@ -231,6 +251,8 @@ export default function CreateItemPage() {
                 <NumberInput
                   radius="sm"
                   size="md"
+                  label="재고 수량"
+                  placeholder="재고 수량을 입력하세요"
                   label="재고 수량"
                   placeholder="재고 수량을 입력하세요"
                   value={stock}
@@ -244,11 +266,17 @@ export default function CreateItemPage() {
 
                 <FileInput
                   multiple // ⭐ 여러 파일 업로드 가능하도록 multiple 속성 추가 ⭐
+                  multiple // ⭐ 여러 파일 업로드 가능하도록 multiple 속성 추가 ⭐
                   radius="sm"
                   size="md"
                   label="상품 이미지 등록"
                   placeholder="이미지를 업로드하세요 (최대 N개)" // 메시지 수정
+                  placeholder="이미지를 업로드하세요 (최대 N개)" // 메시지 수정
                   leftSection={<IconPhoto size={16} />}
+                  value={imageFiles} // ⭐ imageFiles 배열 사용 ⭐
+                  onChange={setImageFiles} // ⭐ setImageFiles로 변경 ⭐
+                  accept="image/png,image/jpeg,image/gif" // gif 형식 추가
+                  required // 이미지 파일도 필수
                   value={imageFiles} // ⭐ imageFiles 배열 사용 ⭐
                   onChange={setImageFiles} // ⭐ setImageFiles로 변경 ⭐
                   accept="image/png,image/jpeg,image/gif" // gif 형식 추가
@@ -264,12 +292,29 @@ export default function CreateItemPage() {
                   onChange={(e) => setDescription(e.currentTarget.value)}
                   minRows={4}
                   required
+                  required
                 />
 
                 {/* 날짜 선택은 기존 방식 유지 */}
                 <TextInput
+                {/* 날짜 선택은 기존 방식 유지 */}
+                <TextInput
                   radius="sm"
                   size="md"
+                  label="할인 종료 일시"
+                  type="datetime-local"
+                  required
+                  onChange={(e) => {
+                    const parsedDate = new Date(e.currentTarget.value);
+                    if (!isNaN(parsedDate.getTime())) {
+                      setEndDate(parsedDate);
+                    } else {
+                      setEndDate(null);
+                    }
+                  }}
+                  // 최소 날짜를 오늘 이후로 제한 (선택 사항, HTML 기본 datepicker에서는 직접 구현 필요)
+                  // Mantine DatePicker/DateTimePicker처럼 minDate prop이 바로 없으므로 주의
+                  // value={endDate ? toLocalDateTimeString(endDate).substring(0, 16) : ''} // YYYY-MM-DDTHH:mm 형식으로 value 바인딩
                   label="할인 종료 일시"
                   type="datetime-local"
                   required
