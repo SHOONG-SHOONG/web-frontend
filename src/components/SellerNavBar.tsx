@@ -23,6 +23,9 @@ import {
   IconPackage,
   IconHelpCircle,
   IconDeviceImac,
+  IconUser,
+  IconPlayerEject,
+  IconUserX,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import shoongImage from "../assets/shoong2.png";
@@ -153,12 +156,24 @@ export default function SellerNavBarPage() {
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
+                leftSection={<IconUser size="1rem" />}
+                onClick={() => navigate("/seller/mypage")}
+              >
+                마이페이지
+              </Menu.Item>
+              <Menu.Item
                 leftSection={<IconLogout size="1rem" />}
                 onClick={() => {
                   navigate("/logout");
                 }}
               >
                 로그아웃
+              </Menu.Item>
+              <Menu.Item
+                leftSection={<IconUserX size="1rem" />}
+                onClick={() => navigate("/seller")}
+              >
+                탈퇴하기
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
