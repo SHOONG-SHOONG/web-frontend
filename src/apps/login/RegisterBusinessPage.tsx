@@ -80,7 +80,7 @@ export default function RegisterBusinessPage() {
 
       if (response.ok) {
         alert("판매자 회원가입 성공!");
-        navigate("/main", { replace: true });
+        navigate("/seller/notification", { replace: true });
       } else {
         alert("판매자 회원가입 실패!");
         const errorData = await response.json();
