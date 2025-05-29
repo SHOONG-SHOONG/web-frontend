@@ -301,12 +301,12 @@ export default function LivePage() {
                       {liveInfo?.liveItems[0].discountRate! * 100}%
                     </Text>
                     <Text size="xs" td="line-through" c="dimmed">
-                      {liveInfo?.liveItems[0].price.toLocaleString()}원
+                      {liveInfo?.liveItems[0].price!.toLocaleString()}원
                     </Text>
                     <Text size="sm" fw={700}>
-                      {Math.floor(
+                      {(
                         liveInfo!.liveItems[0].price *
-                          (1 - liveInfo!.liveItems[0].discountRate)
+                        (1 - liveInfo!.liveItems[0].discountRate!)
                       ).toLocaleString()}
                       원
                     </Text>
