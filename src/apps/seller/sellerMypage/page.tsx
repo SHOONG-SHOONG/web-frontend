@@ -235,7 +235,7 @@ export default function SellerMypge() {
                                             <Box h={1} bg="gray.2" my="sm" />
                                             <Box>
                                                 <Text fw={700} size="lg" mb="md">등록된 상품</Text>
-                                                {brandInfo.items.length > 0 ? (
+                                                {Array.isArray(brandInfo.items) && brandInfo.items.length > 0 ? (
                                                     <Grid gutter="md">
                                                         {brandInfo.items.map((item) => (
                                                             <Grid.Col span={3} key={item.itemId}>
