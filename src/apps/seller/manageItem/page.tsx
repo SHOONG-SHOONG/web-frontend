@@ -39,7 +39,7 @@ export default function SellerItemPage() {
     const fetchItems = async () => {
       const token = localStorage.getItem("access");
       try {
-        const res = await fetch(`${BASE_URL}/admin/item-list`, {
+        const res = await fetch(`${BASE_URL}/item/item-list`, {
           headers: { access: token || "" },
         });
         const data = await res.json();

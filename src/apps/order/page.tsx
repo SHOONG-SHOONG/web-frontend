@@ -332,22 +332,6 @@ export default function OrderPage() {
           </Box>
 
           {/* 주문자 정보 */}
-          {/* <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
-            <Text fw={700} size="sm" mb="md">
-              주문자 정보
-            </Text>
-            <TextInput
-              size="md"
-              radius="sm"
-              label="주소"
-              placeholder="주소 검색"
-              leftSection={<IconMapPin size={16} />}
-              value={userAddress}
-              onClick={handleAddressSearch}
-              readOnly
-              required
-            />
-          </Box> */}
           <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
             <Text fw={700} size="sm" mb="md">주문자 정보</Text>
 
