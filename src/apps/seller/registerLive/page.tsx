@@ -68,7 +68,7 @@ export default function LiveRegisterPage() {
     const fetchItems = async () => {
       const token = localStorage.getItem("access");
       try {
-        const res = await fetch(`${BASE_URL}/admin/item-list`, {
+        const res = await fetch(`${BASE_URL}/item/item-list`, {
           method: "GET",
           headers: {
             access: token || "",
