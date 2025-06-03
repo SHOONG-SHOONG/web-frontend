@@ -114,8 +114,8 @@ export default function LivePage() {
 
   const sendMessage = () => {
     const name = localStorage.getItem("name");
-    if (!messageInput.trim() || !name) return;
-    const payload = { name, content: messageInput };
+    if (!messageInput.trim() || !name || !liveId) return;
+    const payload = { name, content: messageInput, liveId: Number(liveId) };
     fetch(`https://${BASE_CHAT_URL}/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
