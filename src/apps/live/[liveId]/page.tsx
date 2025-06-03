@@ -36,11 +36,25 @@ import BASE_URL from "../../../config.js";
 import { useParams, useNavigate } from "react-router-dom";
 
 const LiveVideoSkeleton = () => (
-  <Stack align="center" justify="center" spacing="xs" w="100%">
-    <Box style={{ width: "100%", height: 400, borderRadius: 12, overflow: "hidden" }}>
+  <Stack align="center" justify="center" gap="xs" w="100%">
+    <Box
+      style={{
+        width: "100%",
+        height: 400,
+        borderRadius: 12,
+        overflow: "hidden",
+      }}
+    >
       <Skeleton height="100%" animate />
     </Box>
-    <Alert icon={<IconAlertCircle size={16} />} title="불러오는 중" color="gray" radius="md" mt="xs" w="100%">
+    <Alert
+      icon={<IconAlertCircle size={16} />}
+      title="불러오는 중"
+      color="gray"
+      radius="md"
+      mt="xs"
+      w="100%"
+    >
       다시보기를 불러오는 중이에요. 잠시만 기다려 주세요!
     </Alert>
   </Stack>
@@ -96,7 +110,8 @@ export default function LivePage() {
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [chatMessages]);
 
@@ -122,7 +137,9 @@ export default function LivePage() {
       body: JSON.stringify(payload),
     })
       .then(() => setMessageInput(""))
-      .catch(() => setChatMessages((prev) => [...prev, "[시스템] 메시지 전송 실패"]));
+      .catch(() =>
+        setChatMessages((prev) => [...prev, "[시스템] 메시지 전송 실패"])
+      );
   };
 
   const fetchLiveInfo = async () => {
@@ -134,7 +151,8 @@ export default function LivePage() {
         headers: { accept: "*/*", access: token || "" },
         credentials: "include",
       });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data: LiveInfo = await response.json();
       setLiveInfo(data);
     } catch (err) {
@@ -152,11 +170,17 @@ export default function LivePage() {
       <Container size="lg" pt={40}>
         <Group align="center" mb="md">
           <Avatar src={liveInfo?.imageUrl} size={35} radius="xl" />
-          <Title order={3} style={{ flexGrow: 1 }}>{liveInfo?.title}</Title>
+          <Title order={3} style={{ flexGrow: 1 }}>
+            {liveInfo?.title}
+          </Title>
           {liveInfo?.liveStatus === "ONGOING" && (
-            <Badge color="blue" size="lg" radius="sm">LIVE</Badge>
+            <Badge color="blue" size="lg" radius="sm">
+              LIVE
+            </Badge>
           )}
-          <Text size="sm" c="dimmed">{viewerCount.toLocaleString()} 명 시청</Text>
+          <Text size="sm" c="dimmed">
+            {viewerCount.toLocaleString()} 명 시청
+          </Text>
         </Group>
 
         <Grid gutter="xl">
@@ -192,21 +216,50 @@ export default function LivePage() {
             )}
 
             <Group mt="md">
-              <ActionIcon size="lg" variant="default"><IconBrandFacebook /></ActionIcon>
-              <ActionIcon size="lg" variant="default"><IconBrandTwitter /></ActionIcon>
-              <ActionIcon size="lg" variant="default"><IconBrandBlogger /></ActionIcon>
-              <ActionIcon size="lg" variant="default"><IconShare3 /></ActionIcon>
+              <ActionIcon size="lg" variant="default">
+                <IconBrandFacebook />
+              </ActionIcon>
+              <ActionIcon size="lg" variant="default">
+                <IconBrandTwitter />
+              </ActionIcon>
+              <ActionIcon size="lg" variant="default">
+                <IconBrandBlogger />
+              </ActionIcon>
+              <ActionIcon size="lg" variant="default">
+                <IconShare3 />
+              </ActionIcon>
             </Group>
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 4 }}>
             <Flex direction="column" gap="lg">
-              <Paper shadow="sm" radius="md" p="md" mb="lg" style={{ height: 400, display: "flex", flexDirection: "column" }}>
-                <Text size="sm">{liveInfo?.liveStatus === "ONGOING" ? "실시간 채팅" : "채팅 다시보기"}</Text>
+              <Paper
+                shadow="sm"
+                radius="md"
+                p="md"
+                mb="lg"
+                style={{
+                  height: 400,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Text size="sm">
+                  {liveInfo?.liveStatus === "ONGOING"
+                    ? "실시간 채팅"
+                    : "채팅 다시보기"}
+                </Text>
                 <Divider my="sm" />
-                <Box ref={chatContainerRef} style={{ flex: 1, overflowY: "auto", marginBottom: 12 }}>
+                <Box
+                  ref={chatContainerRef}
+                  style={{ flex: 1, overflowY: "auto", marginBottom: 12 }}
+                >
                   <Flex direction="column" gap={8}>
-                    {chatMessages.map((msg, idx) => (<Text size="xs" key={idx}>{msg}</Text>))}
+                    {chatMessages.map((msg, idx) => (
+                      <Text size="xs" key={idx}>
+                        {msg}
+                      </Text>
+                    ))}
                   </Flex>
                 </Box>
                 {liveInfo?.liveStatus === "ONGOING" && (
@@ -223,26 +276,56 @@ export default function LivePage() {
                         }
                       }}
                     />
-                    <Button onClick={() => {
-                      const token = localStorage.getItem("access");
-                      if (!token) setLoginModalOpened(true);
-                      else sendMessage();
-                    }}>전송</Button>
+                    <Button
+                      onClick={() => {
+                        const token = localStorage.getItem("access");
+                        if (!token) setLoginModalOpened(true);
+                        else sendMessage();
+                      }}
+                    >
+                      전송
+                    </Button>
                   </Group>
                 )}
               </Paper>
 
-              <LoginModal opened={loginModalOpened} onClose={() => setLoginModalOpened(false)} />
+              <LoginModal
+                opened={loginModalOpened}
+                onClose={() => setLoginModalOpened(false)}
+              />
 
               {liveInfo?.liveItems[0] && (
-                <Flex gap="md" align="flex-start" style={{ cursor: "pointer" }} onClick={() => navigate(`/item/${liveInfo.liveItems[0].itemId}`)}>
-                  <Image src={liveInfo.liveItems[0].imageUrl} style={{ width: 60, height: 60 }} radius="md" />
+                <Flex
+                  gap="md"
+                  align="flex-start"
+                  style={{ cursor: "pointer" }}
+                  onClick={() =>
+                    navigate(`/item/${liveInfo.liveItems[0].itemId}`)
+                  }
+                >
+                  <Image
+                    src={liveInfo.liveItems[0].imageUrl}
+                    style={{ width: 60, height: 60 }}
+                    radius="md"
+                  />
                   <Box>
-                    <Text mt="xs" fw={600} size="sm">{liveInfo.liveItems[0].itemName}</Text>
+                    <Text mt="xs" fw={600} size="sm">
+                      {liveInfo.liveItems[0].itemName}
+                    </Text>
                     <Flex mt="xs" align="baseline" gap="xs">
-                      <Text size="xs" c="red" fw={600}>{(liveInfo.liveItems[0].discountRate * 100).toFixed(0)}%</Text>
-                      <Text size="xs" td="line-through" c="dimmed">{liveInfo.liveItems[0].price.toLocaleString()}원</Text>
-                      <Text size="sm" fw={700}>{(liveInfo.liveItems[0].price * (1 - liveInfo.liveItems[0].discountRate)).toLocaleString()}원</Text>
+                      <Text size="xs" c="red" fw={600}>
+                        {(liveInfo.liveItems[0].discountRate * 100).toFixed(0)}%
+                      </Text>
+                      <Text size="xs" td="line-through" c="dimmed">
+                        {liveInfo.liveItems[0].price.toLocaleString()}원
+                      </Text>
+                      <Text size="sm" fw={700}>
+                        {(
+                          liveInfo.liveItems[0].price *
+                          (1 - liveInfo.liveItems[0].discountRate)
+                        ).toLocaleString()}
+                        원
+                      </Text>
                     </Flex>
                   </Box>
                 </Flex>
