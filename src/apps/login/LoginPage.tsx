@@ -67,10 +67,10 @@ export default function LoginPage() {
         } else {
           navigate(prevUrl, { replace: true });
         }
-        } else if (response.status === 401) {
-          alert("아이디 또는 비밀번호가 다릅니다.");
-        } else {
-          alert("로그인에 실패했습니다. 관리자에게 문의하세요.");
+      } else if (response.status === 401) {
+        alert("아이디 또는 비밀번호가 다릅니다.");
+      } else {
+        alert("로그인에 실패했습니다. 관리자에게 문의하세요.");
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -158,29 +158,29 @@ export default function LoginPage() {
               </Button>
 
               <Button
-              fullWidth
-              color="yellow"
-              component="a"
-              href={`${BASE_URL}/oauth2/authorization/kakao`}
-              leftSection={
-                <img
-                  // public 디렉토리 기준의 절대 경로로 다시 한번 확인하고 수정하세요!
-                  // 예: /kakao_login_medium_narrow.png
-                  src="/kakao_login_large_wide.png" // <<< 이 부분은 실제 이미지 경로에 맞게
-                  alt="Kakao"
-                  // width={18} 속성을 제거합니다.
-                  style={{
-                    width: '100%',     // 부모 요소의 너비를 꽉 채움
-                    height: '100%',    // 부모 요소의 높이를 꽉 채움
-                    objectFit: 'cover', // <<< 이 부분을 'cover'로 설정!
-                    // 추가: 이미지가 부모 요소의 좌우 중앙에 오도록 할 수 있습니다. (flexbox 환경에서)
-                    // Mantine의 leftSection이 flexbox를 사용한다면 이미지가 자연스럽게 중앙 정렬될 수 있습니다.
-                  }}
-                />
-              }
-              style={{ color: "black" }}
-              h={45} // 버튼의 높이 (이미지가 들어갈 공간의 높이에 영향)
-            >
+                fullWidth
+                color="#FEE500"
+                component="a"
+                href={`${BASE_URL}/oauth2/authorization/kakao`}
+                leftSection={
+                  <img
+                    // public 디렉토리 기준의 절대 경로로 다시 한번 확인하고 수정하세요!
+                    // 예: /kakao_login_medium_narrow.png
+                    src="/kakao_login_medium_wide.png" // <<< 이 부분은 실제 이미지 경로에 맞게
+                    alt="Kakao"
+                    // width={18} 속성을 제거합니다.
+                    style={{
+                      width: '100%',     // 부모 요소의 너비를 꽉 채움
+                      height: '100%',    // 부모 요소의 높이를 꽉 채움
+                      objectFit: 'cover', // <<< 이 부분을 'cover'로 설정!
+                      // 추가: 이미지가 부모 요소의 좌우 중앙에 오도록 할 수 있습니다. (flexbox 환경에서)
+                      // Mantine의 leftSection이 flexbox를 사용한다면 이미지가 자연스럽게 중앙 정렬될 수 있습니다.
+                    }}
+                  />
+                }
+                style={{ background: "#FEE500", color: "black" }}
+                h={45} // 버튼의 높이 (이미지가 들어갈 공간의 높이에 영향)
+              >
               </Button>
             </Stack>
           </form>
