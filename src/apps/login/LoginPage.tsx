@@ -67,9 +67,14 @@ export default function LoginPage() {
         } else {
           navigate(prevUrl, { replace: true });
         }
+        } else if (response.status === 401) {
+          alert("아이디 또는 비밀번호가 다릅니다.");
+        } else {
+          alert("로그인에 실패했습니다. 관리자에게 문의하세요.");
       }
     } catch (error) {
       console.error("Login error:", error);
+      alert("네트워크 오류가 발생했습니다.");
     }
   };
 
