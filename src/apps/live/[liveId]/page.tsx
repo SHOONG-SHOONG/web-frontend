@@ -80,7 +80,7 @@ export default function LivePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://${BASE_CHAT_URL}/chat/ws/chat`);
+    const ws = new WebSocket(`wss://${BASE_CHAT_URL}/ws/chat`);
     ws.onmessage = (event) => {
       try {
         const json = JSON.parse(event.data);
@@ -102,7 +102,7 @@ export default function LivePage() {
 
   useEffect(() => {
     const fetchViewerCount = () => {
-      fetch(`http://${BASE_CHAT_URL}/chat/viewer-count`)
+      fetch(`https://${BASE_CHAT_URL}/viewer-count`)
         .then((res) => res.json())
         .then((count) => setViewerCount(count))
         .catch(console.error);
@@ -116,7 +116,7 @@ export default function LivePage() {
     const name = localStorage.getItem("name");
     if (!messageInput.trim() || !name) return;
     const payload = { name, content: messageInput };
-    fetch(`http://${BASE_CHAT_URL}/chat/send`, {
+    fetch(`https://${BASE_CHAT_URL}/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
