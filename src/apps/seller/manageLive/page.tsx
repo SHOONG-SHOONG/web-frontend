@@ -71,6 +71,18 @@ export default function ManageLivePage() {
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
+      const token = localStorage.getItem("access");
+      const liveResponse = await fetch(`${BASE_URL}/live/complete/${liveId}`, {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          access: token || "",
+        },
+        credentials: "include",
+      });
+
+    if (!liveResponse.ok) throw new Error(`Live API HTTP ${liveResponse.status}`);
+
       fetchLives();
       alert("라이브가 성공적으로 종료되었습니다.");
     } catch (err) {
