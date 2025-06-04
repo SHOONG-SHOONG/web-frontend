@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import { RingLoader } from "../../../components/RingLoader.tsx";
 import BASE_URL from "../../../config.js";
+import BASE_CHAT_URL from "../../../chat_config.js";
 
 interface LiveItem {
   id: number;
@@ -55,6 +56,26 @@ export default function ManageLivePage() {
       console.error("현재 라이브 정보 불러오기 실패:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const endLive = async (liveId: number) => {
+    try {
+      const response = await fetch(`https://${BASE_CHAT_URL}/endLive`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      fetchLives();
+      alert("라이브가 성공적으로 종료되었습니다.");
+    } catch (err) {
+      console.error("라이브 종료 실패:", err);
+      alert("라이브 종료에 실패했습니다.");
     }
   };
 
@@ -118,23 +139,35 @@ export default function ManageLivePage() {
                     py="md"
                     style={{ borderBottom: "1px solid #f1f3f5" }}
                   >
-                    {/* 상태 Badge */}
                     <Grid.Col span={2} style={{ textAlign: "center" }}>
-                      <Badge
-                        color={
-                          live.status === "대기"
-                            ? "yellow"
-                            : live.status === "ONGOING"
+                      <Flex direction="column" align="center">
+                        <Badge
+                          color={
+                            live.status === "대기"
+                              ? "yellow"
+                              : live.status === "ONGOING"
                               ? "green"
                               : "gray"
-                        }
-                        variant="light"
-                      >
-                        {live.status}
-                      </Badge>
+                          }
+                          variant="light"
+                        >
+                          {live.status}
+                        </Badge>
+
+                        {live.status === "ONGOING" && (
+                          <Button
+                            mt="sm"
+                            size="xs"
+                            color="red"
+                            variant="light"
+                            onClick={() => endLive(live.id)}
+                          >
+                            종료
+                          </Button>
+                        )}
+                      </Flex>
                     </Grid.Col>
 
-                    {/* 라이브 정보 (썸네일 + 제목) */}
                     <Grid.Col span={5}>
                       <Flex gap="md" align="center">
                         <Image
@@ -157,7 +190,6 @@ export default function ManageLivePage() {
                       </Flex>
                     </Grid.Col>
 
-                    {/* 상품 정보 (썸네일 + 이름/가격) */}
                     <Grid.Col span={5}>
                       <Flex gap="md" align="center">
                         <Image
