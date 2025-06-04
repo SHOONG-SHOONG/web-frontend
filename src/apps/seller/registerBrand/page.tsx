@@ -88,7 +88,7 @@ export default function RegisterBrandPage() {
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             alert("브랜드 등록이 완료되었습니다.");
-            navigate("/seller/brand");
+            navigate("/seller");
         } catch (error) {
             console.error("브랜드 등록 실패:", error);
             alert("브랜드 등록에 실패했습니다.");

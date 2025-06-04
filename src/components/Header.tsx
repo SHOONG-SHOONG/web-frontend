@@ -16,6 +16,7 @@ import {
   IconShoppingBag,
 } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
+import { useMediaQuery } from "@mantine/hooks";
 import shoongImage from "../assets/shoong2.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import BASE_URL from "../config.js";
@@ -33,6 +34,7 @@ export default function HeaderComponent() {
   const activePath = location.pathname;
   const { isLoggedIn, loginUser } = useLogin();
   const [cartCount, setCartCount] = useState(0);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -78,11 +80,18 @@ export default function HeaderComponent() {
         {/* 로고 */}
         <Box w={260}>
           <Link to="/">
-            <Image src={shoongImage} w={100} />
+            <Image src={shoongImage} w={isMobile ? 60 : 100} />
           </Link>
         </Box>
         {/* 중앙 메뉴 */}
-        <Group gap="xl" style={{ flex: 1 }} justify="center">
+        <Group gap={isMobile ? "sm" : "xl"}
+          justify="center"
+          wrap="nowrap"
+          style={{
+            // flexWrap: isMobile ? "wrap" : "nowrap",
+            // flexDirection: isMobile ? "row" : "row",
+            flex: 1,
+          }}>
           {menus.map((menu) => {
             const isActive = activePath === menu.path;
             return (
@@ -90,12 +99,13 @@ export default function HeaderComponent() {
                 key={menu.path}
                 to={menu.path}
                 style={{
-                  fontSize: 17,
+                  fontSize: isMobile ? 14 : 17,
                   fontWeight: isActive ? 700 : 500,
                   textDecoration: "none",
                   color: isActive ? "#409fff" : "#888",
                   textTransform: "uppercase",
                   paddingBottom: 4,
+                  whiteSpace: "nowrap",
                 }}
               >
                 {menu.label}
@@ -104,7 +114,7 @@ export default function HeaderComponent() {
           })}
         </Group>
         {/* 오른쪽 아이콘 메뉴 (크기 증가) */}
-        <Group gap="lg" w={260} align="center" justify="flex-end">
+        <Group gap={isMobile ? "sm" : "lg"} w={260} align="center" justify="flex-end">
           <Tooltip
             label="SEARCH"
             position="bottom"
@@ -113,7 +123,7 @@ export default function HeaderComponent() {
             transitionProps={{ transition: "pop" }}
           >
             <UnstyledButton component={Link} to="/item/search">
-              <IconSearch size={22} />
+              <IconSearch size={isMobile ? 14 : 22} />
             </UnstyledButton>
           </Tooltip>
           {isLoggedIn ? (
@@ -126,7 +136,7 @@ export default function HeaderComponent() {
                 transitionProps={{ transition: "pop" }}
               >
                 <Text
-                  size="lg"
+                  size={isMobile ? "sm" : "lg"}
                   fw={600}
                   mb={5}
                   style={{ cursor: "pointer" }}
@@ -145,7 +155,7 @@ export default function HeaderComponent() {
                 transitionProps={{ transition: "pop" }}
               >
                 <UnstyledButton component={Link} to="/logout">
-                  <IconLogout size={22} />
+                  <IconLogout size={isMobile ? 14 : 22} />
                 </UnstyledButton>
               </Tooltip>
             </>
@@ -158,7 +168,7 @@ export default function HeaderComponent() {
               transitionProps={{ transition: "pop" }}
             >
               <UnstyledButton component={Link} to="/login">
-                <IconUser size={22} />
+                <IconUser size={isMobile ? 14 : 22} />
               </UnstyledButton>
             </Tooltip>
           )}
@@ -175,7 +185,7 @@ export default function HeaderComponent() {
               to="/cart"
               style={{ position: "relative" }}
             >
-              <IconShoppingBag size={22} />
+              <IconShoppingBag size={isMobile ? 14 : 22} />
               {cartCount > 0 && (
                 <Badge
                   size="sm"

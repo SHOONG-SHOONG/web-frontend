@@ -264,7 +264,7 @@ export default function ListLivePage() {
                 </Grid.Col>
               ))
             ) : (
-              <Text size="sm" c="dimmed">
+              <Text size="sm" c="gray.5" style={{ lineHeight: 1.6, maxWidth: 320 }}>
                 최근 방송이 없습니다.
               </Text>
             )}

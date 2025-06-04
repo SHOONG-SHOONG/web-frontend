@@ -56,7 +56,7 @@ const LogoutPage = () => {
           console.error(`3. 서버 로그아웃 실패: ${response.status} ${response.statusText}`);
           console.error(`서버 응답 본문: ${errorText}`); // ⭐ 추가: 서버 응답 본문 로그
           console.error("   (이 에러는 서버가 요청에 포함된 refresh 쿠키를 찾지 못했거나 유효하지 않다고 판단했을 때 발생할 수 있습니다.)");
-          alert(`로그아웃에 실패했습니다. (상태: ${response.status})`);
+          // alert(`로그아웃에 실패했습니다. (상태: ${response.status})`);
         }
       } catch (error) {
         // 네트워크 오류 등 fetch 요청 자체에서 에러 발생 시

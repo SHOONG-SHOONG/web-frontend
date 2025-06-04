@@ -48,7 +48,7 @@ export default function LoginPage() {
       if (response.ok) {
         const data = await response.json();
         console.log("서버에서 받은 이름:", data.name);
-        const { name } = data;
+        const { name, brandName, role } = data;
 
         window.localStorage.setItem(
           "access",
@@ -63,9 +63,13 @@ export default function LoginPage() {
 
         // 사업자 로그인
         if (tab === "biz") {
-          navigate("/seller", { replace: true });
+          if (!brandName) {
+            navigate("/seller/mypage", { replace: true }); // 브랜드 등록
+          } else {
+            navigate("/seller", { replace: true }); // 셀러 메인
+          }
         } else {
-          navigate(prevUrl, { replace: true });
+          navigate(prevUrl, { replace: true }); // 사용자
         }
       } else if (response.status === 401) {
         alert("아이디 또는 비밀번호가 다릅니다.");

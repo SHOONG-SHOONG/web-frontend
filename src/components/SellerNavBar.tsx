@@ -55,7 +55,7 @@ export default function SellerNavBarPage() {
       <Flex direction="column" justify="space-between" h="100%">
         <div>
           <Box mb="xl">
-            <Link to="/">
+            <Link to="/seller">
               <Image src={shoongImage} w={110} radius="md" />
             </Link>
           </Box>

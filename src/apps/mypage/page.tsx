@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Text,
@@ -40,7 +41,7 @@ interface User {
   bdate: string | null;
   role: string | null;
   registrationNumber: string;
-  userStatus: string;
+  userStatus: string | null;
 }
 
 interface OrderItem {
@@ -64,6 +65,7 @@ interface Order {
 export default function MyPage() {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [orderList, setOrderList] = useState<Order[]>([]);
+  const navigate = useNavigate();
 
   // 실제 API 호출 대신 더미 데이터 사용
   useEffect(() => {
