@@ -20,7 +20,8 @@ import BASE_URL from "../../../config.js";
 import BASE_CHAT_URL from "../../../chat_config.js";
 
 interface LiveItem {
-  id: number;
+  liveId: number;
+  itemId: number;
   title: string;
   imageUrl: string;
   itemName: string;
@@ -28,6 +29,9 @@ interface LiveItem {
   price: number;
   discountRate: number;
   status: string;
+  liveDate: string; 
+  liveStartTime: string; 
+  liveEndTime: string;
 }
 
 export default function ManageLivePage() {
@@ -146,7 +150,7 @@ export default function ManageLivePage() {
                 {/* 라이브 리스트 */}
                 {lives.map((live) => (
                   <Grid
-                    key={live.id}
+                    key={live.liveId}
                     align="center"
                     py="md"
                     style={{ borderBottom: "1px solid #f1f3f5" }}
@@ -172,7 +176,7 @@ export default function ManageLivePage() {
                             size="xs"
                             color="red"
                             variant="light"
-                            onClick={() => endLive(live.id)}
+                            onClick={() => endLive(live.liveId)}
                           >
                             종료
                           </Button>
@@ -196,7 +200,7 @@ export default function ManageLivePage() {
                             {live.title}
                           </Text>
                           <Text size="xs" c="dimmed">
-                            라이브 ID: {live.id}
+                            라이브 ID: {live.liveId}
                           </Text>
                         </Box>
                       </Flex>
@@ -229,6 +233,26 @@ export default function ManageLivePage() {
                             </Text>
                           </Flex>
                         </Box>
+                      </Flex>
+                    </Grid.Col>
+                    <Grid.Col span={12}>
+                      <Flex justify="end">
+                        <Button
+                          size="xs"
+                          variant="light"
+                          color="blue"
+                          onClick={() => {
+                            const query = new URLSearchParams({
+                              itemId: String(live.itemId),
+                              liveId: String(live.liveId),
+                              from: String(new Date(live.liveStartTime).getTime()),
+                              to: String(new Date(live.liveEndTime).getTime()),
+                            }).toString();
+                            navigate(`/seller/live/${live.liveId}?${query}`);
+                          }}
+                        >
+                          통계 보기
+                        </Button>
                       </Flex>
                     </Grid.Col>
                   </Grid>
