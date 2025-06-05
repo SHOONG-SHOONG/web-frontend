@@ -32,6 +32,7 @@ export default function LiveStatisticsPage() {
   const grafanaUrl = `${grafanaHost}/d/${grafanaDashboardUid}/${encodeURIComponent(
     dashboardTitle
   )}?from=${from}&to=${to}&var-itemId=${itemId}&var-liveId=${liveId}`;
+  console.log("params: ", from, to, liveId, itemId);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 500); // 로딩 UX 개선
@@ -63,7 +64,7 @@ export default function LiveStatisticsPage() {
             >
               <iframe
                 // src={grafanaUrl}
-                src="http://192.168.0.6:3000/d-solo/beniokcoo3thcc/efg?orgId=1&from=1749013510088&to=1749035110088&panelId=1" 
+                src={`http://192.168.0.6:3000/d-solo/beniokcoo3thcc/efg?orgId=1&from=${from}&to=${from}&theme=light&panelId=1`}
                 width="450" 
                 height="200" 
                 frameborder="0"
