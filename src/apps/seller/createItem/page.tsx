@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppShell,
   Container,
@@ -13,121 +13,131 @@ import {
   Card,
   Box,
   Select,
+  Text,
+  Loader,
 } from "@mantine/core";
 import { IconPhoto, IconPlus } from "@tabler/icons-react";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
 import { useNavigate } from "react-router-dom";
-
+import { showNotification } from "@mantine/notifications";
 import Filter from "badwords-ko";
+
 const filter = new Filter();
 
 export default function CreateItemPage() {
   const navigate = useNavigate();
+
+  const [brandId, setBrandId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true); // brandId 로딩 완료 여부
+
   const [itemName, setItemName] = useState<string>("");
   const [price, setPrice] = useState<number | undefined>(undefined);
-  const [discountRate, setDiscountRate] = useState<number | undefined>(
-    undefined
-  );
+  const [discountRate, setDiscountRate] = useState<number | undefined>(undefined);
   const [category, setCategory] = useState<string | null>(null);
   const [stock, setStock] = useState<number | undefined>(undefined);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [description, setDescription] = useState<string>("");
   const [endDate, setEndDate] = useState<Date | null>(null);
-
-  // 욕설 필터링 에러 상태 추가
   const [itemNameError, setItemNameError] = useState<string>("");
   const [descriptionError, setDescriptionError] = useState<string>("");
 
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  const fetchUserInfo = async () => {
+    try {
+      const token = localStorage.getItem("access");
+
+      const response = await fetch(`${BASE_URL}/myPage`, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          access: token || "",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+
+      if (data.brandId) {
+        setBrandId(data.brandId);
+      }
+    } catch (err) {
+      console.error("사용자 정보 조회 실패", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toLocalDateTimeString = (date: Date): string => {
     const pad = (n: number) => String(n).padStart(2, "0");
-    return (
-      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-        date.getDate()
-      )}` +
-      `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
-        date.getSeconds()
-      )}`
-    );
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+      `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   };
 
   const handleSubmit = async () => {
-    // 1. 필수 정보 유효성 검사
-    if (
-      !itemName ||
-      !description ||
-      price === undefined ||
-      price === null ||
-      price <= 0 ||
-      stock === undefined ||
-      stock === null ||
-      stock <= 0 ||
-      imageFiles.length === 0 ||
-      !category ||
-      !endDate ||
-      isNaN(endDate.getTime())
-    ) {
-      alert(
-        "모든 필수 입력 필드를 채워주세요. (상품 이름, 설명, 가격, 수량, 이미지, 카테고리, 할인 종료일)"
-      );
+    if (!brandId) {
+      showNotification({
+        title: "브랜드 미등록",
+        message: "상품 등록 전 브랜드를 먼저 등록해주세요.",
+        color: "red",
+      });
       return;
     }
 
-    // 2. 할인율 유효성 검사 (0% ~ 100% 범위)
-    const currentDiscountRate =
-      discountRate === undefined || discountRate === null ? 0 : discountRate;
+    if (!itemName || !description || price == null || price <= 0 || stock == null || stock <= 0 ||
+      imageFiles.length === 0 || !category || !endDate || isNaN(endDate.getTime())) {
+      showNotification({
+        title: "입력 오류",
+        message: "필수 입력 필드를 모두 채워주세요.",
+        color: "red",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    const currentDiscountRate = discountRate ?? 0;
     if (currentDiscountRate < 0 || currentDiscountRate > 100) {
-      alert("할인율은 0에서 100 사이의 값이어야 합니다.");
+      showNotification({
+        title: "할인율 오류",
+        message: "할인율은 0에서 100 사이여야 합니다.",
+        color: "red",
+      });
       return;
     }
-    const adjustedDiscountRate = currentDiscountRate / 100.0;
 
-    // 3. 욕설 필터링 에러 최종 검사
-    // 실시간 경고가 활성화되어 있어 여기에 걸리면 제출을 막습니다.
     if (itemNameError || descriptionError) {
-      alert(
-        "상품 이름 또는 설명에 부적절한 단어가 포함되어 있습니다. 수정해주세요."
-      );
+      showNotification({
+        title: "부적절한 단어 감지",
+        message: "상품 이름 또는 설명에 부적절한 단어가 포함되어 있습니다.",
+        color: "red",
+      });
       return;
     }
 
-    //  중요: 제출 시 필터링된 내용을 사용합니다.
-    // 실시간 경고 후에도 혹시 모를 상황에 대비해 최종 필터링을 다시 적용합니다.
-    const filteredItemName = filter.clean(itemName);
-    const filteredDescription = filter.clean(description);
-
-    // 4. 백엔드로 전송할 아이템 데이터 객체 생성
     const itemData = {
-      itemName: filteredItemName, // 필터링된 상품 이름 사용
-      price: price as number,
-      discountRate: adjustedDiscountRate,
-      description: filteredDescription, // 필터링된 상품 설명 사용
-      itemQuantity: stock as number,
-      category: category,
+      itemName: filter.clean(itemName),
+      price,
+      discountRate: currentDiscountRate / 100.0,
+      description: filter.clean(description),
+      itemQuantity: stock,
+      category,
       createdAt: new Date().toISOString(),
       discountExpiredAt: toLocalDateTimeString(endDate),
     };
 
     const formData = new FormData();
     formData.append("item", JSON.stringify(itemData));
-
-    imageFiles.forEach((file) => {
-      formData.append("imageFiles", file);
-    });
-
-    // 개발자 디버깅을 위한 FormData 내용 로깅
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+    imageFiles.forEach((file) => formData.append("imageFiles", file));
 
     try {
       const token = localStorage.getItem("access");
-
       const response = await fetch(`${BASE_URL}/item`, {
         method: "POST",
-        headers: {
-          access: token || "",
-        },
+        headers: { access: token || "" },
         credentials: "include",
         body: formData,
       });
@@ -137,17 +147,12 @@ export default function CreateItemPage() {
         throw new Error(`상품 등록 실패: ${response.status} - ${errorDetail}`);
       }
 
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        console.log("상품 등록 성공:", data);
-      } else {
-        console.log("상품 등록 성공 (응답 본문 없음)");
-      }
+      showNotification({
+        title: "등록 성공",
+        message: "상품이 성공적으로 등록되었습니다!",
+        color: "teal",
+      });
 
-      alert("상품이 성공적으로 등록되었습니다!");
-
-      // 폼 초기화
       setItemName("");
       setPrice(undefined);
       setDiscountRate(undefined);
@@ -156,17 +161,17 @@ export default function CreateItemPage() {
       setImageFiles([]);
       setDescription("");
       setEndDate(null);
-      setItemNameError(""); // 에러 메시지도 초기화
-      setDescriptionError(""); // 에러 메시지도 초기화
+      setItemNameError("");
+      setDescriptionError("");
 
       navigate("/seller");
     } catch (error) {
       console.error("상품 등록 에러:", error);
-      alert(
-        `상품 등록에 실패했습니다. 에러: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
+      showNotification({
+        title: "상품 등록 실패",
+        message: "서버 오류 또는 유효하지 않은 입력입니다.",
+        color: "red",
+      });
     }
   };
 
@@ -185,12 +190,13 @@ export default function CreateItemPage() {
                 color="black"
                 variant="light"
                 onClick={handleSubmit}
+                disabled={!brandId}
               >
                 등록하기
               </Button>
             </Flex>
 
-            <Card p="lg" mt="lg" shadow="sm" withBorder>
+            <Card p="lg" mt="lg" shadow="sm" withBorder style={{ position: "relative" }}>
               <Stack gap="lg">
                 <TextInput
                   radius="sm"
@@ -320,6 +326,47 @@ export default function CreateItemPage() {
                   }}
                 />
               </Stack>
+
+              {!loading && !brandId && (
+                <Box
+                  pos="absolute"
+                  top={0}
+                  left={0}
+                  right={0}
+                  bottom={0}
+                  bg="rgba(0, 0, 0, 0.6)"
+                  style={{
+                    zIndex: 10,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backdropFilter: "blur(2px)",
+                  }}
+                >
+                  <Text size="lg" fw={700} c="white">
+                    상품 등록 전 브랜드 등록이 필요합니다.
+                  </Text>
+                </Box>
+              )}
+              {loading && (
+                <Box
+                  pos="absolute"
+                  top={0}
+                  left={0}
+                  right={0}
+                  bottom={0}
+                  bg="rgba(255, 255, 255, 0.6)"
+                  style={{
+                    zIndex: 10,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backdropFilter: "blur(1px)",
+                  }}
+                >
+                  <Loader color="blue" />
+                </Box>
+              )}
             </Card>
           </Container>
         </Box>

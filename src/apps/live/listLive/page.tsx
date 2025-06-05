@@ -134,9 +134,14 @@ export default function ListLivePage() {
                     src={liveItem.imageUrl || "https://placehold.co/400x500"}
                     alt={liveItem.title}
                     radius="md"
-                    h={400}
+                    // h={400}
                     fit="cover"
-                    style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
+                    style={{
+                      width: "100%",            // ✅ 반응형 너비
+                      aspectRatio: "3 / 4",     // ✅ 비율 유지
+                      height: "auto",           // ✅ 고정 높이 제거
+                      objectFit: "cover",       // ✅ 잘림 방지
+                    }}
                   />
                   <Badge
                     color="red"
@@ -207,9 +212,14 @@ export default function ListLivePage() {
                       src={live.imageUrl || "https://placehold.co/400x500"}
                       alt={live.title}
                       radius="md"
-                      h={400}
+                      // h={400}
                       fit="cover"
-                      style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
+                      style={{
+                        width: "100%",            // ✅ 반응형 너비
+                        aspectRatio: "3 / 4",     // ✅ 비율 유지
+                        height: "auto",           // ✅ 고정 높이 제거
+                        objectFit: "cover",       // ✅ 잘림 방지
+                      }}
                     />
 
                     {/* 배지 */}

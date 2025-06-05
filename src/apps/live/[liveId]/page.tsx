@@ -127,6 +127,35 @@ export default function LivePage() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+    if (!token) {
+      setLoginModalOpened(true);
+    }
+  }, []);
+
+  const handleAvatarClick = async () => {
+    try {
+      const itemId = liveInfo?.liveItems?.[0]?.itemId;
+      if (!itemId) {
+        console.warn("itemId 없음");
+        return;
+      }
+
+      const res = await fetch(`${BASE_URL}/item/summary/${itemId}`);
+      if (!res.ok) throw new Error("상품 상세 조회 실패");
+
+      const itemData = await res.json();
+      if (itemData?.brandId) {
+        navigate(`/brand/${itemData.brandId}`);
+      } else {
+        console.warn("brandId 없음");
+      }
+    } catch (err) {
+      console.error("브랜드 이동 실패:", err);
+    }
+  };
+
   const sendMessage = () => {
     const name = localStorage.getItem("name");
     if (!messageInput.trim() || !name || !liveId) return;
@@ -169,7 +198,7 @@ export default function LivePage() {
       <HeaderComponent />
       <Container size="lg" pt={40}>
         <Group align="center" mb="md">
-          <Avatar src={liveInfo?.imageUrl} size={35} radius="xl" />
+          <Avatar src={liveInfo?.imageUrl} size={35} radius="xl" onClick={handleAvatarClick} style={{ cursor: "pointer" }} />
           <Title order={3} style={{ flexGrow: 1 }}>
             {liveInfo?.title}
           </Title>

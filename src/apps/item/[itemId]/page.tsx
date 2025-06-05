@@ -56,6 +56,14 @@ interface Item {
   itemImages: ItemImage[];
 }
 
+const categoryMap: Record<string, string> = {
+  여행: "TRAVEL",
+  항공: "FLIGHT",
+  숙박: "ACCOMMODATION",
+  캠핑: "CAMPING",
+  교통: "TRANSPORT",
+};
+
 export default function ItemDetailPage() {
   const navigate = useNavigate();
   const { itemId } = useParams();
@@ -111,6 +119,7 @@ export default function ItemDetailPage() {
         }
 
         const data: Item = await response.json();
+
         //  상품명과 설명을 필터링
         const filteredItem: Item = {
           ...data,
@@ -203,7 +212,7 @@ export default function ItemDetailPage() {
   // 바로 구매 처리 (현재는 alert만)
   const handleBuy = async () => {
     const token = localStorage.getItem("access");
-  
+
     try {
       // 1️⃣ 장바구니에 아이템 추가
       const cartRes = await fetch(`${BASE_URL}/cart/add`, {
@@ -218,14 +227,14 @@ export default function ItemDetailPage() {
           cartQuantity: quantity,
         }),
       });
-  
+
       if (!cartRes.ok) {
         throw new Error("장바구니 추가 실패");
       }
 
       const cartData = await cartRes.json();
       const cartId = cartData.cartId;
-  
+
       // 2️⃣ 주문 생성
       const orderRes = await fetch(`${BASE_URL}/orders/create`, {
         method: "POST",
@@ -238,20 +247,20 @@ export default function ItemDetailPage() {
           selectedCartIds: [cartId],
         }),
       });
-  
+
       if (!orderRes.ok) {
         throw new Error("주문 생성 실패");
       }
-  
+
       // 3️⃣ 주문 페이지로 이동
       navigate("/order");
-  
+
     } catch (error) {
       console.error("바로 구매 실패:", error);
       alert("구매 처리 중 문제가 발생했습니다.");
     }
   };
-  
+
   // 로딩 중일 때 로더 표시
   if (loading) {
     return (
@@ -295,7 +304,7 @@ export default function ItemDetailPage() {
               style={{ textTransform: "uppercase" }}
               mb={4}
             >
-              CRASH BAGGAGE
+              {categoryMap[item.category] || ""}
             </Text>
 
             {/* 상품명 + 찜 버튼 */}
@@ -325,7 +334,7 @@ export default function ItemDetailPage() {
                 </Text>
               )}
               <Text size="xl" fw={700}>
-                {item.finalPrice.toLocaleString()}원
+                {Math.round(item.finalPrice).toLocaleString()}원
               </Text>
             </Flex>
 

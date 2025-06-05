@@ -12,6 +12,8 @@ import {
   Anchor,
   Center,
   Stack,
+  Flex,
+  Box,
 } from "@mantine/core";
 import { IconUser, IconLock, IconBuildingStore } from "@tabler/icons-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -31,6 +33,8 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const fetchLogin = async (credentials: {
     username: string;
     password: string;
@@ -48,7 +52,19 @@ export default function LoginPage() {
       if (response.ok) {
         const data = await response.json();
         console.log("서버에서 받은 이름:", data.name);
-        const { name, brandName, role } = data;
+        const { name, brandName, userStatus } = data;
+
+        window.localStorage.setItem("userStatus", userStatus);
+
+        if (data.userStatus === "PENDING") {
+          setErrorMessage("가입 승인 대기 중입니다. 관리자 승인을 기다려주세요.");
+          return;
+        }
+
+        if (data.userStatus === "INACTIVE") {
+          setErrorMessage("비활성화된 계정입니다. 관리자에게 문의하세요.");
+          return;
+        }
 
         window.localStorage.setItem(
           "access",
@@ -59,8 +75,12 @@ export default function LoginPage() {
         setIsLoggedIn(true);
         setLoginUser(name);
 
-        alert("로그인 성공!");
+        // alert("로그인 성공!");
 
+        if (data.name.toLowerCase() === "admin") {
+          navigate("/admin"); // 관리자 페이지로 이동
+          return; // 더 이상 아래 코드 실행되지 않도록 종료
+        }
         // 사업자 로그인
         if (tab === "biz") {
           if (!brandName) {
@@ -72,7 +92,7 @@ export default function LoginPage() {
           navigate(prevUrl, { replace: true }); // 사용자
         }
       } else if (response.status === 401) {
-        alert("아이디 또는 비밀번호가 다릅니다.");
+        setErrorMessage("아이디 또는 비밀번호가 다릅니다.");
       } else {
         alert("로그인에 실패했습니다. 관리자에게 문의하세요.");
       }
@@ -143,8 +163,17 @@ export default function LoginPage() {
                 required
               />
 
-              <Group justify="space-between">
-                <div />
+              <Group justify="space-between" mt="xs">
+                {/* 왼쪽 묶음 */}
+                <Box>
+                  {errorMessage && (
+                    <Text color="red" size="sm">
+                      {errorMessage}
+                    </Text>
+                  )}
+                </Box>
+
+                {/* 오른쪽 링크 */}
                 <Anchor href="#" size="sm" c="gray">
                   비밀번호 찾기
                 </Anchor>

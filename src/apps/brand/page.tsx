@@ -9,19 +9,14 @@ import {
   Badge,
   Card,
   Box,
-  Tabs,
   Stack,
-  Group,
-  Anchor,
   Divider,
+  Center,
 } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { useParams, useNavigate } from "react-router-dom";
 import BASE_URL from "../../config.js";
-
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 interface Item {
   itemId: number;
@@ -37,212 +32,121 @@ interface BrandData {
   items: Item[];
 }
 
-const menus = [
-  { label: "홈", value: "home" },
-  { label: "카테고리", value: "category" },
-  { label: "라이브", value: "live" },
-];
-
 export default function BrandPage() {
-  const [active, setActive] = useState("home");
   const { brandId } = useParams();
-  const [brandData, setBrandData] = useState<BrandData | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!brandId) return;
+  const [brandData, setBrandData] = useState<BrandData | null>(null);
 
-    fetch(`${BASE_URL}/brand/${brandId}`)
-      .then((res) => res.json())
-      .then((data) => setBrandData(data))
-      .catch((err) => console.error("Error fetching brand data:", err));
+  useEffect(() => {
+    const fetchBrand = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/brand/summary/${brandId}`);
+        if (!res.ok) throw new Error("브랜드 정보를 가져오는 데 실패했습니다.");
+        const data = await res.json();
+        setBrandData(data);
+      } catch (err) {
+        console.error("브랜드 정보 조회 실패:", err);
+      }
+    };
+
+
+
+    fetchBrand();
   }, [brandId]);
 
   if (!brandId) {
     return <Text color="red">유효하지 않은 브랜드 경로입니다.</Text>;
   }
+
   if (!brandData) {
     return <Text>로딩 중...</Text>;
   }
 
   return (
     <>
-      {/* Header */}
       <HeaderComponent />
 
-      {/* 본문 내용 */}
       <Container size="lg" pt={30}>
-        <Tabs defaultValue="intro">
-          <Tabs.List>
-            <Tabs.Tab value="intro">브랜드 소개</Tabs.Tab>
-            <Tabs.Tab value="products">상품</Tabs.Tab>
-            <Tabs.Tab value="live">라이브</Tabs.Tab>
-          </Tabs.List>
-
-          {/* 브랜드 소개 */}
-          <Tabs.Panel value="intro" pt="xl">
-            <Grid gutter="xl" align="center">
-              <Grid.Col span={{ base: 12, md: 4 }}>
+        <Box mb={50}>
+          <Grid gutter="xl" align="center">
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <Box
+                style={{
+                  padding: 12,
+                  border: "2px solid #e0e0e0",
+                  borderRadius: "999px",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
+                  width: 150,
+                  height: 150,
+                  margin: "0 auto",
+                }}
+              >
                 <Image
                   src={brandData.logoUrl}
-                  //src={`https://placehold.co/240x320?text=brand`}
                   alt="브랜드 로고"
                   radius="xl"
+                  width={120}
+                  height={120}
+                  style={{ objectFit: "cover" }}
                 />
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, md: 8 }}>
-                <Title order={3} mb="md">
+              </Box>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, md: 8 }}>
+              <Stack gap="xs">
+                <Title order={2} fw={700}>
                   {brandData.brandName}
                 </Title>
-                <Text size="sm" c="dimmed">
-                  {brandData.brandDescription}
+                <Text size="md" color="dimmed" lh={1.6}>
+                  {brandData.brandDescription || "브랜드 설명이 없습니다."}
                 </Text>
+                <Badge color="blue" size="lg" variant="light" w="fit-content">
+                  # {brandData.brandName}와 함께
+                </Badge>
+              </Stack>
+            </Grid.Col>
+          </Grid>
+        </Box>
+
+        <Divider my={30} label="상품 목록" labelPosition="center" />
+
+        {brandData.items.length === 0 ? (
+          <Center pb={60}>
+            <Text color="dimmed">등록된 상품이 없습니다.</Text>
+          </Center>
+        ) : (
+          <Grid gutter="md" pb={60}>
+            {brandData.items.map((item) => (
+              <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
+                <Box
+                  onClick={() => navigate(`/item/${item.itemId}`, { state: item })}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Image
+                    src={item.imageUrl || "https://placehold.co/400x400"}
+                    alt={item.name}
+                    radius="sm"
+                    height={320}
+                    fit="cover"
+                    style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                  />
+
+                  <Text size="sm" mb="xs" mt="sm">
+                    {item.name}
+                  </Text>
+
+                  <Text size="sm" fw={700}>
+                    {item.price.toLocaleString()}원
+                  </Text>
+                </Box>
               </Grid.Col>
-            </Grid>
-          </Tabs.Panel>
-
-          {/* 상품 탭 */}
-          <Tabs.Panel value="products" pt="xl">
-            <Title order={3}>상품</Title>
-            <Grid gutter="md" pt={10} mb={70}>
-              {brandData.items.map((item) => (
-                <Grid.Col span={4} key={item.itemId}>
-                  <Card
-                    padding="sm"
-                    radius="md"
-                    withBorder
-                    onClick={() =>
-                      navigate(`/item/${item.itemId}`, { state: item })
-                    }
-                  >
-                    <Card.Section>
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.name}
-                        height={160}
-                        fit="cover"
-                      />
-                    </Card.Section>
-                    <Text mt="xs" fw={600} size="sm">
-                      {item.name}
-                    </Text>
-                    <Text size="sm" fw={700}>
-                      {item.price.toLocaleString()}원
-                    </Text>
-                  </Card>
-                </Grid.Col>
-              ))}
-            </Grid>
-          </Tabs.Panel>
-
-          {/* 라이브 탭 */}
-          <Tabs.Panel value="live" pt="xl">
-            <Title order={3}>라이브 진행중인 방송</Title>
-            <Text size="sm" c="dimmed">
-              <Grid gutter="md" pt={10} mb={70}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <Grid.Col span={3} key={i}>
-                    <Card shadow="sm" padding="sm" radius="md" withBorder>
-                      <Badge color="blue" variant="filled" size="sm">
-                        LIVE
-                      </Badge>
-
-                      <Image
-                        src={`https://placehold.co/240x320?text=Live+${i + 1}`}
-                        alt="방송 이미지"
-                        mt="xs"
-                        radius="sm"
-                      />
-
-                      <Text mt="xs" fw={600} ta="center" size="sm">
-                        라이브 방송 제목
-                      </Text>
-
-                      <Flex
-                        mt="sm"
-                        gap="xs"
-                        justify="center"
-                        align="center"
-                        direction="row"
-                        wrap="wrap"
-                      >
-                        <Image
-                          src={`https://placehold.co/60x60?text=pr+${i + 1}`}
-                          alt="상품 이미지"
-                          radius="sm"
-                          w={45}
-                        />
-                        <Text size="xs" fw={500}>
-                          상품명
-                        </Text>
-                        <Text size="xs" c="red">
-                          50%{" "}
-                          <Text span fw={700} c="black">
-                            19,800원
-                          </Text>
-                        </Text>
-                      </Flex>
-                    </Card>
-                  </Grid.Col>
-                ))}
-              </Grid>
-            </Text>
-            <Divider my="sm" />
-            <Title order={3}>다시보기</Title>
-            <Text size="sm" c="dimmed">
-              <Grid gutter="md" pt={10} mb={70}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <Grid.Col span={3} key={i}>
-                    <Card shadow="sm" padding="sm" radius="md" withBorder>
-                      <Badge color="blue" variant="filled" size="sm">
-                        LIVE
-                      </Badge>
-
-                      <Image
-                        src={`https://placehold.co/240x320?text=Live+${i + 1}`}
-                        alt="방송 이미지"
-                        mt="xs"
-                        radius="sm"
-                      />
-
-                      <Text mt="xs" fw={600} ta="center" size="sm">
-                        라이브 방송 제목
-                      </Text>
-
-                      <Flex
-                        mt="sm"
-                        gap="xs"
-                        justify="center"
-                        align="center"
-                        direction="row"
-                        wrap="wrap"
-                      >
-                        <Image
-                          src={`https://placehold.co/60x60?text=pr+${i + 1}`}
-                          alt="상품 이미지"
-                          radius="sm"
-                          w={45}
-                        />
-                        <Text size="xs" fw={500}>
-                          상품명
-                        </Text>
-                        <Text size="xs" c="red">
-                          50%{" "}
-                          <Text span fw={700} c="black">
-                            19,800원
-                          </Text>
-                        </Text>
-                      </Flex>
-                    </Card>
-                  </Grid.Col>
-                ))}
-              </Grid>
-            </Text>
-          </Tabs.Panel>
-        </Tabs>
+            ))}
+          </Grid>
+        )}
       </Container>
 
-      {/* Footer */}
       <FooterComponent />
     </>
   );
