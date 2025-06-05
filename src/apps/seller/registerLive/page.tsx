@@ -15,6 +15,9 @@ import {
   Image,
   Flex,
   FileInput,
+  Divider,
+  Paper,
+  Tooltip,
 } from "@mantine/core";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
@@ -251,16 +254,6 @@ export default function LiveRegisterPage() {
                   )}
                 </Box>
 
-                <TextInput
-                  radius="sm"
-                  size="md"
-                  label="라이브 예정 일시"
-                  placeholder="예: 2025-05-24T15:00"
-                  type="datetime-local"
-                  value={liveDate}
-                  onChange={(e) => setLiveDate(e.currentTarget.value)}
-                  required
-                />
 
                 <Textarea
                   radius="sm"
@@ -284,6 +277,17 @@ export default function LiveRegisterPage() {
                   error={descriptionError} // Mantine 컴포넌트에 에러 메시지 표시
                 />
 
+                {/* <TextInput
+                  radius="sm"
+                  size="md"
+                  label="라이브 예정 일시"
+                  placeholder="예: 2025-05-24T15:00"
+                  type="datetime-local"
+                  value={liveDate}
+                  onChange={(e) => setLiveDate(e.currentTarget.value)}
+                  required
+                />
+
                 <TextInput
                   radius="sm"
                   size="md"
@@ -293,7 +297,30 @@ export default function LiveRegisterPage() {
                   value={startTime}
                   onChange={(e) => setStartTime(e.currentTarget.value)}
                   required
+                /> */}
+
+                <TextInput
+                  radius="sm"
+                  size="md"
+                  label="라이브 예정 날짜"
+                  placeholder="예: 2025-06-10"
+                  type="date" // ✅ 날짜만
+                  value={liveDate}
+                  onChange={(e) => setLiveDate(e.currentTarget.value)}
+                  required
                 />
+
+                <TextInput
+                  radius="sm"
+                  size="md"
+                  label="라이브 시작 시간"
+                  placeholder="예: 15:00"
+                  type="time" // ✅ 시간만
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.currentTarget.value)}
+                  required
+                />
+
 
                 <TextInput
                   radius="sm"
@@ -310,70 +337,85 @@ export default function LiveRegisterPage() {
                   <Text fw={500} mb="xs">
                     라이브 쇼핑 상품 선택
                   </Text>
+
                   {items.length === 0 ? (
                     <Text color="dimmed">등록된 상품이 없습니다.</Text>
                   ) : (
-                    <Accordion multiple defaultValue={[]}>
+                    <Accordion multiple={false} defaultValue={[]}>
                       {items.map((item) => {
-                        const isSelected = selectedItemIds.includes(
-                          item.itemId
-                        );
-                        const discountPercent =
-                          item.discountRate > 0 && item.discountRate < 1
-                            ? item.discountRate * 100
-                            : 0;
+                        const isSelected = selectedItemIds.includes(item.itemId);
+                        const isOnSale = item.status === "ON_SALE";
                         const imageFile =
-                          item.itemImages?.[0]?.url ||
-                          "https://placehold.co/100x100";
+                          item.itemImages?.[0]?.url || "https://placehold.co/100x100";
 
                         return (
                           <Accordion.Item
                             key={item.itemId}
                             value={item.itemId.toString()}
+                            style={{
+                              borderRadius: "12px",
+                              marginBottom: "16px",
+                              overflow: "hidden",
+                              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
+                            }}
                           >
                             <Accordion.Control>
                               <Flex align="center" justify="space-between">
-                                <Checkbox
-                                  label={item.itemName}
-                                  checked={isSelected}
-                                  onChange={(e) => {
-                                    const newId = item.itemId;
-                                    setSelectedItemIds((prev) =>
-                                      e.currentTarget.checked
-                                        ? [...prev, newId]
-                                        : prev.filter((id) => id !== newId)
-                                    );
-                                  }}
-                                />
-                                <Text size="xs" c="dimmed">
-                                  {item.status === "ON_SALE"
-                                    ? "판매중"
-                                    : "승인대기"}
+                                <Tooltip
+                                  label="승인 대기 중인 상품은 선택할 수 없습니다"
+                                  disabled={isOnSale}
+                                  withArrow
+                                  position="top-start"
+                                >
+                                  <Checkbox
+                                    label={item.itemName}
+                                    checked={isSelected}
+                                    disabled={!isOnSale}
+                                    onChange={() => {
+                                      if (!isOnSale) return;
+                                      const newId = item.itemId;
+                                      setSelectedItemIds((prev) =>
+                                        isSelected ? [] : [newId]
+                                      );
+                                    }}
+                                  />
+                                </Tooltip>
+                                <Text size="xs" color="blue">
+                                  {item.status === "ON_SALE" ? "판매중" : "승인대기"}
                                 </Text>
                               </Flex>
                             </Accordion.Control>
+
                             <Accordion.Panel>
-                              <Flex gap="md" align="center">
-                                <Image
-                                  src={imageFile}
-                                  width={100}
-                                  radius="md"
-                                  alt={item.itemName}
-                                />
-                                <Box>
-                                  <Text size="sm">{item.description}</Text>
-                                  <Flex align="center" gap="sm" mt="xs">
-                                    {discountPercent > 0 && (
-                                      <Text size="sm" fw={700} c="red">
-                                        {discountPercent}%
-                                      </Text>
-                                    )}
-                                    <Text size="sm" fw={700}>
+                              <Paper p="sm" radius="md" withBorder>
+                                <Flex gap="lg" align="center" mt="xs" wrap="nowrap">
+                                  <Image
+                                    src={imageFile}
+                                    alt={item.itemName}
+                                    width={100}
+                                    height={100}
+                                    radius="md"
+                                    fit="cover"
+                                    style={{
+                                      objectFit: "cover",
+                                      width: "100px",
+                                      height: "100px",
+                                      flexShrink: 0,
+                                    }}
+                                  />
+                                  <Box style={{ flexGrow: 1 }}>
+                                    <Text size="md" fw={600} mb={4}>
+                                      {item.itemName}
+                                    </Text>
+                                    <Text size="sm" lineClamp={2}>
+                                      {item.description}
+                                    </Text>
+                                    <Text size="sm" color="dimmed" mt="sm">
                                       {item.finalPrice.toLocaleString()}원
                                     </Text>
-                                  </Flex>
-                                </Box>
-                              </Flex>
+                                  </Box>
+                                </Flex>
+                              </Paper>
                             </Accordion.Panel>
                           </Accordion.Item>
                         );

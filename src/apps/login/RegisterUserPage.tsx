@@ -42,7 +42,7 @@ export default function RegisterUserPage() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState("");
   const [name, setName] = useState("");
   const [userPhone, setUserPhone] = useState("");
   const [birthDay, setBirthDay] = useState("");
@@ -112,7 +112,7 @@ export default function RegisterUserPage() {
       return;
     }
 
-    if (userName.trim().toLowerCase() === "admin") {
+    if (userId.trim().toLowerCase() === "admin") {
       setErrorMessage("admin 아이디는 사용할 수 없습니다.");
       return;
     }
@@ -120,7 +120,7 @@ export default function RegisterUserPage() {
     const credentials = {
       userEmail,
       userPassword,
-      userName,
+      userName: userId,
       name,
       userPhone,
       birthDay,
@@ -160,7 +160,7 @@ export default function RegisterUserPage() {
             회원가입
           </Text>
 
-          <Stepper active={active} onStepClick={setActive} breakpoint="sm" size="sm" my="xl">
+          <Stepper active={active} onStepClick={setActive} bgp="sm" size="sm" my="xl">
             <Stepper.Step icon={<IconCheck size={18} />} label="1단계" description="약관동의" />
             <Stepper.Step icon={<IconUser size={18} />} label="2단계" description="기본 정보 입력" />
             <Stepper.Completed><Text ta="center" fw={500}>가입이 완료되었습니다.</Text></Stepper.Completed>
@@ -175,10 +175,15 @@ export default function RegisterUserPage() {
                     size="md"
                     radius="sm"
                     label="아이디"
-                    placeholder="username"
+                    placeholder="영어로 작성해주세요"
                     leftSection={<IconUser size={16} />}
-                    value={userName}
-                    onChange={(e) => setUserName(e.currentTarget.value)}
+                    value={userId}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      // 한글 제거 (또는 한글 입력 자체 차단)
+                      const onlyEnglish = value.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
+                      setUserId(onlyEnglish);
+                    }}
                     required
                   />
 
@@ -290,7 +295,7 @@ export default function RegisterUserPage() {
                 <>
                   <Divider my="xs" label="약관 동의" labelPosition="center" />
 
-                  <Stack spacing={4}>
+                  <Stack gap={4}>
                     {/* 서비스 이용약관 */}
                     <Flex direction="column">
                       <Flex align="center" mb="xs">

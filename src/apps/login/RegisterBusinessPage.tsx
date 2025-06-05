@@ -244,7 +244,12 @@ export default function RegisterBusinessPage() {
                     placeholder="회사명 또는 상호"
                     leftSection={<IconBuildingStore size={16} />}
                     value={userName}
-                    onChange={(e) => setUserName(e.currentTarget.value)}
+                    onChange={(e) => {
+                      const value = e.currentTarget.value;
+                      // 한글 제거
+                      const onlyAlphaNumeric = value.replace(/[^a-zA-Z0-9]/g, "");
+                      setUserName(onlyAlphaNumeric);
+                    }}
                     required
                   />
 

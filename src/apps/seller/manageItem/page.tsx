@@ -29,6 +29,7 @@ interface Item {
   itemQuantity: number;
   finalPrice: number;
   itemImages: { url: string }[];
+  status: string;
 }
 
 export default function SellerItemPage() {
@@ -154,7 +155,10 @@ export default function SellerItemPage() {
                   <Text fw={500} w={120}>
                     재고
                   </Text>
-                  <Text fw={500} w={200}>
+                  <Text fw={500} w={100}>
+                    상태
+                  </Text>
+                  <Text fw={500} w={100}>
                     작업
                   </Text>
                 </Flex>
@@ -178,7 +182,8 @@ export default function SellerItemPage() {
                     <Text w={100}>{item.price.toLocaleString()}원</Text>
                     <Text w={100}>{item.discountRate}%</Text>
                     <Text w={120}>{item.itemQuantity}개</Text>
-                    <Group w={200}>
+                    <Text w={100}> {item.status === "ON_SALE" ? "판매중" : "승인대기"}</Text>
+                    <Group w={100}>
                       <Tooltip label="수정">
                         <ActionIcon variant="light" color="blue" radius="xl">
                           <IconEdit size={16} />
