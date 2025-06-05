@@ -26,7 +26,7 @@ import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { RingLoader } from "../../../components/RingLoader.tsx";
 import LoginModal from "../../../components/LoginModal.tsx";
 import { showNotification } from "@mantine/notifications";
-
+import shoongBanner from "../../../assets/banner.png";
 
 //  필터 라이브러리 임포트
 import Filter from "badwords-ko";
@@ -440,7 +440,7 @@ export default function ItemDetailPage() {
             {/* 상품 상세 이미지 (예시) */}
             <Box style={{ textAlign: "center" }} mb="xl">
               <Image
-                src="https://placehold.co/800x100?text=item+detail+banner"
+                src={shoongBanner}
                 alt="상세 이미지"
                 radius="sm"
                 width="100%"
