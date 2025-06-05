@@ -326,7 +326,7 @@ export default function LiveRegisterPage() {
                   radius="sm"
                   size="md"
                   label="스트림 키"
-                  placeholder="예: your-stream-key"
+                  placeholder="관리자에게 문의 후 입력해주세요."
                   value={streamKey}
                   onChange={(e) => setStreamKey(e.currentTarget.value)}
                   required

@@ -167,6 +167,7 @@ const SearchPage = () => {
   };
 
   const onSearchClick = () => {
+    setIsLoading(true);
     setHasSearched(true);
     fetchProducts();
   };
@@ -318,18 +319,21 @@ const SearchPage = () => {
               </Text>
             </Box>
           ) : isLoading ? (
-            <Grid gutter="xl">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <Grid.Col span={{ base: 6, md: 3 }} key={`skeleton-${i}`}>
-                  <Box>
-                    <Skeleton height={320} radius="md" />
-                    <Skeleton height={12} mt={12} width="60%" />
-                    <Skeleton height={14} mt={6} width="80%" />
-                    <Skeleton height={18} mt={6} width="50%" />
-                  </Box>
-                </Grid.Col>
-              ))}
-            </Grid>
+            <Box
+              style={{
+                height: 380,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+              }}
+            >
+              <Skeleton height={20} width={120} />
+              <Text mt="sm" size="sm" color="dimmed">
+                검색 중입니다...
+              </Text>
+            </Box>
           ) : products.length > 0 ? (
             <Grid gutter="xl">
               {products.map((item) => (

@@ -169,7 +169,7 @@ export default function SellerMypge() {
                                     <Box h={1} bg="gray.2" my="sm" />
 
                                     <Box mt="lg">
-                                        <SimpleGrid cols={3} spacing="lg" align="center">
+                                        <SimpleGrid cols={3} spacing="lg" ta="center">
                                             <Box>
                                                 <Text size="xs" c="dimmed" mb={4}>브랜드</Text>
                                                 <Text fw={600}>
