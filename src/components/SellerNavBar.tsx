@@ -28,7 +28,7 @@ import {
   IconUserX,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import shoongImage from "../assets/shoong2.png";
+import shoongImage from "../assets/shoong-logo.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 
 export default function SellerNavBarPage() {
