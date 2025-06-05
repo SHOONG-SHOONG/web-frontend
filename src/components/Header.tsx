@@ -17,7 +17,7 @@ import {
 } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
-import shoongImage from "../assets/shoong2.png";
+import shoongImage from "../assets/shoong-logo.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import BASE_URL from "../config.js";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +71,7 @@ export default function HeaderComponent() {
   return (
     <Box
       px="xl"
-      py={24}
+      py={14}
       style={{
         borderBottom: "1px solid #ddd",
       }}
@@ -80,18 +80,20 @@ export default function HeaderComponent() {
         {/* 로고 */}
         <Box w={260}>
           <Link to="/">
-            <Image src={shoongImage} w={isMobile ? 60 : 100} />
+            <Image src={shoongImage} w={isMobile ? 60 : 125} />
           </Link>
         </Box>
         {/* 중앙 메뉴 */}
-        <Group gap={isMobile ? "sm" : "xl"}
+        <Group
+          gap={isMobile ? "sm" : "xl"}
           justify="center"
           wrap="nowrap"
           style={{
             // flexWrap: isMobile ? "wrap" : "nowrap",
             // flexDirection: isMobile ? "row" : "row",
             flex: 1,
-          }}>
+          }}
+        >
           {menus.map((menu) => {
             const isActive = activePath === menu.path;
             return (
@@ -114,7 +116,12 @@ export default function HeaderComponent() {
           })}
         </Group>
         {/* 오른쪽 아이콘 메뉴 (크기 증가) */}
-        <Group gap={isMobile ? "sm" : "lg"} w={260} align="center" justify="flex-end">
+        <Group
+          gap={isMobile ? "sm" : "lg"}
+          w={260}
+          align="center"
+          justify="flex-end"
+        >
           <Tooltip
             label="SEARCH"
             position="bottom"
