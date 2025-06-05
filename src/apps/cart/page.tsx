@@ -17,6 +17,7 @@ import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 import BASE_URL from "../../config.js";
 import { useNavigate, Link } from "react-router-dom";
+import { showNotification } from "@mantine/notifications";
 
 export type CartItem = {
   cartId: number;
@@ -42,44 +43,94 @@ export default function CartPage() {
 
     const token = localStorage.getItem("access");
     if (!token) {
-      alert("로그인이 필요합니다.");
+      showNotification({
+        title: "이용 안내",
+        message: "앗! 로그인 없이는 장바구니를 이용할 수 없어요.",
+        color: "yellow",
+        autoClose: 3500,
+      });
       navigate("/login");
       return;
     }
 
-    const fetchCartItems = async () => {
+    const checkIfSellerAndFetchCart = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/cart/get`, {
+        const res = await fetch(`${BASE_URL}/myPage`, {
           method: "GET",
-          headers: {
-            access: token || "",
-          },
+          headers: { access: token },
           credentials: "include",
         });
 
-        if (response.status === 401) {
-          alert("로그인이 필요한 서비스입니다.");
-          // localStorage.removeItem("access"); // 필요 시 제거
-          navigate("/login");
+        if (!res.ok) throw new Error("유저 정보 불러오기 실패");
+
+        const data = await res.json();
+        if (data.registrationNumber) {
+          showNotification({
+            title: "이용 안내",
+            message: "판매자 계정은 장바구니 기능을 이용할 수 없어요 🛒",
+            color: "yellow",
+          });
+          navigate("/");
           return;
         }
 
-        if (!response.ok) {
-          throw new Error(`서버 오류: ${response.status}`);
-        }
+        const cartRes = await fetch(`${BASE_URL}/cart/get`, {
+          method: "GET",
+          headers: { access: token },
+          credentials: "include",
+        });
 
-        const data = await response.json();
-        console.log(data);
-        setCartItems(data);
-        setSelectedIds(data.map((item: CartItem) => item.cartId));
-      } catch (error) {
-        console.error("장바구니 조회 실패:", error);
-        setCartItems([]); // 오류 시 빈 배열로 초기화
+        if (!cartRes.ok) throw new Error("장바구니 조회 실패");
+
+        const cartData = await cartRes.json();
+        setCartItems(cartData);
+        setSelectedIds(cartData.map((item: CartItem) => item.cartId));
+      } catch (err) {
+        console.error("에러:", err);
+        showNotification({
+          title: "오류 발생",
+          message: "장바구니를 불러오는 중 문제가 생겼습니다.",
+          color: "red",
+        });
       }
     };
 
-    fetchCartItems();
+    checkIfSellerAndFetchCart();
   }, [navigate]);
+
+  //   const fetchCartItems = async () => {
+  //     try {
+  //       const response = await fetch(`${BASE_URL}/cart/get`, {
+  //         method: "GET",
+  //         headers: {
+  //           access: token || "",
+  //         },
+  //         credentials: "include",
+  //       });
+
+  //       if (response.status === 401) {
+  //         alert("로그인이 필요한 서비스입니다.");
+  //         // localStorage.removeItem("access"); // 필요 시 제거
+  //         navigate("/login");
+  //         return;
+  //       }
+
+  //       if (!response.ok) {
+  //         throw new Error(`서버 오류: ${response.status}`);
+  //       }
+
+  //       const data = await response.json();
+  //       console.log(data);
+  //       setCartItems(data);
+  //       setSelectedIds(data.map((item: CartItem) => item.cartId));
+  //     } catch (error) {
+  //       console.error("장바구니 조회 실패:", error);
+  //       setCartItems([]); // 오류 시 빈 배열로 초기화
+  //     }
+  //   };
+
+  //   fetchCartItems();
+  // }, [navigate]);
 
   const isAllSelected =
     selectedIds.length === cartItems.length && cartItems.length > 0;
@@ -127,13 +178,25 @@ export default function CartPage() {
       );
 
       if (res.ok) {
-        alert("수량이 업데이트되었습니다.");
+        showNotification({
+          title: "수량 변경 완료",
+          message: `"${item.itemName}"의 수량이 업데이트되었어요!`,
+          color: "teal",
+        });
       } else {
-        alert("수정 실패");
+        showNotification({
+          title: "수량 변경 실패",
+          message: "변경에 실패했습니다. 다시 시도해 주세요.",
+          color: "red",
+        });
       }
     } catch (error) {
       console.error("수정 요청 실패:", error);
-      alert("서버와의 통신 중 오류가 발생했습니다.");
+      showNotification({
+        title: "네트워크 오류",
+        message: "서버와의 연결 중 문제가 발생했습니다.",
+        color: "red",
+      });
     }
   };
 
@@ -163,12 +226,15 @@ export default function CartPage() {
         throw new Error("삭제 실패");
       }
 
-      // 삭제 성공 시 UI에서도 제거
       setCartItems((prev) => prev.filter((item) => item.cartId !== cartId));
       setSelectedIds((prev) => prev.filter((id) => id !== cartId));
     } catch (err) {
       console.error("장바구니 삭제 실패:", err);
-      alert("상품 삭제에 실패했습니다.");
+      showNotification({
+        title: "삭제 실패",
+        message: "상품 삭제 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.",
+        color: "red",
+      });
     }
   };
 
@@ -189,21 +255,32 @@ export default function CartPage() {
       });
 
       if (res.ok) {
-        // 성공 시 주문 완료 페이지로 이동
         navigate("/order");
       } else {
-        const text = await res.text(); // JSON이 아닐 수도 있으니 텍스트로 먼저 받기
+        const text = await res.text();
 
         try {
           const error = JSON.parse(text);
-          alert(`주문 실패: ${error.message || "알 수 없는 오류"}`);
+          showNotification({
+            title: "주문 알림",
+            message: error.message || "알 수 없는 오류가 발생했어요.",
+            color: "red",
+          });
         } catch {
-          alert("주문 실패: 응답 본문이 없습니다.");
+          showNotification({
+            title: "주문 알림",
+            message: "관리자에게 문의해주세요.",
+            color: "red",
+          });
         }
       }
     } catch (error) {
-      console.error("주문 실패:", error);
-      alert("서버와의 통신 중 오류가 발생했습니다.");
+      console.error("주문 알림:", error);
+      showNotification({
+        title: "통신 오류",
+        message: "서버와 연결 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.",
+        color: "red",
+      });
     }
   };
 
