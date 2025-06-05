@@ -137,11 +137,12 @@ export default function ItemPage() {
 
       const data = await response.json();
       //  받아온 상품 데이터의 itemName과 description을 필터링
-      const filteredItems = data.content.map((item: Item) => ({
-        ...item,
-        itemName: filter.clean(item.itemName),
-        description: filter.clean(item.description),
-      }));
+      const filteredItems = data.content
+        .filter((item: Item) => item.status !== "PENDING").map((item: Item) => ({
+          ...item,
+          itemName: filter.clean(item.itemName),
+          description: filter.clean(item.description),
+        }));
       setItems(filteredItems);
       setPageInfo(data.page);
       setError(null);
@@ -182,11 +183,12 @@ export default function ItemPage() {
 
       const data = await response.json();
       //  받아온 상품 데이터의 itemName과 description을 필터링
-      const filteredItems = data.content.map((item: Item) => ({
-        ...item,
-        itemName: filter.clean(item.itemName),
-        description: filter.clean(item.description),
-      }));
+      const filteredItems = data.content
+        .filter((item: Item) => item.status !== "PENDING").map((item: Item) => ({
+          ...item,
+          itemName: filter.clean(item.itemName),
+          description: filter.clean(item.description),
+        }));
       setItems(filteredItems);
       setPageInfo(data.page);
       setError(null);

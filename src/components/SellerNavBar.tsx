@@ -26,6 +26,7 @@ import {
   IconUser,
   IconPlayerEject,
   IconUserX,
+  IconHome,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import shoongImage from "../assets/shoong-logo.png";
@@ -91,11 +92,9 @@ export default function SellerNavBarPage() {
               <Divider my="md" />
 
               <NavLink
-                label="알림"
-                leftSection={<IconBell size="1.1rem" />}
-                rightSection={
-                  <Indicator inline label={"7"} size={16} color="red" />
-                }
+                label="shoong 메인"
+                leftSection={<IconHome size="1.1rem" />}
+                onClick={() => navigate("/")}
                 styles={(theme) => ({
                   root: {
                     borderRadius: theme.radius.md,

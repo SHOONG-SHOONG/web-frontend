@@ -25,6 +25,8 @@ import BASE_URL from "../../../config.js";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { RingLoader } from "../../../components/RingLoader.tsx";
 import LoginModal from "../../../components/LoginModal.tsx";
+import { showNotification } from "@mantine/notifications";
+import shoongBanner from "../../../assets/banner.png";
 
 //  필터 라이브러리 임포트
 import Filter from "badwords-ko";
@@ -201,11 +203,19 @@ export default function ItemDetailPage() {
         throw new Error("장바구니 추가 실패");
       }
 
-      alert("장바구니에 담았습니다!");
-      navigate("/cart"); // 장바구니 페이지로 이동
+      showNotification({
+        title: "장바구니 담기 성공",
+        message: "상품이 장바구니에 담겼습니다.",
+        color: "teal",
+      });
+
     } catch (error) {
       console.error("❌ 장바구니 요청 실패:", error);
-      alert("장바구니 추가 중 문제가 발생했습니다.");
+      showNotification({
+        title: "알림",
+        message: "해당 상품을 장바구니에 담을 수 없습니다. (로그인 또는 권한 확인 필요)",
+        color: "red",
+      });
     }
   };
 
@@ -257,7 +267,12 @@ export default function ItemDetailPage() {
 
     } catch (error) {
       console.error("바로 구매 실패:", error);
-      alert("구매 처리 중 문제가 발생했습니다.");
+      showNotification({
+        title: "알림",
+        message: "해당 상품을 구매할 수 없습니다. (로그인 또는 권한 확인 필요)",
+        color: "red",
+      });
+
     }
   };
 
@@ -425,7 +440,7 @@ export default function ItemDetailPage() {
             {/* 상품 상세 이미지 (예시) */}
             <Box style={{ textAlign: "center" }} mb="xl">
               <Image
-                src="https://placehold.co/800x100?text=item+detail+banner"
+                src={shoongBanner}
                 alt="상세 이미지"
                 radius="sm"
                 width="100%"

@@ -10,6 +10,7 @@ import {
   SimpleGrid,
   Flex,
   Grid,
+  Modal,
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import HeaderComponent from "../../components/Header.tsx";
@@ -66,6 +67,7 @@ export default function MyPage() {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [orderList, setOrderList] = useState<Order[]>([]);
   const navigate = useNavigate();
+  const [opened, setOpened] = useState(false);
 
   // 실제 API 호출 대신 더미 데이터 사용
   useEffect(() => {
@@ -91,6 +93,9 @@ export default function MyPage() {
       const data = await response.json();
       console.log(data);
       setUserInfo(data);
+      if (data.registrationNumber) {
+        navigate("/seller/mypage");
+      }
     } catch (err) {
       console.error("mypage", err);
     }
@@ -234,10 +239,29 @@ export default function MyPage() {
                   </Text>
                 </Box>
                 <Box>
+                  <Modal
+                    opened={opened}
+                    onClose={() => setOpened(false)}
+                    title="쿠폰 상세 정보"
+                    centered
+                  >
+                    <Card shadow="sm" padding="lg" radius="md" withBorder>
+                      <Text fw={700} size="lg" mb="sm">
+                        50% 할인 쿠폰
+                      </Text>
+                      <Text size="sm" color="dimmed">
+                        📅 유효기간: 발급일로부터 7일
+                      </Text>
+                    </Card>
+                  </Modal>
                   <Text fw={600} style={{ fontSize: "12px", color: "#666" }}>
                     쿠폰
                   </Text>
-                  <Text fw={700} style={{ fontSize: "16px" }}>
+                  <Text
+                    fw={700}
+                    style={{ fontSize: "16px", cursor: "pointer" }}
+                    onClick={() => setOpened(true)}
+                  >
                     1장
                   </Text>
                 </Box>

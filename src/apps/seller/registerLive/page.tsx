@@ -86,11 +86,11 @@ export default function LiveRegisterPage() {
         setItems(data);
       } catch (err) {
         console.error(err);
-        showNotification({
-          title: "상품 로딩 실패",
-          message: "상품 목록을 불러오는 데 실패했습니다.",
-          color: "red",
-        });
+        // showNotification({
+        //   title: "상품 로딩 실패",
+        //   message: "상품 목록을 불러오는 데 실패했습니다.",
+        //   color: "red",
+        // });
       }
     };
 

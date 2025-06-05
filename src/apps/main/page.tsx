@@ -49,14 +49,18 @@ interface Item {
 }
 
 interface LiveItem {
-  id: number;
+  liveId: number;
+  itemId: number;
   title: string;
   imageUrl: string;
   itemName: string;
+  itemImageUrl: string;
   price: number;
   discountRate: number;
-  itemImageUrl: string;
   status: string;
+  liveDate: string;
+  liveStartTime: string;
+  liveEndTime: string;
 }
 
 const categoryMap: Record<string, string> = {
@@ -227,10 +231,10 @@ export default function MainPage() {
                 </Grid.Col>
               ))
             : mergedLiveItems.map((live) => (
-                <Grid.Col span={{ base: 6, md: 3 }} key={live.id}>
+                <Grid.Col span={{ base: 6, md: 3 }} key={live.liveId}>
                   {/* 기존 live 카드 렌더링 코드 */}
                   <Box
-                    onClick={() => navigate(`/live/${live.id}`)}
+                    onClick={() => navigate(`/live/${live.liveId}`)}
                     style={{ cursor: "pointer", position: "relative" }}
                   >
                     <Image
