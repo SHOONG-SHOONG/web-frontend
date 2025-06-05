@@ -6,11 +6,13 @@ import {
   Title,
   Box,
   Loader,
+  Text,
+  Card,
+  Divider,
+  Stack,
 } from "@mantine/core";
-
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SellerNavBarPage from "../../../../components/SellerNavBar.tsx";
-import { RingLoader } from "../../../../components/RingLoader.tsx";
 import BASE_URL from "../../../../config.js";
 
 export default function LiveStatisticsPage() {
@@ -18,65 +20,110 @@ export default function LiveStatisticsPage() {
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
 
-  // 쿼리 파라미터 가져오기
   const itemId = searchParams.get("itemId");
   const liveId = searchParams.get("liveId");
   const from = searchParams.get("from");
   const to = searchParams.get("to");
 
-  // Grafana iframe URL 구성
-  const grafanaDashboardUid = "beniokcoo3thcc"; // 실제 대시보드 UID로 대체
+  const grafanaDashboardUid = "beniokcoo3thcc";
   const grafanaHost = "http://192.168.0.6:3000";
   const dashboardTitle = "efg";
 
-  const grafanaUrl = `${grafanaHost}/d/${grafanaDashboardUid}/${encodeURIComponent(
-    dashboardTitle
-  )}?from=${from}&to=${to}&var-itemId=${itemId}&var-liveId=${liveId}`;
-  console.log("params: ", from, to, liveId, itemId);
+  const baseGrafanaUrl = `${grafanaHost}/d-solo/${grafanaDashboardUid}/${dashboardTitle}?orgId=1&theme=light`;
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500); // 로딩 UX 개선
+    const timer = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <AppShell layout="default">
       <SellerNavBarPage />
-      <AppShell.Main style={{ backgroundColor: "#fff" }}>
-        <Container py="xl" px="xl">
-          <Flex justify="space-between" align="center" mb="xl">
-            <Title order={3} fw={600}>
-              라이브 통계
+      <AppShell.Main style={{ backgroundColor: "#ffffff" }}>
+        <Container size="lg" py="xl">
+          <Flex justify="space-between" align="center" mb="lg">
+            <Title order={2} fw={700}>
+              라이브 커머스 통계 대시보드
             </Title>
           </Flex>
 
           {loading ? (
             <Flex justify="center" align="center" py="xl">
-              <Loader size="lg" />
+              <Loader size="lg" color="#409FFF" />
             </Flex>
           ) : (
-            <Box
-              style={{
-                border: "1px solid #eee",
-                borderRadius: 8,
-                overflow: "hidden",
-              }}
-            >
-              <iframe
-                // src={grafanaUrl}
-                src={`http://192.168.0.6:3000/d-solo/beniokcoo3thcc/efg?orgId=1&from=${from}&to=${to}&var-liveId=${liveId}&theme=light&panelId=1`}
-                width="500" 
-                height="200" 
-                frameborder="0"
-              ></iframe>
-              <iframe 
-                src={`http://192.168.0.6:3000/d-solo/beniokcoo3thcc/efg?orgId=1&from=${from}&to=${to}&var-itemId=${itemId}&theme=light&panelId=6`} 
-                width="1000" 
-                height="300" 
-                frameborder="0"
-              ></iframe>
-              
-            </Box>
+            <Stack gap="xl">
+              {/* 상품별 통계 요약 (카운트형) */}
+              <Flex gap="md">
+                <Box w="33.3%">
+                  <Card padding="lg" radius="md" withBorder>
+                    <Title order={4} mb="sm">
+                      상품별 결제 횟수
+                    </Title>
+                    <iframe
+                      src={`${baseGrafanaUrl}&var-liveId=${liveId}&var-itemId=${itemId}&from=${from}&to=${to}&panelId=2`}
+                      width="100%"
+                      height="150"
+                      style={{ border: "none" }}
+                    />
+                  </Card>
+                </Box>
+
+                <Box w="33.3%">
+                  <Card padding="lg" radius="md" withBorder>
+                    <Title order={4} mb="sm">
+                      상품 조회수
+                    </Title>
+                    <iframe
+                      src={`${baseGrafanaUrl}&var-liveId=${liveId}&var-itemId=${itemId}&from=${from}&to=${to}&panelId=4`}
+                      width="100%"
+                      height="150"
+                      style={{ border: "none" }}
+                    />
+                  </Card>
+                </Box>
+
+                <Box w="33.3%">
+                  <Card padding="lg" radius="md" withBorder>
+                    <Title order={4} mb="sm">
+                      장바구니 담긴 횟수
+                    </Title>
+                    <iframe
+                      src={`${baseGrafanaUrl}&var-liveId=${liveId}&var-itemId=${itemId}&from=${from}&to=${to}&panelId=5`}
+                      width="100%"
+                      height="150"
+                      style={{ border: "none" }}
+                    />
+                  </Card>
+                </Box>
+              </Flex>
+
+              {/* 방송 전환율 요약 */}
+              <Card padding="lg" radius="md" withBorder>
+                <Title order={4} mb="sm">
+                  방송 전환율 요약
+                </Title>
+                <iframe
+                  src={`${baseGrafanaUrl}&from=${from}&to=${to}&panelId=1`}
+                  width="100%"
+                  height="200"
+                  style={{ border: "none" }}
+                />
+              </Card>
+
+              {/* 상품별 상세 트렌드 추가 (panelId=6) */}
+              <Card padding="lg" radius="md" withBorder>
+                <Title order={4} mb="sm">
+                  상품별 구매 트렌드
+                </Title>
+                <iframe
+                  src={`${baseGrafanaUrl}&from=${from}&to=${to}&var-itemId=${itemId}&panelId=6`}
+                  width="100%"
+                  height="300"
+                  style={{ border: "none" }}
+                />
+              </Card>
+            </Stack>
           )}
         </Container>
       </AppShell.Main>
