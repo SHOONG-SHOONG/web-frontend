@@ -32,7 +32,7 @@ export default function HeaderComponent() {
   const navigate = useNavigate();
   const location = useLocation();
   const activePath = location.pathname;
-  const { isLoggedIn, loginUser } = useLogin();
+  const { isLoggedIn, loginUser, role } = useLogin();
   const [cartCount, setCartCount] = useState(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -81,7 +81,6 @@ export default function HeaderComponent() {
         <Box w={260}>
           <Link to="/">
             <Image src="/assets/shoong-logo.png" w={isMobile ? 60 : 125} />
-            {/* <Image src={shoongImage} w={isMobile ? 60 : 125} /> */}
           </Link>
         </Box>
         {/* 중앙 메뉴 */}
@@ -90,8 +89,6 @@ export default function HeaderComponent() {
           justify="center"
           wrap="nowrap"
           style={{
-            // flexWrap: isMobile ? "wrap" : "nowrap",
-            // flexDirection: isMobile ? "row" : "row",
             flex: 1,
           }}
         >
@@ -149,7 +146,11 @@ export default function HeaderComponent() {
                   mb={5}
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    navigate("/mypage");
+                    if (role === "STREAMER") {
+                      navigate("/seller/mypage");
+                    } else {
+                      navigate("/mypage");
+                    }
                   }}
                 >
                   {loginUser}님
