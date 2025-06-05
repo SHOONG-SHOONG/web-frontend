@@ -64,16 +64,18 @@ export default function LiveStatisticsPage() {
             >
               <iframe
                 // src={grafanaUrl}
-                src={`http://192.168.0.6:3000/d-solo/beniokcoo3thcc/efg?orgId=1&from=${from}&to=${from}&theme=light&panelId=1`}
-                width="450" 
+                src={`http://192.168.0.6:3000/d-solo/beniokcoo3thcc/efg?orgId=1&from=${from}&to=${to}&var-liveId=${liveId}&theme=light&panelId=1`}
+                width="500" 
                 height="200" 
                 frameborder="0"
-                // src="http://192.168.0.6:3000/d/beniokcoo3thcc/efg?orgId=1&from=1749013357828&to=1749034957829&viewPanel=1"
-                // title="Live Analytics"
-                // width="100%"
-                // height="700"
-                // frameBorder="0"
-              />
+              ></iframe>
+              <iframe 
+                src={`http://192.168.0.6:3000/d-solo/beniokcoo3thcc/efg?orgId=1&from=${from}&to=${to}&var-itemId=${itemId}&theme=light&panelId=6`} 
+                width="1000" 
+                height="300" 
+                frameborder="0"
+              ></iframe>
+              
             </Box>
           )}
         </Container>
