@@ -17,7 +17,7 @@ import {
 } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
-import shoongImage from "../assets/shoong-logo.png";
+// import shoongImage from "../assets/shoong-logo.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import BASE_URL from "../config.js";
 import { useNavigate } from "react-router-dom";
@@ -80,7 +80,8 @@ export default function HeaderComponent() {
         {/* 로고 */}
         <Box w={260}>
           <Link to="/">
-            <Image src={shoongImage} w={isMobile ? 60 : 125} />
+            <Image src="/assets/shoong-logo.png" w={isMobile ? 60 : 125} />
+            {/* <Image src={shoongImage} w={isMobile ? 60 : 125} /> */}
           </Link>
         </Box>
         {/* 중앙 메뉴 */}

@@ -27,7 +27,7 @@ import {
   IconMoodCheck,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import shoongImage from "../assets/shoong-logo.png";
+// import shoongImage from "../assets/shoong-logo.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -58,7 +58,8 @@ export default function AdminNavBarPage() {
         <div>
           <Box mb="xl">
             <Link to="/">
-              <Image src={shoongImage} w={110} radius="md" />
+              <Image src="/assets/shoong-logo.png" w={110} radius="md" />
+              {/* <Image src={shoongImage} w={110} radius="md" /> */}
             </Link>
           </Box>
 

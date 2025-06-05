@@ -5,9 +5,10 @@ interface AuthContextType {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   loginUser: string | null;
   setLoginUser: React.Dispatch<React.SetStateAction<string | null>>;
+  role: string | null;
+  setRole: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-// 기본값 undefined로 두고, useLogin 훅에서 체크함
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -20,9 +21,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return raw ? decodeURIComponent(raw) : null;
   });
 
+  const [role, setRole] = useState<string | null>(() => {
+    return window.localStorage.getItem("role");
+  });
+
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, loginUser, setLoginUser }}
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        loginUser,
+        setLoginUser,
+        role,
+        setRole,
+      }}
     >
       {children}
     </AuthContext.Provider>
