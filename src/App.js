@@ -29,6 +29,7 @@ import AuthSellerPage from "./apps/admin/authseller/page.tsx"
 import ReportPage from "./apps/admin/report/page.tsx"
 import NotFoundPage from "./apps/error/NotFoundPage.tsx";
 import ManageLivePage from "./apps/seller/manageLive/page.tsx";
+import LiveStatisticsPage from "./apps/seller/manageLive/[liveId]/page.tsx";
 import StatisticsPage from "./apps/admin/statistics/page.tsx";
 import SellerMypge from "./apps/seller/sellerMypage/page.tsx";
 import SellerNotificationPage from "./apps/seller/notification/page.tsx";
@@ -79,6 +80,7 @@ function App() {
             <Route path="/seller" element={<SellerItemPage />} />
             <Route path="/seller/item/create" element={<CreateItemPage />} />
             <Route path="/seller/live" element={<ManageLivePage />} />
+            <Route path="/seller/live/:liveId" element={<LiveStatisticsPage />} />
             <Route path="/seller/regist-live" element={<LiveRegisterPage />} />
             <Route path="/seller/user" element={<SellerUserPage />} />
             <Route path="/seller/brand" element={<RegisterBrandPage />} />
