@@ -341,7 +341,7 @@ export default function LiveRegisterPage() {
                   {items.length === 0 ? (
                     <Text color="dimmed">등록된 상품이 없습니다.</Text>
                   ) : (
-                    <Accordion multiple={false} defaultValue={[]}>
+                    <Accordion multiple={false} defaultValue={null}>
                       {items.map((item) => {
                         const isSelected = selectedItemIds.includes(item.itemId);
                         const isOnSale = item.status === "ON_SALE";
