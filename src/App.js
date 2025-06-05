@@ -5,6 +5,9 @@ import OAuth2Redirect from "./services/Oauth2Redirect.js";
 import AuthProvider from "./contexts/AuthContext.tsx";
 import CartProvider from "./contexts/CartContext.tsx";
 
+import { Notifications } from "@mantine/notifications";
+import ProtectedRoute from "./././routes/ProtectedRoute.tsx";
+
 // 페이지들
 import MainPage from "./apps/main/page.tsx";
 import LoginPage from "./apps/login/LoginPage.tsx";
@@ -43,6 +46,7 @@ function App() {
   return (
     <CartProvider>
       <AuthProvider>
+        <Notifications position="top-right" />
         <BrowserRouter>
           <Routes>
             {/* main */}

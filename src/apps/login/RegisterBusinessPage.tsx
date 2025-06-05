@@ -31,6 +31,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../config";
 import React from "react";
+import { showNotification } from "@mantine/notifications";
 
 // Daum Postcode API를 위한 전역 선언 (public/index.html에 스크립트를 추가하는 것이 일반적)
 declare global {
@@ -54,6 +55,7 @@ export default function RegisterBusinessPage() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [agreeMarketing, setAgreeMarketing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleNextStep = () => {
     if (
@@ -64,6 +66,7 @@ export default function RegisterBusinessPage() {
       return;
     }
 
+    setErrorMessage("");
     setActive(1);
   };
 
@@ -79,16 +82,28 @@ export default function RegisterBusinessPage() {
       });
 
       if (response.ok) {
-        alert("판매자 회원가입 성공!");
+        // alert("판매자 회원가입 성공!");
         navigate("/seller/notification", { replace: true });
       } else {
-        alert("판매자 회원가입 실패!");
+        // alert("판매자 회원가입 실패!");
         const errorData = await response.json();
         console.error("Business Join Failed:", errorData);
+        showNotification({
+          title: "가입 실패",
+          message: errorData.message || "판매자 회원가입에 실패했습니다.",
+          color: "red",
+          autoClose: 3000, // 3초 뒤 자동 종료
+        });
       }
     } catch (error) {
       console.error("Error during business join:", error);
-      alert("판매자 회원가입 중 오류가 발생했습니다.");
+      // alert("판매자 회원가입 중 오류가 발생했습니다.");
+      showNotification({
+        title: "오류 발생",
+        message: "판매자 회원가입 중 문제가 발생했습니다.",
+        color: "red",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -105,6 +120,10 @@ export default function RegisterBusinessPage() {
       return;
     }
 
+    if ((name?.trim().toLowerCase() || "") === "admin") {
+      setErrorMessage("admin 아이디는 사용할 수 없습니다.");
+      return;
+    }
     const credentials = {
       userEmail,
       userPassword,
@@ -224,10 +243,17 @@ export default function RegisterBusinessPage() {
                     label="사업자명(아이디)"
                     placeholder="회사명 또는 상호"
                     leftSection={<IconBuildingStore size={16} />}
-                    value={name}
-                    onChange={(e) => setName(e.currentTarget.value)}
+                    value={userName}
+                    onChange={(e) => setUserName(e.currentTarget.value)}
                     required
                   />
+
+                  {/* 에러 메시지 출력 */}
+                  {errorMessage && (
+                    <Text color="red" size="sm" mt="xs">
+                      {errorMessage}
+                    </Text>
+                  )}
 
                   <TextInput
                     size="md"
@@ -235,8 +261,8 @@ export default function RegisterBusinessPage() {
                     label="대표자 이름"
                     placeholder="홍길동"
                     leftSection={<IconUser size={16} />}
-                    value={userName}
-                    onChange={(e) => setUserName(e.currentTarget.value)}
+                    value={name}
+                    onChange={(e) => setName(e.currentTarget.value)}
                     required
                   />
 

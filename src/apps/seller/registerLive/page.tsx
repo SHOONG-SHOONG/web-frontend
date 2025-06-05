@@ -19,6 +19,8 @@ import {
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
 import { useNavigate } from "react-router-dom";
+import { showNotification } from "@mantine/notifications";
+import { Loader } from "@mantine/core";
 
 //  필터 라이브러리 임포트
 import Filter from "badwords-ko";
@@ -81,6 +83,11 @@ export default function LiveRegisterPage() {
         setItems(data);
       } catch (err) {
         console.error(err);
+        showNotification({
+          title: "상품 로딩 실패",
+          message: "상품 목록을 불러오는 데 실패했습니다.",
+          color: "red",
+        });
       }
     };
 
@@ -97,16 +104,22 @@ export default function LiveRegisterPage() {
       !streamKey ||
       selectedItemIds.length === 0
     ) {
-      alert("필수 정보를 모두 입력하고 최소 하나의 상품을 선택해주세요.");
+      showNotification({
+        title: "입력 오류",
+        message: "필수 정보를 모두 입력하고 상품을 선택해주세요.",
+        color: "red",
+      });
       return;
     }
 
     //  2. 욕설 필터링 에러 최종 검사
     // 실시간 경고가 활성화되어 있어 여기에 걸리면 제출을 막습니다.
     if (titleError || descriptionError) {
-      alert(
-        "제목 또는 소개 문구에 부적절한 단어가 포함되어 있습니다. 수정해주세요."
-      );
+      showNotification({
+        title: "부적절한 단어 감지",
+        message: "제목 또는 소개 문구에 부적절한 단어가 포함되어 있습니다.",
+        color: "red",
+      });
       return;
     }
 
@@ -143,7 +156,11 @@ export default function LiveRegisterPage() {
 
       const data = await response.json();
       console.log("등록 성공:", data);
-      alert("라이브가 성공적으로 등록되었습니다!");
+      showNotification({
+        title: "등록 성공",
+        message: "라이브가 성공적으로 등록되었습니다!",
+        color: "teal",
+      });
 
       // 폼 초기화
       setTitle("");
@@ -159,11 +176,14 @@ export default function LiveRegisterPage() {
       navigate("/seller/live");
     } catch (error) {
       console.error("등록 에러:", error);
-      alert(
-        `라이브 등록에 실패했습니다. 에러: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
+      showNotification({
+        title: "등록 실패",
+        message:
+          error instanceof Error
+            ? error.message
+            : "알 수 없는 오류가 발생했습니다.",
+        color: "red",
+      });
     }
   };
 

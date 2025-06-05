@@ -27,6 +27,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../config";
 import React from "react";
+import { showNotification } from "@mantine/notifications";
 
 declare global {
   interface Window {
@@ -52,6 +53,7 @@ export default function RegisterUserPage() {
   const [agreeMarketing, setAgreeMarketing] = useState(false);
   const [openedTerms, setOpenedTerms] = useState(false);
   const [openedPrivacy, setOpenedPrivacy] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleNextStep = () => {
     if (
@@ -77,16 +79,28 @@ export default function RegisterUserPage() {
       });
 
       if (response.ok) {
-        alert("회원가입 성공!");
+        // alert("회원가입 성공!");
         navigate("/login", { replace: true });
       } else {
-        alert("회원가입 실패!");
+        // alert("회원가입 실패!");
         const errorData = await response.json();
         console.error("Join Failed:", errorData);
+        showNotification({
+          title: "회원가입 실패",
+          message: errorData.message || "회원가입에 실패했습니다.",
+          color: "red",
+          autoClose: 3000,
+        });
       }
     } catch (error) {
       console.error("Error during join:", error);
-      alert("회원가입 중 오류가 발생했습니다.");
+      // alert("회원가입 중 오류가 발생했습니다.");
+      showNotification({
+        title: "오류 발생",
+        message: "서버와 통신 중 문제가 발생했습니다.",
+        color: "red",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -95,6 +109,11 @@ export default function RegisterUserPage() {
 
     if (userPassword !== confirmPassword) {
       alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+
+    if (userName.trim().toLowerCase() === "admin") {
+      setErrorMessage("admin 아이디는 사용할 수 없습니다.");
       return;
     }
 
@@ -162,6 +181,13 @@ export default function RegisterUserPage() {
                     onChange={(e) => setUserName(e.currentTarget.value)}
                     required
                   />
+
+                  {/* 에러 메시지 출력 */}
+                  {errorMessage && (
+                    <Text color="red" size="sm" mt="xs">
+                      {errorMessage}
+                    </Text>
+                  )}
 
                   <PasswordInput
                     size="md"

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import { MantineProvider, createTheme, Loader } from "@mantine/core";
 import { RingLoader } from "./components/RingLoader.tsx";
 
