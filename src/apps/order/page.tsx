@@ -157,9 +157,10 @@ export default function OrderPage() {
           try {
             const token = localStorage.getItem("access");
             const orderId = orderDetails[0]?.orderId;
-            
+            const finalAddress = userAddress || orderDetails[0]?.orderAddress;
+
             if (!userAddress) {
-              setUserAddress(orderDetails[0]?.orderAddress);
+              setUserAddress(finalAddress);
             }
 
             const res = await fetch(`${BASE_URL}/orders/success`, {
@@ -171,7 +172,7 @@ export default function OrderPage() {
               credentials: "include",
               body: JSON.stringify({
                 orderId: orderId,
-                orderAddress: userAddress,
+                orderAddress: finalAddress,
               }),
             });
 
