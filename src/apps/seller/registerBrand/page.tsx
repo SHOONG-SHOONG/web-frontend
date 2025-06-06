@@ -12,6 +12,7 @@ import {
     Text,
     Card,
     Flex,
+    AppShellNavbar,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
@@ -97,8 +98,10 @@ export default function RegisterBrandPage() {
 
     return (
         <AppShell layout="default">
-            <SellerNavBarPage />
-            <AppShell.Main style={{ backgroundColor: "#fff" }}>
+            <AppShellNavbar>
+                <SellerNavBarPage />
+            </AppShellNavbar>
+            <AppShell.Main ml={250}>
                 <Container py="xl" px="xl">
                     <Flex justify="space-between" align="center" mb="xl">
                         <Title order={3} fw={600}>브랜드 등록</Title>

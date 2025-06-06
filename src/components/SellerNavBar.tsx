@@ -27,11 +27,13 @@ import {
   IconUser,
   IconUserX,
   IconHome,
+  IconInfoCircle,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 // import shoongImage from "../assets/shoong-logo.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import { useDisclosure } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 
 export default function SellerNavBarPage() {
   const navigate = useNavigate();
@@ -54,7 +56,7 @@ export default function SellerNavBarPage() {
   }, [navigate]);
 
   return (
-    <AppShell.Navbar w={250} p="md" withBorder>
+    <Box w={250} p="md" h="100vh">
       <Flex direction="column" justify="space-between" h="100%">
         <div>
           <Box mb="xl">
@@ -212,7 +214,14 @@ export default function SellerNavBarPage() {
               </Menu.Item>
               <Menu.Item
                 leftSection={<IconUserX size="1rem" />}
-                onClick={() => navigate("/seller")}
+                onClick={() =>
+                  showNotification({
+                    title: "준비 중입니다",
+                    message: "계정 삭제 기능은 현재 개발 중입니다.",
+                    icon: <IconInfoCircle size="1rem" />,
+                    color: "gray",
+                  })
+                }
               >
                 계정삭제
               </Menu.Item>
@@ -220,6 +229,6 @@ export default function SellerNavBarPage() {
           </Menu>
         </Box>
       </Flex>
-    </AppShell.Navbar>
+    </Box>
   );
 }

@@ -15,6 +15,7 @@ import {
     Image,
     Loader,
     Divider,
+    AppShellNavbar,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
@@ -106,8 +107,10 @@ export default function SellerMypge() {
 
     return (
         <AppShell layout="default">
-            <SellerNavBarPage />
-            <AppShell.Main style={{ backgroundColor: "#fff" }}>
+            <AppShellNavbar>
+                <SellerNavBarPage />
+            </AppShellNavbar>
+            <AppShell.Main ml={250}>
                 <Container py="xl" px="xl">
                     <Title order={3} fw={600}>마이페이지</Title>
                     <Box style={{ display: "flex", minHeight: "100vh" }}>
