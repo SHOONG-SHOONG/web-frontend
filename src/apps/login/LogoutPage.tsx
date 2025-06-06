@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLogin } from "../../contexts/AuthContext.tsx";
 import BASE_URL from "../../config.js";
+import { showNotification } from "@mantine/notifications";
+import { IconLogout } from "@tabler/icons-react";
 
 const LogoutPage = () => {
   const navigate = useNavigate();
@@ -49,7 +51,12 @@ const LogoutPage = () => {
 
         if (response.ok) {
           console.log("3. 서버 로그아웃 처리 성공: 서버로부터 2xx 응답을 받았습니다.");
-          alert("로그아웃되었습니다.");
+          showNotification({
+            title: "로그아웃",
+            message: "로그아웃되었습니다.",
+            color: "blue",
+            icon: <IconLogout size="1.1rem" />,
+          });
         } else {
           // 서버에서 200 OK 외 다른 응답 (예: 400 Bad Request, 401 Unauthorized)을 보낼 때
           const errorText = await response.text(); // 서버가 보낸 에러 메시지 읽기
