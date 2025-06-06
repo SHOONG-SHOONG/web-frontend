@@ -124,23 +124,22 @@ export default function ListLivePage() {
           />
 
           <Grid gutter="lg" mb={70}>
-            {liveItem && (
-              <Grid.Col span={3}>
+            <Grid.Col span={3}>
+              {liveItem ? (
                 <Box
                   onClick={() => navigate(`/live/${liveItem.liveId}`)}
                   style={{ cursor: "pointer", position: "relative" }}
                 >
+                  {/* 진행 중 라이브 이미지 */}
                   <Image
                     src={liveItem.imageUrl || "https://placehold.co/400x500"}
                     alt={liveItem.title}
                     radius="md"
-                    // h={400}
-                    fit="cover"
                     style={{
-                      width: "100%",            // ✅ 반응형 너비
-                      aspectRatio: "3 / 4",     // ✅ 비율 유지
-                      height: "auto",           // ✅ 고정 높이 제거
-                      objectFit: "cover",       // ✅ 잘림 방지
+                      width: "100%",
+                      aspectRatio: "3 / 4",
+                      height: "auto",
+                      objectFit: "cover",
                     }}
                   />
                   <Badge
@@ -161,9 +160,7 @@ export default function ListLivePage() {
                   </Text>
                   <Flex mt="xs" align="center" gap="xs">
                     <Image
-                      src={
-                        liveItem.itemImageUrl || "https://placehold.co/60x60"
-                      }
+                      src={liveItem.itemImageUrl || "https://placehold.co/60x60"}
                       alt="상품 썸네일"
                       w={50}
                       h={50}
@@ -178,21 +175,32 @@ export default function ListLivePage() {
                             {Math.round(liveItem.discountRate * 100)}%
                           </Text>
                         )}
-                        {liveItem.price !== null && (
-                          <Text size="sm" fw={700}>
-                            {(
-                              liveItem.price *
-                              (1 - liveItem.discountRate)
-                            ).toLocaleString()}
-                            원
-                          </Text>
-                        )}
+                        <Text size="sm" fw={700}>
+                          {(liveItem.price * (1 - liveItem.discountRate)).toLocaleString()}원
+                        </Text>
                       </Flex>
                     </Box>
                   </Flex>
                 </Box>
-              </Grid.Col>
-            )}
+              ) : (
+                <Box
+                  style={{
+                    padding: "2rem",
+                    border: "1px solid #eee",
+                    borderRadius: "8px",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#f9fafb",
+                  }}
+                >
+                  <Text size="sm" c="gray.6">
+                    진행 중인 라이브 방송이 없습니다.
+                  </Text>
+                </Box>
+              )}
+            </Grid.Col>
           </Grid>
 
           <Divider my="sm" />
@@ -274,9 +282,21 @@ export default function ListLivePage() {
                 </Grid.Col>
               ))
             ) : (
-              <Text size="sm" c="gray.5" style={{ lineHeight: 1.6, maxWidth: 320 }}>
-                최근 방송이 없습니다.
-              </Text>
+              <Grid.Col span={12}>
+                <Box
+                  style={{
+                    padding: "2rem",
+                    border: "1px solid #eee",
+                    borderRadius: "8px",
+                    textAlign: "center",
+                    backgroundColor: "#f9fafb",
+                  }}
+                >
+                  <Text size="sm" c="gray.5">
+                    최근 방송이 없습니다.
+                  </Text>
+                </Box>
+              </Grid.Col>
             )}
           </Grid>
         </Container>
