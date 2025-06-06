@@ -9,7 +9,7 @@ function CountdownBanner() {
     seconds: "00",
   });
 
-  const endTime = new Date("2025-05-27T10:59:00+09:00");
+  const endTime = new Date("2025-06-08T10:59:00+09:00");
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -45,7 +45,7 @@ function CountdownBanner() {
         시간 한정 특가 캠핑 의자
       </Text>
       <Text size="sm" mt={4}>
-        06.17 (수) 11:00 ~ 06.18 (금) 10:59
+        06.06 (금) 11:00 ~ 06.08 (일) 10:59
       </Text>
 
       <Group mt={32} justify="center">
