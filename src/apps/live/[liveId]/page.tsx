@@ -26,6 +26,7 @@ import {
   IconShare3,
   IconDeviceTvOldFilled,
   IconAlertCircle,
+  IconBrandInstagram,
 } from "@tabler/icons-react";
 import LiveViewer from "./LiveViewer.tsx";
 import HeaderComponent from "../../../components/Header.tsx";
@@ -203,7 +204,7 @@ export default function LivePage() {
             {liveInfo?.title}
           </Title>
           {liveInfo?.liveStatus === "ONGOING" && (
-            <Badge color="blue" size="lg" radius="sm">
+            <Badge color="#409fff" size="lg" radius="sm">
               LIVE
             </Badge>
           )}
@@ -249,7 +250,7 @@ export default function LivePage() {
                 <IconBrandFacebook />
               </ActionIcon>
               <ActionIcon size="lg" variant="default">
-                <IconBrandTwitter />
+                <IconBrandInstagram />
               </ActionIcon>
               <ActionIcon size="lg" variant="default">
                 <IconBrandBlogger />
@@ -306,6 +307,7 @@ export default function LivePage() {
                       }}
                     />
                     <Button
+                      c="#409fff"
                       onClick={() => {
                         const token = localStorage.getItem("access");
                         if (!token) setLoginModalOpened(true);

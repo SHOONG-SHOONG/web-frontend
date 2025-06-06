@@ -13,6 +13,7 @@ import {
   ScrollArea,
   rem,
   Indicator,
+  Modal,
 } from "@mantine/core";
 import {
   IconChevronRight,
@@ -24,18 +25,19 @@ import {
   IconHelpCircle,
   IconDeviceImac,
   IconUser,
-  IconPlayerEject,
   IconUserX,
   IconHome,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import shoongImage from "../assets/shoong-logo.png";
+// import shoongImage from "../assets/shoong-logo.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function SellerNavBarPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn, loginUser } = useLogin();
+  const [opened, { open, close }] = useDisclosure(false);
 
   const navItems = [
     { label: "상품 관리", icon: IconPackage, path: "/seller" },
@@ -57,7 +59,9 @@ export default function SellerNavBarPage() {
         <div>
           <Box mb="xl">
             <Link to="/seller">
-              <Image src={shoongImage} w={110} radius="md" />
+              <Image src="/assets/shoong-logo.png" w={110} radius="md" />
+
+              {/* <Image src={shoongImage} w={110} radius="md" /> */}
             </Link>
           </Box>
 
@@ -111,6 +115,7 @@ export default function SellerNavBarPage() {
               <NavLink
                 label="도움말 & 지원"
                 leftSection={<IconHelpCircle size="1.1rem" />}
+                onClick={open}
                 styles={(theme) => ({
                   root: {
                     borderRadius: theme.radius.md,
@@ -123,6 +128,43 @@ export default function SellerNavBarPage() {
                   },
                 })}
               />
+              <Modal
+                opened={opened}
+                onClose={close}
+                title={
+                  <Text fw={700} size="lg">
+                    📬 문의 및 지원
+                  </Text>
+                }
+                centered
+                size="sm"
+                radius="md"
+                withCloseButton
+                overlayProps={{
+                  blur: 2,
+                  opacity: 0.55,
+                }}
+              >
+                <Text size="sm" color="dimmed" mb="sm">
+                  서비스에 대한 문의는 아래 이메일로 보내주세요.
+                </Text>
+
+                <Box
+                  p="md"
+                  bg="gray.0"
+                  style={{
+                    borderRadius: "8px",
+                    border: "1px solid #eee",
+                  }}
+                >
+                  <Text size="sm" color="gray.6">
+                    관리자 이메일
+                  </Text>
+                  <Text fw={600} size="md" mt={4}>
+                    pushoongpashoong@gmail.com
+                  </Text>
+                </Box>
+              </Modal>
             </Box>
           </ScrollArea>
         </div>

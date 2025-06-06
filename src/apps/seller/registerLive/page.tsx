@@ -326,7 +326,7 @@ export default function LiveRegisterPage() {
                   radius="sm"
                   size="md"
                   label="스트림 키"
-                  placeholder="예: your-stream-key"
+                  placeholder="관리자에게 문의 후 입력해주세요."
                   value={streamKey}
                   onChange={(e) => setStreamKey(e.currentTarget.value)}
                   required
@@ -341,7 +341,7 @@ export default function LiveRegisterPage() {
                   {items.length === 0 ? (
                     <Text color="dimmed">등록된 상품이 없습니다.</Text>
                   ) : (
-                    <Accordion multiple={false} defaultValue={[]}>
+                    <Accordion multiple={false} defaultValue={null}>
                       {items.map((item) => {
                         const isSelected = selectedItemIds.includes(item.itemId);
                         const isOnSale = item.status === "ON_SALE";

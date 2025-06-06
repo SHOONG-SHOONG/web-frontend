@@ -26,7 +26,6 @@ import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { RingLoader } from "../../../components/RingLoader.tsx";
 import LoginModal from "../../../components/LoginModal.tsx";
 import { showNotification } from "@mantine/notifications";
-import shoongBanner from "../../../assets/banner.png";
 
 //  필터 라이브러리 임포트
 import Filter from "badwords-ko";
@@ -440,7 +439,7 @@ export default function ItemDetailPage() {
             {/* 상품 상세 이미지 (예시) */}
             <Box style={{ textAlign: "center" }} mb="xl">
               <Image
-                src={shoongBanner}
+                src="\assets\banner.png"
                 alt="상세 이미지"
                 radius="sm"
                 width="100%"
@@ -450,10 +449,36 @@ export default function ItemDetailPage() {
             </Box>
 
             {/* 상품 설명 */}
-            <Box px="md" style={{ maxWidth: 800, margin: "0 auto" }}>
-              <Text size="md" lh={1.8}>
-                {item.description} {/*  필터링된 상품 설명 표시 */}
-              </Text>
+            <Box
+              px="md"
+              style={{
+                maxWidth: 800,
+                margin: "0 auto",
+                textAlign: "center",
+                lineHeight: "1.8",
+                whiteSpace: "pre-line", // 줄바꿈 반영
+                fontSize: "16px",
+                color: "#333",
+              }}
+            >
+              {item.description}
+            </Box>
+
+
+            {/* 상품 상세 이미지 리스트 */}
+            <Box style={{ textAlign: "center" }} mb="xl">
+              {item.itemImages?.map((img, index) => (
+                <Image
+                  key={img.id || index}
+                  src={img.url}
+                  alt={`상품 이미지 ${index + 1}`}
+                  radius="sm"
+                  width="100%"
+                  maw={600}
+                  mx="auto"
+                  mb="md"
+                />
+              ))}
             </Box>
           </Tabs.Panel>
 

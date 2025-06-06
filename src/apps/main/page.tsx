@@ -58,8 +58,8 @@ interface LiveItem {
   price: number;
   discountRate: number;
   status: string;
-  liveDate: string; 
-  liveStartTime: string; 
+  liveDate: string;
+  liveStartTime: string;
   liveEndTime: string;
 }
 
@@ -226,86 +226,84 @@ export default function MainPage() {
         <Grid gutter="lg" mb={70}>
           {mergedLiveItems.length === 0
             ? Array.from({ length: 4 }).map((_, idx) => (
-              <Grid.Col span={{ base: 6, md: 3 }} key={idx}>
-                <LiveSkeletonCard />
-              </Grid.Col>
-            ))
+                <Grid.Col span={{ base: 6, md: 3 }} key={idx}>
+                  <LiveSkeletonCard />
+                </Grid.Col>
+              ))
             : mergedLiveItems.map((live) => (
-              <Grid.Col span={{ base: 6, md: 3 }} key={live.liveId}>
-                {/* 기존 live 카드 렌더링 코드 */}
-                <Box
-                  onClick={() => navigate(`/live/${live.liveId}`)}
-                  style={{ cursor: "pointer", position: "relative" }}
-                >
-                  <Image
-                    src={live.imageUrl || "https://placehold.co/400x500"}
-                    alt={live.title}
-                    radius="md"
-                    // h={400}
-                    fit="cover"
-                    // style={{ aspectRatio: "3 / 4", objectFit: "cover" }}
-                    style={{
-                      width: "100%",            // ✅ 반응형 너비
-                      aspectRatio: "3 / 4",     // ✅ 비율 유지
-                      height: "auto",           // ✅ 고정 높이 제거
-                      objectFit: "cover",       // ✅ 잘림 방지
-                    }}
-                  />
-                  <Badge
-                    color={live.status === "ONGOING" ? "red" : "gray"}
-                    variant="filled"
-                    size="sm"
-                    style={{
-                      position: "absolute",
-                      top: 10,
-                      left: 10,
-                      zIndex: 1,
-                    }}
+                <Grid.Col span={{ base: 6, md: 3 }} key={live.liveId}>
+                  {/* 기존 live 카드 렌더링 코드 */}
+                  <Box
+                    onClick={() => navigate(`/live/${live.liveId}`)}
+                    style={{ cursor: "pointer", position: "relative" }}
                   >
-                    {live.status === "ONGOING" ? "LIVE" : "종료됨"}
-                  </Badge>
-                  <Text mt="xs" size="sm" fw={600} lineClamp={2}>
-                    {live.title}
-                  </Text>
-                  <Flex mt="xs" align="center" gap="xs">
                     <Image
-                      src={live.itemImageUrl || "https://placehold.co/60x60"}
-                      alt="상품 썸네일"
-                      w={50}
-                      h={50}
+                      src={live.imageUrl || "https://placehold.co/400x500"}
+                      alt={live.title}
+                      radius="md"
                       fit="cover"
-                      radius="sm"
+                      style={{
+                        width: "100%",
+                        aspectRatio: "3 / 4",
+                        height: "auto",
+                        objectFit: "cover",
+                      }}
                     />
-                    <Box style={{ flex: 1, minWidth: 0 }}>
-                      <Text size="xs">{live.itemName}</Text>
-                      <Flex align="baseline" gap={6}>
-                        {live.discountRate > 0 && (
-                          <Text size="sm" fw={700} color="red">
-                            {Math.round(live.discountRate * 100)}%
-                          </Text>
-                        )}
-                        {live.price !== null && (
-                          <>
-                            {live.discountRate > 0 && (
-                              <Text size="xs" td="line-through" c="dimmed">
-                                {live.price.toLocaleString()}원
-                              </Text>
-                            )}
-                            <Text size="sm" fw={700}>
-                              {(
-                                live.price *
-                                (1 - live.discountRate)
-                              ).toLocaleString()}
-                              원
+                    <Badge
+                      color={live.status === "ONGOING" ? "red" : "gray"}
+                      variant="filled"
+                      size="sm"
+                      style={{
+                        position: "absolute",
+                        top: 10,
+                        left: 10,
+                        zIndex: 1,
+                      }}
+                    >
+                      {live.status === "ONGOING" ? "LIVE" : "종료됨"}
+                    </Badge>
+                    <Text mt="xs" size="sm" fw={600} lineClamp={2}>
+                      {live.title}
+                    </Text>
+                    <Flex mt="xs" align="center" gap="xs">
+                      <Image
+                        src={live.itemImageUrl || "https://placehold.co/60x60"}
+                        alt="상품 썸네일"
+                        w={50}
+                        h={50}
+                        fit="cover"
+                        radius="sm"
+                      />
+                      <Box style={{ flex: 1, minWidth: 0 }}>
+                        <Text size="xs">{live.itemName}</Text>
+                        <Flex align="baseline" gap={6}>
+                          {live.discountRate > 0 && (
+                            <Text size="sm" fw={700} color="red">
+                              {Math.round(live.discountRate * 100)}%
                             </Text>
-                          </>
-                        )}
-                      </Flex>
-                    </Box>
-                  </Flex>
-                </Box>
-              </Grid.Col>
-            ))}
+                          )}
+                          {live.price !== null && (
+                            <>
+                              {live.discountRate > 0 && (
+                                <Text size="xs" td="line-through" c="dimmed">
+                                  {live.price.toLocaleString()}원
+                                </Text>
+                              )}
+                              <Text size="sm" fw={700}>
+                                {(
+                                  live.price *
+                                  (1 - live.discountRate)
+                                ).toLocaleString()}
+                                원
+                              </Text>
+                            </>
+                          )}
+                        </Flex>
+                      </Box>
+                    </Flex>
+                  </Box>
+                </Grid.Col>
+              ))}
         </Grid>
 
         <Flex justify="space-between" align="center" mt="xl" mb="sm">
@@ -333,77 +331,77 @@ export default function MainPage() {
         <Grid gutter="xl">
           {visibleItems.length === 0
             ? Array.from({ length: 4 }).map((_, idx) => (
-              <Grid.Col span={{ base: 6, md: 3 }} key={idx}>
-                <ProductSkeletonCard />
-              </Grid.Col>
-            ))
+                <Grid.Col span={{ base: 6, md: 3 }} key={idx}>
+                  <ProductSkeletonCard />
+                </Grid.Col>
+              ))
             : visibleItems.map((item) => (
-              <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
-                <Box
-                  onClick={() =>
-                    navigate(`/item/${item.itemId}`, { state: item })
-                  }
-                  style={{ cursor: "pointer", position: "relative" }}
-                >
-                  {/* 이미지 + 흐리게 처리 + SOLD OUT 뱃지 */}
-                  <Box style={{ position: "relative" }}>
-                    <Image
-                      src={
-                        item.itemImages?.[0]?.url ||
-                        "https://placehold.co/400x400"
-                      }
-                      alt={item.itemName}
-                      radius="md"
-                      height={320}
-                      fit="cover"
-                      style={{
-                        aspectRatio: "1 / 1",
-                        objectFit: "cover",
-                        filter:
-                          item.status === "SOLD_OUT"
-                            ? "grayscale(60%) opacity(60%)"
-                            : "none",
-                      }}
-                    />
-                    {item.status === "SOLD_OUT" && (
-                      <Badge
-                        color="dark"
-                        variant="filled"
+                <Grid.Col span={{ base: 6, md: 3 }} key={item.itemId}>
+                  <Box
+                    onClick={() =>
+                      navigate(`/item/${item.itemId}`, { state: item })
+                    }
+                    style={{ cursor: "pointer", position: "relative" }}
+                  >
+                    {/* 이미지 + 흐리게 처리 + SOLD OUT 뱃지 */}
+                    <Box style={{ position: "relative" }}>
+                      <Image
+                        src={
+                          item.itemImages?.[0]?.url ||
+                          "https://placehold.co/400x400"
+                        }
+                        alt={item.itemName}
+                        radius="md"
+                        height={320}
+                        fit="cover"
                         style={{
-                          position: "absolute",
-                          top: 10,
-                          left: 10,
-                          zIndex: 1,
+                          aspectRatio: "1 / 1",
+                          objectFit: "cover",
+                          filter:
+                            item.status === "SOLD_OUT"
+                              ? "grayscale(60%) opacity(60%)"
+                              : "none",
                         }}
-                      >
-                        SOLD OUT
-                      </Badge>
-                    )}
-                  </Box>
-                  {/* 카테고리 표시 */}
-                  <Text size="xs" c="dimmed" mt={10}>
-                    {categoryMap[item.category] || ""}
-                  </Text>
-
-                  {/* 상품명 */}
-                  <Text size="sm" fw={600} mt={4} mb={4}>
-                    {item.itemName}
-                  </Text>
-
-                  {/* 할인율 + 가격 */}
-                  <Flex align="center" gap={6}>
-                    {item.discountRate > 0 && (
-                      <Text size="sm" fw={700} color="red">
-                        {item.discountRate * 100}%
-                      </Text>
-                    )}
-                    <Text size="sm" fw={700}>
-                      {item.finalPrice.toLocaleString()}원
+                      />
+                      {item.status === "SOLD_OUT" && (
+                        <Badge
+                          color="dark"
+                          variant="filled"
+                          style={{
+                            position: "absolute",
+                            top: 10,
+                            left: 10,
+                            zIndex: 1,
+                          }}
+                        >
+                          SOLD OUT
+                        </Badge>
+                      )}
+                    </Box>
+                    {/* 카테고리 표시 */}
+                    <Text size="xs" c="dimmed" mt={10}>
+                      {categoryMap[item.category] || ""}
                     </Text>
-                  </Flex>
-                </Box>
-              </Grid.Col>
-            ))}
+
+                    {/* 상품명 */}
+                    <Text size="sm" fw={600} mt={4} mb={4}>
+                      {item.itemName}
+                    </Text>
+
+                    {/* 할인율 + 가격 */}
+                    <Flex align="center" gap={6}>
+                      {item.discountRate > 0 && (
+                        <Text size="sm" fw={700} color="red">
+                          {item.discountRate * 100}%
+                        </Text>
+                      )}
+                      <Text size="sm" fw={700}>
+                        {item.finalPrice.toLocaleString()}원
+                      </Text>
+                    </Flex>
+                  </Box>
+                </Grid.Col>
+              ))}
         </Grid>
 
         <CountdownBanner />

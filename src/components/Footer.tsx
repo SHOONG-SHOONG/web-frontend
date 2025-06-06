@@ -41,7 +41,7 @@ export default function FooterComponent() {
             </Text>
           </Group>
 
-          <Group spacing="xs" mt="xs" justify="center">
+          <Group gap="xs" mt="xs" justify="center">
             <ActionIcon
               size="lg"
               variant="light"

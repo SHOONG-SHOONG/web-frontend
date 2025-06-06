@@ -13,6 +13,7 @@ import {
   ScrollArea,
   rem,
   Indicator,
+  Modal,
 } from "@mantine/core";
 import {
   IconChevronRight,
@@ -26,13 +27,15 @@ import {
   IconMoodCheck,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import shoongImage from "../assets/shoong-logo.png";
+// import shoongImage from "../assets/shoong-logo.png";
 import { useLogin } from "../contexts/AuthContext.tsx";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function AdminNavBarPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn, loginUser } = useLogin();
+  const [opened, { open, close }] = useDisclosure(false);
 
   const navItems = [
     { label: "상품 승인", icon: IconBasketCheck, path: "/admin" },
@@ -55,7 +58,8 @@ export default function AdminNavBarPage() {
         <div>
           <Box mb="xl">
             <Link to="/">
-              <Image src={shoongImage} w={110} radius="md" />
+              <Image src="/assets/shoong-logo.png" w={110} radius="md" />
+              {/* <Image src={shoongImage} w={110} radius="md" /> */}
             </Link>
           </Box>
 
@@ -93,8 +97,9 @@ export default function AdminNavBarPage() {
                 label="알림"
                 leftSection={<IconBell size="1.1rem" />}
                 rightSection={
-                  <Indicator inline label={"7"} size={16} color="red" />
+                  <Indicator inline label={"3"} size={16} color="red" />
                 }
+                onClick={open}
                 styles={(theme) => ({
                   root: {
                     borderRadius: theme.radius.md,
@@ -107,22 +112,59 @@ export default function AdminNavBarPage() {
                   },
                 })}
               />
+              <Modal
+                opened={opened}
+                onClose={close}
+                withCloseButton
+                centered
+                size="sm"
+                radius="md"
+                overlayProps={{
+                  blur: 2,
+                  opacity: 0.5,
+                }}
+                title={
+                  <Group gap="xs">
+                    <IconBell size="1.2rem" />
+                    <Text fw={700} size="lg">관리자 알림</Text>
+                  </Group>
+                }
+              >
+                <Text size="sm" color="dimmed" mb="sm">
+                  최근 시스템 알림 목록입니다.
+                </Text>
 
-              <NavLink
-                label="도움말 & 지원"
-                leftSection={<IconHelpCircle size="1.1rem" />}
-                styles={(theme) => ({
-                  root: {
-                    borderRadius: theme.radius.md,
-                    fontSize: rem(14),
-                    padding: rem(10),
-                    color: theme.colors.gray[7],
-                    "&:hover": {
-                      backgroundColor: theme.colors.gray[0],
-                    },
-                  },
-                })}
-              />
+                <ScrollArea h={200} type="auto">
+                  <Box
+                    p="sm"
+                    mb="sm"
+                    bg="gray.0"
+                    style={{ borderRadius: "8px", border: "1px solid #eee" }}
+                  >
+                    <Text size="sm">✅ 서버 점검 완료</Text>
+                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 7일 새벽 2시</Text>
+                  </Box>
+
+                  <Box
+                    p="sm"
+                    mb="sm"
+                    bg="gray.0"
+                    style={{ borderRadius: "8px", border: "1px solid #eee" }}
+                  >
+                    <Text size="sm">🛠️ 라이브 스트리밍 기능 개선</Text>
+                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 6일 오후 4시</Text>
+                  </Box>
+
+                  <Box
+                    p="sm"
+                    bg="gray.0"
+                    style={{ borderRadius: "8px", border: "1px solid #eee" }}
+                  >
+                    <Text size="sm">📦 상품 등록 요청 3건</Text>
+                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 5일 오전 10시</Text>
+                  </Box>
+                </ScrollArea>
+              </Modal>
             </Box>
           </ScrollArea>
         </div>

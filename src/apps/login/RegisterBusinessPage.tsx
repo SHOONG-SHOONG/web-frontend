@@ -167,7 +167,7 @@ export default function RegisterBusinessPage() {
             판매자 회원가입
           </Text>
 
-          <Stepper active={active} onStepClick={setActive} breakpoint="sm" size="sm" my="xl">
+          <Stepper active={active} onStepClick={setActive} bgp="sm" size="sm" my="xl">
             <Stepper.Step icon={<IconCheck size={18} />} label="1단계" description="약관동의" />
             <Stepper.Step icon={<IconUser size={18} />} label="2단계" description="기본 정보 입력" />
             <Stepper.Completed><Text ta="center" fw={500}>가입이 완료되었습니다.</Text></Stepper.Completed>
@@ -179,7 +179,7 @@ export default function RegisterBusinessPage() {
                 <>
                   <Divider my="xs" label="약관 동의" labelPosition="center" />
 
-                  <Stack spacing={4}>
+                  <Stack gap={4}>
                     {/* 서비스 이용약관 */}
                     <Flex direction="column">
                       <Flex align="center" mb="xs">
