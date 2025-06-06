@@ -6,7 +6,7 @@ import AuthProvider from "./contexts/AuthContext.tsx";
 import CartProvider from "./contexts/CartContext.tsx";
 
 import { Notifications } from "@mantine/notifications";
-import RoleBasedRoute from "./routes/RoleBasedRoute.tsx";
+// import RoleBasedRoute from "./routes/RoleBasedRoute.tsx";
 
 // 페이지들
 import MainPage from "./apps/main/page.tsx";
@@ -73,34 +73,34 @@ function App() {
             <Route path="/mypage" element={<Mypage />} />
 
             {/* Seller 전용 (보호됨) */}
-            <Route element={<RoleBasedRoute allowedRoles={["STREAMER"]} />}>
-              <Route path="/seller" element={<SellerItemPage />} />
-              <Route path="/seller/item/create" element={<CreateItemPage />} />
-              <Route path="/seller/live" element={<ManageLivePage />} />
-              <Route
-                path="/seller/live/:liveId"
-                element={<LiveStatisticsPage />}
-              />
-              <Route
-                path="/seller/regist-live"
-                element={<LiveRegisterPage />}
-              />
-              <Route path="/seller/user" element={<SellerUserPage />} />
-              <Route path="/seller/brand" element={<RegisterBrandPage />} />
-              <Route path="/seller/mypage" element={<SellerMypge />} />
-              <Route
-                path="/seller/notification"
-                element={<SellerNotificationPage />}
-              />
-            </Route>
+            {/* <Route element={<RoleBasedRoute allowedRoles={["STREAMER"]} />}> */}
+            <Route path="/seller" element={<SellerItemPage />} />
+            <Route path="/seller/item/create" element={<CreateItemPage />} />
+            <Route path="/seller/live" element={<ManageLivePage />} />
+            <Route
+              path="/seller/live/:liveId"
+              element={<LiveStatisticsPage />}
+            />
+            <Route
+              path="/seller/regist-live"
+              element={<LiveRegisterPage />}
+            />
+            <Route path="/seller/user" element={<SellerUserPage />} />
+            <Route path="/seller/brand" element={<RegisterBrandPage />} />
+            <Route path="/seller/mypage" element={<SellerMypge />} />
+            <Route
+              path="/seller/notification"
+              element={<SellerNotificationPage />}
+            />
+            {/* </Route> */}
 
             {/* Admin 전용 (보호됨) */}
-            <Route element={<RoleBasedRoute allowedRoles={["ADMIN"]} />}>
-              <Route path="/admin" element={<AuthItemPage />} />
-              <Route path="/admin/seller" element={<AuthSellerPage />} />
-              <Route path="/admin/report" element={<ReportPage />} />
-              <Route path="/admin/statistics" element={<StatisticsPage />} />
-            </Route>
+            {/* <Route element={<RoleBasedRoute allowedRoles={["ADMIN"]} />}> */}
+            <Route path="/admin" element={<AuthItemPage />} />
+            <Route path="/admin/seller" element={<AuthSellerPage />} />
+            <Route path="/admin/report" element={<ReportPage />} />
+            <Route path="/admin/statistics" element={<StatisticsPage />} />
+            {/* </Route> */}
 
             {/* 404 */}
             <Route path="*" element={<NotFoundPage />} />
