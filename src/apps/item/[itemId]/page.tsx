@@ -26,6 +26,7 @@ import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import { RingLoader } from "../../../components/RingLoader.tsx";
 import LoginModal from "../../../components/LoginModal.tsx";
 import { showNotification } from "@mantine/notifications";
+import { useLogin } from "../../../contexts/AuthContext.tsx";
 
 //  필터 라이브러리 임포트
 import Filter from "badwords-ko";
@@ -74,12 +75,19 @@ export default function ItemDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isWishlisted, setIsWishlisted] = useState(false); // 찜 상태
   const [loginModalOpened, setLoginModalOpened] = useState(false);
+  const { role } = useLogin();
 
   const handleItemPurchaseClick = () => {
     const token = localStorage.getItem("access");
 
     if (!token) {
       setLoginModalOpened(true);
+    } else if (role?.toUpperCase() !== "CLIENT") {
+      showNotification({
+        title: "권한 제한",
+        message: "구매는 일반 사용자만 사용할 수 있습니다.",
+        color: "red",
+      });
     } else {
       handleBuy();
     }
@@ -90,6 +98,12 @@ export default function ItemDetailPage() {
 
     if (!token) {
       setLoginModalOpened(true);
+    } else if (role?.toUpperCase() !== "CLIENT") {
+      showNotification({
+        title: "권한 제한",
+        message: "장바구니는 일반 사용자만 사용할 수 있습니다.",
+        color: "red",
+      });
     } else {
       handleAddToCart();
     }
@@ -212,7 +226,7 @@ export default function ItemDetailPage() {
       console.error("❌ 장바구니 요청 실패:", error);
       showNotification({
         title: "알림",
-        message: "해당 상품을 장바구니에 담을 수 없습니다. (로그인 또는 권한 확인 필요)",
+        message: "해당 상품을 장바구니에 담을 수 없습니다.",
         color: "red",
       });
     }
@@ -268,7 +282,7 @@ export default function ItemDetailPage() {
       console.error("바로 구매 실패:", error);
       showNotification({
         title: "알림",
-        message: "해당 상품을 구매할 수 없습니다. (로그인 또는 권한 확인 필요)",
+        message: "해당 상품을 구매할 수 없습니다.",
         color: "red",
       });
 

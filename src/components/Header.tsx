@@ -21,6 +21,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useLogin } from "../contexts/AuthContext.tsx";
 import BASE_URL from "../config.js";
 import { useNavigate } from "react-router-dom";
+import { showNotification } from "@mantine/notifications";
 
 const menus = [
   { label: "홈", value: "home", path: "/" },
@@ -55,6 +56,8 @@ export default function HeaderComponent() {
           throw new Error(`서버 응답 오류: ${response.status}`);
         }
         const data = await response.json();
+        console.log("🔐 role", role);
+
         if (Array.isArray(data)) {
           setCartCount(data.length);
         } else {
@@ -148,8 +151,14 @@ export default function HeaderComponent() {
                   onClick={() => {
                     if (role === "STREAMER") {
                       navigate("/seller/mypage");
-                    } else {
+                    } else if (role === "CLIENT") {
                       navigate("/mypage");
+                    } else {
+                      showNotification({
+                        title: "접근 제한",
+                        message: "해당 마이페이지는 일반 사용자만 접근할 수 있습니다.",
+                        color: "red",
+                      });
                     }
                   }}
                 >
@@ -190,9 +199,18 @@ export default function HeaderComponent() {
             transitionProps={{ transition: "pop" }}
           >
             <UnstyledButton
-              component={Link}
-              to="/cart"
-              style={{ position: "relative" }}
+              onClick={() => {
+                if (role === "CLIENT") {
+                  navigate("/cart");
+                } else {
+                  showNotification({
+                    title: "접근 제한",
+                    message: "장바구니는 일반 사용자만 이용할 수 있습니다.",
+                    color: "red",
+                  });
+                }
+              }}
+              style={{ position: "relative", background: "none", border: "none" }}
             >
               <IconShoppingBag size={isMobile ? 14 : 22} />
               {cartCount > 0 && (

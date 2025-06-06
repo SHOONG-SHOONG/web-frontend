@@ -27,6 +27,7 @@ import Filter from "badwords-ko";
 const filter = new Filter();
 
 export default function CreateItemPage() {
+  const MAX_DESCRIPTION_LENGTH = 255;
   const navigate = useNavigate();
 
   const [brandId, setBrandId] = useState<number | null>(null);
@@ -299,19 +300,33 @@ export default function CreateItemPage() {
                   value={description}
                   onChange={(e) => {
                     const inputValue = e.currentTarget.value;
+
+                    if (inputValue.length > MAX_DESCRIPTION_LENGTH) {
+                      showNotification({
+                        title: "⚠️ 설명이 너무 깁니다",
+                        message: `최대 ${MAX_DESCRIPTION_LENGTH}자까지만 입력할 수 있습니다.`,
+                        color: "red",
+                      });
+                      return;
+                    }
+
                     if (filter.isProfane(inputValue)) {
-                      setDescriptionError(
-                        "상품 설명에 부적절한 단어가 포함되어 있습니다."
-                      );
+                      setDescriptionError("상품 설명에 부적절한 단어가 포함되어 있습니다.");
                     } else {
                       setDescriptionError("");
                     }
+
                     setDescription(inputValue);
                   }}
                   minRows={4}
+                  maxLength={MAX_DESCRIPTION_LENGTH}
                   required
-                  error={descriptionError} // Mantine 컴포넌트에 에러 메시지 표시
+                  error={descriptionError}
                 />
+                <Text size="sm" mt="xs" c={description.length > MAX_DESCRIPTION_LENGTH ? "red" : "gray"}>
+                  {description.length}/{MAX_DESCRIPTION_LENGTH}자
+                </Text>
+
 
                 <TextInput
                   radius="sm"

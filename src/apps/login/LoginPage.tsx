@@ -75,8 +75,8 @@ export default function LoginPage() {
           name.toLowerCase() === "admin"
             ? "ADMIN"
             : tab === "biz"
-            ? "STREAMER"
-            : "CLIENT";
+              ? "STREAMER"
+              : "CLIENT";
 
         window.localStorage.setItem("role", role);
         setRole(role);
