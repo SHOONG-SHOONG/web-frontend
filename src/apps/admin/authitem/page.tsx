@@ -12,6 +12,7 @@ import {
   ActionIcon,
   Tooltip,
   Table,
+  AppShellNavbar,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -89,8 +90,10 @@ export default function AuthItemPage() {
 
   return (
     <AppShell layout="default">
-      <AdminNavBarPage />
-      <AppShell.Main>
+      <AppShellNavbar>
+        <AdminNavBarPage />
+      </AppShellNavbar>
+      <AppShell.Main ml={250}>
         <Box py="xl" px="xl">
           <Container>
             <Flex justify="space-between" align="center">
@@ -100,7 +103,7 @@ export default function AuthItemPage() {
         </Box>
         <Container py="xl">
           <Title order={4} mb="md">
-            승인 대기 상품 목록
+            대기 상품 목록
           </Title>
           <Card withBorder p="lg" radius="md">
             {!items ? (
@@ -117,7 +120,7 @@ export default function AuthItemPage() {
                 stickyHeaderOffset={60}
                 striped
               >
-                <thead style={{ textAlign: "center" }}>
+                <thead style={{ textAlign: "center", borderBottom: "2px solid #dee2e6" }}>
                   <tr>
                     <th>상품이미지</th>
                     <th>상품명</th>
@@ -130,7 +133,7 @@ export default function AuthItemPage() {
                 </thead>
                 <tbody style={{ textAlign: "center" }}>
                   {items.map((item) => (
-                    <tr key={item.itemId}>
+                    <tr key={item.itemId} style={{ height: "60px" }}>
                       <td style={{ textAlign: "center" }}>
                         <Flex justify="center" align="center">
                           <Avatar

@@ -11,6 +11,7 @@ import {
   Text,
   Badge,
   Image,
+  AppShellNavbar,
 } from "@mantine/core";
 
 import { useNavigate } from "react-router-dom";
@@ -29,8 +30,8 @@ interface LiveItem {
   price: number;
   discountRate: number;
   status: string;
-  liveDate: string; 
-  liveStartTime: string; 
+  liveDate: string;
+  liveStartTime: string;
   liveEndTime: string;
 }
 
@@ -85,7 +86,7 @@ export default function ManageLivePage() {
         credentials: "include",
       });
 
-    if (!liveResponse.ok) throw new Error(`Live API HTTP ${liveResponse.status}`);
+      if (!liveResponse.ok) throw new Error(`Live API HTTP ${liveResponse.status}`);
 
       fetchLives();
       alert("라이브가 성공적으로 종료되었습니다.");
@@ -101,8 +102,10 @@ export default function ManageLivePage() {
 
   return (
     <AppShell layout="default">
-      <SellerNavBarPage />
-      <AppShell.Main style={{ backgroundColor: "#fff" }}>
+      <AppShellNavbar>
+        <SellerNavBarPage />
+      </AppShellNavbar>
+      <AppShell.Main ml={250}>
         <Container py="xl" px="xl">
           <Flex justify="space-between" align="center" mb="xl">
             <Title order={3} fw={600}>
@@ -162,8 +165,8 @@ export default function ManageLivePage() {
                             live.status === "대기"
                               ? "yellow"
                               : live.status === "ONGOING"
-                              ? "green"
-                              : "gray"
+                                ? "green"
+                                : "gray"
                           }
                           variant="light"
                         >

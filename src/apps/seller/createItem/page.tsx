@@ -15,6 +15,7 @@ import {
   Select,
   Text,
   Loader,
+  AppShellNavbar,
 } from "@mantine/core";
 import { IconPhoto, IconPlus } from "@tabler/icons-react";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
@@ -177,8 +178,10 @@ export default function CreateItemPage() {
 
   return (
     <AppShell layout="default">
-      <SellerNavBarPage />
-      <AppShell.Main style={{ backgroundColor: "#ffffff" }}>
+      <AppShellNavbar>
+        <SellerNavBarPage />
+      </AppShellNavbar>
+      <AppShell.Main ml={250}>
         <Box py="xl" px="xl">
           <Container w={800}>
             <Flex justify="space-between" align="center" mb="xl">

@@ -18,6 +18,7 @@ import {
   Divider,
   Paper,
   Tooltip,
+  AppShellNavbar,
 } from "@mantine/core";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
 import BASE_URL from "../../../config.js";
@@ -192,8 +193,10 @@ export default function LiveRegisterPage() {
 
   return (
     <AppShell layout="default">
-      <SellerNavBarPage />
-      <AppShell.Main style={{ backgroundColor: "#fff" }}>
+      <AppShellNavbar>
+        <SellerNavBarPage />
+      </AppShellNavbar>
+      <AppShell.Main ml={250}>
         <Container py="xl" px="xl">
           <Flex justify="space-between" align="center">
             <Title order={3} fw={600}>

@@ -41,7 +41,7 @@ export default function AdminNavBarPage() {
     { label: "상품 승인", icon: IconBasketCheck, path: "/admin" },
     { label: "판매자 승인", icon: IconMoodCheck, path: "/admin/seller" },
     { label: "신고 관리", icon: IconAlertCircle, path: "/admin/report" },
-    { label: "통계", icon: IconChartDots2, path: "/admin/statistics" },
+    // { label: "통계", icon: IconChartDots2, path: "/admin/statistics" },
   ];
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function AdminNavBarPage() {
   }, [navigate]);
 
   return (
-    <AppShell.Navbar w={250} p="md" withBorder>
+    <Box w={250} p="md" h="100vh">
       <Flex direction="column" justify="space-between" h="100%">
         <div>
           <Box mb="xl">
@@ -142,7 +142,7 @@ export default function AdminNavBarPage() {
                     style={{ borderRadius: "8px", border: "1px solid #eee" }}
                   >
                     <Text size="sm">✅ 서버 점검 완료</Text>
-                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 7일 새벽 2시</Text>
+                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 9일 새벽 2시</Text>
                   </Box>
 
                   <Box
@@ -151,8 +151,8 @@ export default function AdminNavBarPage() {
                     bg="gray.0"
                     style={{ borderRadius: "8px", border: "1px solid #eee" }}
                   >
-                    <Text size="sm">🛠️ 라이브 스트리밍 기능 개선</Text>
-                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 6일 오후 4시</Text>
+                    <Text size="sm">🛠️ 판매자 승인 신청 4건</Text>
+                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 8일 오후 4시</Text>
                   </Box>
 
                   <Box
@@ -161,7 +161,7 @@ export default function AdminNavBarPage() {
                     style={{ borderRadius: "8px", border: "1px solid #eee" }}
                   >
                     <Text size="sm">📦 상품 등록 요청 3건</Text>
-                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 5일 오전 10시</Text>
+                    <Text size="xs" color="dimmed" mt={4}>2025년 6월 8일 오전 10시</Text>
                   </Box>
                 </ScrollArea>
               </Modal>
@@ -208,6 +208,6 @@ export default function AdminNavBarPage() {
           </Menu>
         </Box>
       </Flex>
-    </AppShell.Navbar>
+    </Box>
   );
 }

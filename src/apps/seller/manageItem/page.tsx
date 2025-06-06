@@ -13,6 +13,7 @@ import {
   Button,
   ActionIcon,
   Tooltip,
+  AppShellNavbar,
 } from "@mantine/core";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -68,8 +69,10 @@ export default function SellerItemPage() {
 
   return (
     <AppShell layout="default">
-      <SellerNavBarPage />
-      <AppShell.Main style={{ backgroundColor: "#ffffff" }}>
+      <AppShellNavbar>
+        <SellerNavBarPage />
+      </AppShellNavbar>
+      <AppShell.Main ml={250}>
         <Box py="xl" px="xl">
           <Container>
             <Flex justify="space-between" align="center">
@@ -183,7 +186,7 @@ export default function SellerItemPage() {
                     <Text w={100}>{item.discountRate}%</Text>
                     <Text w={120}>{item.itemQuantity}개</Text>
                     <Text w={100}> {item.status === "ON_SALE" ? "판매중" : "승인대기"}</Text>
-                    <Group w={100}>
+                    <Group w={100} gap="xs" justify="center">
                       <Tooltip label="수정">
                         <ActionIcon variant="light" color="blue" radius="xl">
                           <IconEdit size={16} />

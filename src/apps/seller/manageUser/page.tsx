@@ -11,6 +11,7 @@ import {
     Stack,
     Text,
     Card,
+    AppShellNavbar,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import SellerNavBarPage from "../../../components/SellerNavBar.tsx";
@@ -20,8 +21,10 @@ export default function SellerUserPage() {
 
     return (
         <AppShell layout="default">
-            <SellerNavBarPage />
-            <AppShell.Main style={{ backgroundColor: "#f8f9fa" }}>
+            <AppShellNavbar>
+                <SellerNavBarPage />
+            </AppShellNavbar>
+            <AppShell.Main ml={250}>
                 <Container size="xl" px={0}>
                     <Box
                         mb="lg"

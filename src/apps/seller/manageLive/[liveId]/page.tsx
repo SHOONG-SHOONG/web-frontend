@@ -8,6 +8,7 @@ import {
   Loader,
   Card,
   Stack,
+  AppShellNavbar,
 } from "@mantine/core";
 import { useSearchParams } from "react-router-dom";
 import SellerNavBarPage from "../../../../components/SellerNavBar.tsx";
@@ -34,8 +35,10 @@ export default function LiveStatisticsPage() {
 
   return (
     <AppShell layout="default">
-      <SellerNavBarPage />
-      <AppShell.Main style={{ backgroundColor: "#ffffff" }}>
+      <AppShellNavbar>
+        <SellerNavBarPage />
+      </AppShellNavbar>
+      <AppShell.Main ml={250}>
         <Container size="lg" py="xl">
           <Flex justify="space-between" align="center" mb="lg">
             <Title order={2} fw={700}>

@@ -16,6 +16,8 @@ import {
     ActionIcon,
     Tooltip,
     Loader,
+    AppShellNavbar,
+    Table,
 } from "@mantine/core";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -68,8 +70,10 @@ export default function ReportPage() {
 
     return (
         <AppShell layout="default">
-            <AdminNavBarPage />
-            <AppShell.Main style={{ backgroundColor: "#ffffff" }}>
+            <AppShellNavbar>
+                <AdminNavBarPage />
+            </AppShellNavbar>
+            <AppShell.Main ml={250}>
                 <Box py="xl" px="xl">
                     <Container>
                         <Flex justify="space-between" align="center">
@@ -96,63 +100,27 @@ export default function ReportPage() {
                                 <Loader size="lg" />
                             </Flex>
                         ) : (
-                            <Box>
-                                <Flex
-                                    justify="space-between"
-                                    pb="sm"
-                                    mb="sm"
-                                    style={{ borderBottom: "1px solid #eee" }}
-                                >
-
-                                    <Text fw={500} w={200}>
-                                        라이브 썸네일
-                                    </Text>
-                                    <Text fw={500} w={200}>
-                                        라이브 아이디
-                                    </Text>
-                                    <Text fw={500} w={120}>
-                                        라이브 명
-                                    </Text>
-                                    <Text fw={500} w={100}>
-                                        라이브 시간
-                                    </Text>
-                                    <Text fw={500} w={100}>
-                                        라이브 상태
-                                    </Text>
-                                    <Text fw={500} w={200}>
-                                        작업
-                                    </Text>
-                                </Flex>
-                                {items.map((item) => (
-                                    <Flex
-                                        key={item.itemId}
-                                        align="center"
-                                        justify="space-between"
-                                        py="sm"
-                                        style={{ borderBottom: "1px solid #f1f3f5" }}
-                                    >
-                                        <Group w={200}>
-                                            <Avatar
-                                                src={item.itemImages?.[0]?.url}
-                                                size="sm"
-                                                radius="xl"
-                                            />
-                                            <Text>{item.itemName}</Text>
-                                        </Group>
-                                        <Text w={120}>{item.category}</Text>
-                                        <Text w={120}>{item.price.toLocaleString()}원</Text>
-                                        <Text w={80}>{item.discountRate}%</Text>
-                                        <Text w={120}>{item.itemQuantity}개</Text>
-                                        <Group w={200}>
-                                            <Tooltip label="이동">
-                                                <ActionIcon variant="light" color="blue" radius="xl">
-                                                    <IconEdit size={16} />
-                                                </ActionIcon>
-                                            </Tooltip>
-                                        </Group>
-                                    </Flex>
-                                ))}
-                            </Box>
+                            <Table highlightOnHover withColumnBorders striped stickyHeader stickyHeaderOffset={60}
+                                styles={{
+                                    td: {
+                                        paddingTop: 16,
+                                        paddingBottom: 16,
+                                    },
+                                }}>
+                                <thead style={{
+                                    textAlign: "center", borderBottom: "2px solid #dee2e6"
+                                }}>
+                                    <tr>
+                                        <th>라이브 썸네일</th>
+                                        <th>라이브 아이디</th>
+                                        <th>라이브 명</th>
+                                        <th>라이브 시간</th>
+                                        <th>라이브 상태</th>
+                                        <th>라이브 상태</th>
+                                        <th>작업</th>
+                                    </tr>
+                                </thead>
+                            </Table>
                         )}
                     </Card>
                 </Container>

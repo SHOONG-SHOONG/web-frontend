@@ -11,10 +11,13 @@ import {
   ActionIcon,
   Tooltip,
   Loader,
+  AppShellNavbar,
+  Table,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import AdminNavBarPage from "../../../components/AdminNavBar.tsx";
 import BASE_URL from "../../../config";
+import { RingLoader } from "../../../components/RingLoader.tsx";
 
 interface Seller {
   id: number;
@@ -80,93 +83,78 @@ export default function AuthSellerPage() {
 
   return (
     <AppShell layout="default">
-      <AdminNavBarPage />
-      <AppShell.Main>
+      <AppShellNavbar>
+        <AdminNavBarPage />
+      </AppShellNavbar>
+      <AppShell.Main ml={250}>
         <Box py="xl" px="xl">
           <Container>
-            <Flex justify="space-between" align="center">
-              <Title order={2}>판매자 관리</Title>
-            </Flex>
+            <Title order={2}>판매자 관리</Title>
           </Container>
         </Box>
         <Container py="xl">
-          <Title order={4} mb="md">
-            대기 목록
-          </Title>
+          <Title order={4} mb="md">대기 목록</Title>
           <Card withBorder p="lg" radius="md">
             {!sellers ? (
               <Flex justify="center" align="center" py="xl">
-                <Loader size="lg" />
+                <RingLoader />
               </Flex>
             ) : sellers.length === 0 ? (
               <Text ta="center">대기중인 정보가 없습니다.</Text>
             ) : (
-              <Box>
-                <Flex
-                  justify="space-between"
-                  pb="sm"
-                  mb="sm"
-                  style={{
-                    borderBottom: "1px solid #eee",
-                    textAlign: "center",
-                  }}
-                >
-                  <Text fw={500} w={200}>
-                    이름
-                  </Text>
-                  <Text fw={500} w={200}>
-                    이메일
-                  </Text>
-                  <Text fw={500} w={160}>
-                    전화번호
-                  </Text>
-                  <Text fw={500} w={200}>
-                    사업자번호
-                  </Text>
-                  <Text fw={500} w={200}>
-                    작업
-                  </Text>
-                </Flex>
-                {sellers.map((seller) => (
-                  <Flex
-                    key={seller.id}
-                    align="center"
-                    justify="space-between"
-                    py="sm"
-                    style={{
-                      borderBottom: "1px solid #f1f3f5",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Text w={200}>{seller.userName}</Text>
-                    <Text w={200}>{seller.userEmail}</Text>
-                    <Text w={160}>{seller.userPhone}</Text>
-                    <Text w={200}>{seller.registrationNumber}</Text>
-                    <Group w={200} justify="center">
-                      <Tooltip label="승인">
-                        <ActionIcon
-                          variant="light"
-                          color="blue"
-                          radius="xl"
-                          onClick={() => handleApprove(seller.id)}
-                        >
-                          <IconCheck size={16} />
-                        </ActionIcon>
-                      </Tooltip>
-                      <Tooltip label="거절">
-                        <ActionIcon
-                          variant="light"
-                          color="red"
-                          radius="xl"
-                          onClick={() => handleReject(seller.id)}
-                        >
-                          <IconX size={16} />
-                        </ActionIcon>
-                      </Tooltip>
-                    </Group>
-                  </Flex>
-                ))}
-              </Box>
+              <Table highlightOnHover withColumnBorders striped stickyHeader stickyHeaderOffset={60}
+                styles={{
+                  td: {
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                  },
+                }}>
+                <thead style={{
+                  textAlign: "center", borderBottom: "2px solid #dee2e6"
+                }}>
+                  <tr>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>사업자번호</th>
+                    <th>작업</th>
+                  </tr>
+                </thead>
+                <tbody style={{ textAlign: "center" }}>
+                  {sellers.map((s) => (
+                    <tr key={s.id} style={{ height: "60px" }}>
+                      <td>{s.userName}</td>
+                      <td>{s.userEmail}</td>
+                      <td>{s.userPhone}</td>
+                      <td>{s.registrationNumber}</td>
+                      <td>
+                        <Group gap="xs" justify="center">
+                          <Tooltip label="승인">
+                            <ActionIcon
+                              variant="light"
+                              color="blue"
+                              radius="xl"
+                              onClick={() => handleApprove(s.id)}
+                            >
+                              <IconCheck size={16} />
+                            </ActionIcon>
+                          </Tooltip>
+                          <Tooltip label="거절">
+                            <ActionIcon
+                              variant="light"
+                              color="red"
+                              radius="xl"
+                              onClick={() => handleReject(s.id)}
+                            >
+                              <IconX size={16} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             )}
           </Card>
         </Container>
