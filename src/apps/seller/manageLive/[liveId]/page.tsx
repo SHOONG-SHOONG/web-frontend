@@ -6,9 +6,7 @@ import {
   Title,
   Box,
   Loader,
-  Text,
   Card,
-  Divider,
   Stack,
 } from "@mantine/core";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -16,7 +14,6 @@ import SellerNavBarPage from "../../../../components/SellerNavBar.tsx";
 import DASHBOARD_BASE_URL from "../../../../dashboard_config.js";
 
 export default function LiveStatisticsPage() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
 
