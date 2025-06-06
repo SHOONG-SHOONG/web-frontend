@@ -22,6 +22,7 @@ import { useDisclosure } from "@mantine/hooks";
 import HeaderComponent from "../../components/Header.tsx";
 import FooterComponent from "../../components/Footer.tsx";
 import BASE_URL from "../../config.js";
+import { useLogin } from "../../contexts/AuthContext.tsx";
 
 interface User {
   brandName: string | null;
@@ -60,6 +61,7 @@ export default function MyPage() {
   const [couponCount, setCouponCount] = useState(1);
   const [drawerOpened, { open, close, toggle }] = useDisclosure();
   const navigate = useNavigate();
+  const { role } = useLogin();
 
   useEffect(() => {
     fetchUserInfo();
@@ -76,7 +78,13 @@ export default function MyPage() {
       if (!res.ok) throw new Error();
       const data = await res.json();
       setUserInfo(data);
-      if (data.registrationNumber) navigate("/seller/mypage");
+      if (
+        role &&
+        data.role?.toUpperCase() === "STREAMER" &&
+        role.toUpperCase() === "STREAMER"
+      ) {
+        navigate("/seller/mypage");
+      }
     } catch (err) {
       console.error("mypage error", err);
     }
