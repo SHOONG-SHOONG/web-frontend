@@ -3,24 +3,28 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useLogin } from "../contexts/AuthContext.tsx";
 
 interface RoleBasedRouteProps {
-  allowedRoles: string[]; // 반드시 props로 넘어와야 함
+  allowedRoles: string[];
 }
 
 const RoleBasedRoute = ({ allowedRoles }: RoleBasedRouteProps) => {
   const { isLoggedIn, role } = useLogin();
   const location = useLocation();
 
-  // ⛔ 예외 처리 추가!
   if (!allowedRoles || !Array.isArray(allowedRoles)) {
     console.error("RoleBasedRoute: allowedRoles prop is missing or invalid");
     return <Navigate to="/" replace />;
   }
 
-  if (!isLoggedIn) {
-    return <Navigate to="/login" state={location.pathname} replace />;
+  // role이 아직 안 불러와졌을 경우에는 아무 것도 안 보여주기 (로딩 처리)
+  if (!isLoggedIn || role === null) {
+    return null;
   }
 
-  if (!role || !allowedRoles.includes(role)) {
+  // 대소문자 통일해서 체크
+  const normalizedRole = role.toUpperCase();
+  const normalizedAllowed = allowedRoles.map((r) => r.toUpperCase());
+
+  if (!normalizedAllowed.includes(normalizedRole)) {
     return <Navigate to="/" replace />;
   }
 
