@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SellerNavBarPage from "../../../../components/SellerNavBar.tsx";
-import BASE_URL from "../../../../config.js";
+import DASHBOARD_BASE_URL from "../../../../dashboard_config.js";
 
 export default function LiveStatisticsPage() {
   const navigate = useNavigate();
@@ -26,10 +26,9 @@ export default function LiveStatisticsPage() {
   const to = searchParams.get("to");
 
   const grafanaDashboardUid = "beniokcoo3thcc";
-  const grafanaHost = "http://192.168.0.6:3000";
   const dashboardTitle = "efg";
 
-  const baseGrafanaUrl = `${grafanaHost}/d-solo/${grafanaDashboardUid}/${dashboardTitle}?orgId=1&theme=light`;
+  const baseGrafanaUrl = `${DASHBOARD_BASE_URL}/d-solo/${grafanaDashboardUid}/${dashboardTitle}?orgId=1&theme=light`;
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 500);

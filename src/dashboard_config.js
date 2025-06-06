@@ -1,0 +1,3 @@
+const DASHBOARD_BASE_URL = process.env.GRAFANA_DASHBOARD_BASE_URL;
+
+export default DASHBOARD_BASE_URL;
