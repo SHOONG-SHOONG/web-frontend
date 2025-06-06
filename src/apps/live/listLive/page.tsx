@@ -42,7 +42,7 @@ interface Item {
 }
 
 interface LiveItem {
-  id: number;
+  liveId: number;
   title: string;
   imageUrl: string;
   itemName: string;
@@ -127,7 +127,7 @@ export default function ListLivePage() {
             {liveItem && (
               <Grid.Col span={3}>
                 <Box
-                  onClick={() => navigate(`/live/${liveItem.id}`)}
+                  onClick={() => navigate(`/live/${liveItem.liveId}`)}
                   style={{ cursor: "pointer", position: "relative" }}
                 >
                   <Image
@@ -202,9 +202,9 @@ export default function ListLivePage() {
           <Grid gutter="lg" mb={70}>
             {latestLiveItems.length > 0 ? (
               latestLiveItems.map((live) => (
-                <Grid.Col span={3} key={live.id}>
+                <Grid.Col span={3} key={live.liveId}>
                   <Box
-                    onClick={() => navigate(`/live/${live.id}`)}
+                    onClick={() => navigate(`/live/${live.liveId}`)}
                     style={{ cursor: "pointer", position: "relative" }}
                   >
                     {/* 썸네일 이미지 */}
