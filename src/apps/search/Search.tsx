@@ -124,7 +124,7 @@ const ProductBox = ({
 const SearchPage = () => {
   const [keyword, setKeyword] = useState("");
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(200000);
+  const [maxPrice, setMaxPrice] = useState(1000000);
   const [sortBy, setSortBy] = useState("");
   const [products, setProducts] = useState<Item[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
@@ -227,12 +227,12 @@ const SearchPage = () => {
                   setMaxPrice(val[1]);
                 }}
                 min={0}
-                max={200000}
+                max={1000000}
                 step={10000}
                 marks={[
                   { value: 0, label: "₩0" },
                   { value: 100000, label: "₩100,000" },
-                  { value: 200000, label: "₩200,000" },
+                  { value: 1000000, label: "₩1,000,000" },
                 ]}
               />
             </Box>
