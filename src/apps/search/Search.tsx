@@ -231,9 +231,14 @@ const SearchPage = () => {
                 step={10000}
                 marks={[
                   { value: 0, label: "₩0" },
-                  { value: 100000, label: "₩100,000" },
+                  { value: 500000, label: "₩500,0000" },
                   { value: 1000000, label: "₩1,000,000" },
                 ]}
+                styles={{
+                  markLabel: {
+                    fontSize: "12px",
+                  },
+                }}
               />
             </Box>
 
