@@ -50,6 +50,7 @@ export default function OrderPage() {
   const [userAddress, setUserAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [paymentType, setPaymentType] = useState<string>("");
   const [agreements, setAgreements] = useState({
     privacy: false,
     thirdParty: false,
@@ -367,6 +368,20 @@ export default function OrderPage() {
 
           {/* 결제 수단 */}
           <Box p="md" style={{ borderBottom: "1px solid #eee" }}>
+            <Box mt="md" >
+              <Image
+                src="/assets/b1.png"
+                alt="카드 결제 프로모션"
+                radius="md"
+                w="100%"
+                style={{
+                  maxWidth: 800,
+                  margin: "0 auto",
+                  display: "block",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
             <Flex align="center" mb="md" gap="xs">
               <Text fw={700} size="sm">결제 수단</Text>
               <Text size="lg" c="red">*</Text>
