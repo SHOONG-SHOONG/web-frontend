@@ -332,6 +332,27 @@ export default function ItemPage() {
         <IconArrowNarrowUp size={30} />
       </Button>
 
+      <Container size="lg" py="lg">
+        <Box
+          bg="white"
+          p="xl"
+          style={{
+            overflow: "hidden",
+          }}
+        >
+          <Image
+            src="/assets/b3.png"
+            alt="메인 배너"
+            radius="md"
+            w="100%"
+            style={{
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        </Box>
+      </Container>
+
       <FooterComponent />
     </>
   );
