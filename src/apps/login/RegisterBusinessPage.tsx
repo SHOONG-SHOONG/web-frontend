@@ -33,7 +33,6 @@ import BASE_URL from "../../config";
 import React from "react";
 import { showNotification } from "@mantine/notifications";
 
-// Daum Postcode API를 위한 전역 선언 (public/index.html에 스크립트를 추가하는 것이 일반적)
 declare global {
   interface Window {
     daum: any;
@@ -82,10 +81,8 @@ export default function RegisterBusinessPage() {
       });
 
       if (response.ok) {
-        // alert("판매자 회원가입 성공!");
         navigate("/seller/notification", { replace: true });
       } else {
-        // alert("판매자 회원가입 실패!");
         const errorData = await response.json();
         console.error("Business Join Failed:", errorData);
         showNotification({

@@ -158,8 +158,6 @@ export default function ItemDetailPage() {
 
   // 찜하기/찜 해제 토글 함수
   const toggleWishlist = async () => {
-    // 실제 API 호출 로직은 주석 처리되어 있으므로, 여기서는 UI 상태만 토글합니다.
-    // 실제 백엔드 연동 시에는 주석 처리된 코드를 활성화하고 로그인 여부 등 추가 로직을 처리해야 합니다.
     setIsWishlisted((prev) => !prev);
 
     // const token = localStorage.getItem("access");
@@ -237,7 +235,7 @@ export default function ItemDetailPage() {
     const token = localStorage.getItem("access");
 
     try {
-      // 1️⃣ 장바구니에 아이템 추가
+      // 장바구니에 아이템 추가
       const cartRes = await fetch(`${BASE_URL}/cart/add`, {
         method: "POST",
         headers: {
@@ -258,7 +256,7 @@ export default function ItemDetailPage() {
       const cartData = await cartRes.json();
       const cartId = cartData.cartId;
 
-      // 2️⃣ 주문 생성
+      // 주문 생성
       const orderRes = await fetch(`${BASE_URL}/orders/create`, {
         method: "POST",
         headers: {
@@ -275,7 +273,7 @@ export default function ItemDetailPage() {
         throw new Error("주문 생성 실패");
       }
 
-      // 3️⃣ 주문 페이지로 이동
+      // 주문 페이지로 이동
       navigate("/order");
 
     } catch (error) {

@@ -63,7 +63,7 @@ export default function OrderPage() {
     setAgreed(allChecked);
   }, [agreements]);
 
-  // 백엔드에서 상품 데이터 가져오기 (실제로는 API 호출)
+  // 백엔드에서 상품 데이터 가져오기
   useEffect(() => {
     const fetchOrderItems = async () => {
       const token = localStorage.getItem("access");
@@ -80,7 +80,7 @@ export default function OrderPage() {
 
         if (response.status === 401) {
           alert("로그인이 필요한 서비스입니다.");
-          // localStorage.removeItem("access"); // 필요 시 제거
+          // localStorage.removeItem("access"); 
           // navigate("/login");
           return;
         }

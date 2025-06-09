@@ -15,7 +15,6 @@ const RoleBasedRoute = ({ allowedRoles }: RoleBasedRouteProps) => {
     return <Navigate to="/" replace />;
   }
 
-  // role이 아직 안 불러와졌을 경우에는 아무 것도 안 보여주기 (로딩 처리)
   if (!isLoggedIn || role === null) {
     return null;
   }

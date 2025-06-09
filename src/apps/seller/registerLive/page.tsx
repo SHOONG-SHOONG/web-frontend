@@ -26,12 +26,9 @@ import { useNavigate } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import { Loader } from "@mantine/core";
 
-//  필터 라이브러리 임포트
 import Filter from "badwords-ko";
-const filter = new Filter(); // 필터 인스턴스 생성 (기본 욕설 리스트 사용)
+const filter = new Filter(); 
 
-// 필요한 경우 커스텀 단어 추가:
-// filter.addWords("새로운욕설", "나쁜말");
 
 interface ItemImage {
   id: number;
@@ -87,11 +84,6 @@ export default function LiveRegisterPage() {
         setItems(data);
       } catch (err) {
         console.error(err);
-        // showNotification({
-        //   title: "상품 로딩 실패",
-        //   message: "상품 목록을 불러오는 데 실패했습니다.",
-        //   color: "red",
-        // });
       }
     };
 
@@ -117,7 +109,6 @@ export default function LiveRegisterPage() {
     }
 
     //  2. 욕설 필터링 에러 최종 검사
-    // 실시간 경고가 활성화되어 있어 여기에 걸리면 제출을 막습니다.
     if (titleError || descriptionError) {
       showNotification({
         title: "부적절한 단어 감지",
@@ -127,15 +118,13 @@ export default function LiveRegisterPage() {
       return;
     }
 
-    //  중요: 제출 시 필터링된 내용을 사용합니다.
-    // 실시간 경고 후에도 혹시 모를 상황에 대비해 최종 필터링을 다시 적용합니다.
     const filteredTitle = filter.clean(title);
     const filteredDescription = filter.clean(description);
 
     const formData = new FormData();
-    formData.append("title", filteredTitle); // ✨ 필터링된 제목 사용
-    formData.append("description", filteredDescription); // ✨ 필터링된 설명 사용
-    formData.append("LiveDate", liveDate); // 이 필드가 백엔드에서 어떤 형태를 기대하는지 확인 필요 (현재는 YYYY-MM-DDTHH:mm 형식 그대로)
+    formData.append("title", filteredTitle); // 필터링된 제목 사용
+    formData.append("description", filteredDescription); // 필터링된 설명 사용
+    formData.append("LiveDate", liveDate); 
     formData.append("streamKey", streamKey);
     formData.append("imageFile", file);
     selectedItemIds.forEach((id) => formData.append("itemIds", id.toString()));
@@ -307,7 +296,7 @@ export default function LiveRegisterPage() {
                   size="md"
                   label="라이브 예정 날짜"
                   placeholder="예: 2025-06-10"
-                  type="date" // ✅ 날짜만
+                  type="date" // 날짜만
                   value={liveDate}
                   onChange={(e) => setLiveDate(e.currentTarget.value)}
                   required
@@ -318,7 +307,7 @@ export default function LiveRegisterPage() {
                   size="md"
                   label="라이브 시작 시간"
                   placeholder="예: 15:00"
-                  type="time" // ✅ 시간만
+                  type="time" // 시간만
                   value={startTime}
                   onChange={(e) => setStartTime(e.currentTarget.value)}
                   required

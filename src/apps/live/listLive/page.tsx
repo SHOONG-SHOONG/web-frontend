@@ -224,10 +224,10 @@ export default function ListLivePage() {
                       // h={400}
                       fit="cover"
                       style={{
-                        width: "100%",            // ✅ 반응형 너비
-                        aspectRatio: "3 / 4",     // ✅ 비율 유지
-                        height: "auto",           // ✅ 고정 높이 제거
-                        objectFit: "cover",       // ✅ 잘림 방지
+                        width: "100%",            
+                        aspectRatio: "3 / 4",     
+                        height: "auto",          
+                        objectFit: "cover",      
                       }}
                     />
 

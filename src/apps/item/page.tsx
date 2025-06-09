@@ -10,9 +10,6 @@ import BASE_URL from "../../config.js";
 import Filter from "badwords-ko";
 const filter = new Filter(); // 필터 인스턴스 생성 (기본 욕설 리스트 사용)
 
-// 필요한 경우 커스텀 단어 추가:
-// filter.addWords("새로운욕설", "나쁜말");
-
 // filter
 const categories = [
   {

@@ -70,7 +70,7 @@ export default function LoginPage() {
         window.localStorage.setItem("name", encodeURIComponent(name));
         window.localStorage.setItem("userStatus", userStatus);
 
-        // ✅ role 지정: ADMIN, STREAMER, CLIENT
+        // role 지정: ADMIN, STREAMER, CLIENT
         const role =
           name.toLowerCase() === "admin"
             ? "ADMIN"
@@ -84,7 +84,7 @@ export default function LoginPage() {
         setIsLoggedIn(true);
         setLoginUser(name);
 
-        // ✅ 이동
+        // 이동
         if (role === "ADMIN") {
           navigate("/admin");
         } else if (role === "STREAMER") {

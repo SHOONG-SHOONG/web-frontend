@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
-    allowedStatus: string[]; // 예: ["ACTIVE"]
+    allowedStatus: string[]; 
     children: JSX.Element;
 }
 
